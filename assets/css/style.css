@@ -494,12 +494,6 @@ a.chip:hover { text-decoration: none; }
 .empresa-cabecalho-texto { min-width: 0; }
 @media (max-width: 620px) { .empresa-topo-com-marca { flex-direction: column; gap: 14px; } }
 
-.aviso-imagem {
-  margin: 14px 0 0; font-size: .89rem; color: var(--ink-soft);
-  background: var(--surface-alt); border: 1px dashed var(--border);
-  border-radius: var(--radius-sm); padding: 10px 14px;
-}
-
 .nota-ordem { color: var(--muted); font-size: .86rem; margin: -8px 0 16px; }
 
 /* ---------- Espaços publicitários ----------------------------------------- */

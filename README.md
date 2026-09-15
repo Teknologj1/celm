@@ -170,8 +170,7 @@ quadrado (400×400, PNG ou SVG) é o que melhor se encaixa no cartão e na ficha
 
 Empresa sem `logo` não fica sem nada: o site desenha um monograma com as
 iniciais dela. Mas **só quem envia imagem aparece primeiro na lista geral** —
-é o incentivo para que os condôminos mandem o material. A ficha de quem ainda
-não enviou exibe um convite discreto para fazê-lo.
+é o incentivo para que os condôminos mandem o material.
 
 ## Espaços publicitários
 

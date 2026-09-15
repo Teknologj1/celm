@@ -386,7 +386,6 @@ function empresa(dados, item) {
         </div>
         <h1>${escapar(item.nome)}</h1>
         <p class="empresa-resumo">${escapar(item.descricao)}</p>
-        ${!item.logo ? `<p class="aviso-imagem">Esta empresa ainda não enviou logotipo. <a href="${u("cadastro/")}">Envie o seu</a> para aparecer com imagem e ter prioridade na lista geral.</p>` : ""}
         </div>
       </header>
 
