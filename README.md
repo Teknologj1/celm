@@ -213,11 +213,13 @@ O workflow `.github/workflows/site.yml` roda a cada push: gera o site, verifica
 os links e confere se o HTML commitado está atualizado. Quando o push é para o
 branch padrão, publica automaticamente no GitHub Pages.
 
-Na primeira execução o próprio workflow liga o GitHub Pages (`enablement: true`
-no passo `configure-pages`). Se a organização bloquear essa ativação
-automática, ligue à mão em **Settings → Pages → Source: GitHub Actions** — sem
-isso o job de publicação falha com `Get Pages site failed`, embora o de build
-continue passando.
+**Antes do primeiro deploy, ligue o Pages à mão:** em **Settings → Pages →
+Source**, escolha **GitHub Actions**. Sem isso o job de publicação falha com
+`Get Pages site failed`, embora o de build e verificação continue passando.
+
+Esse passo não dá para automatizar: criar o site do Pages exige permissão de
+administração do repositório, que o `GITHUB_TOKEN` do workflow não tem —
+`enablement: true` devolve `Resource not accessible by integration`.
 
 Se o endereço final não for `https://teknologj1.github.io/celm`, ajuste
 `siteUrl` em `data/centro.json` — esse valor alimenta as URLs canônicas, o
