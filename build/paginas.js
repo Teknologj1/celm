@@ -166,7 +166,6 @@ function home(dados) {
           <div>
             <span class="olho">Vizinhos em destaque</span>
             <h2>Empresas do complexo</h2>
-            <p style="margin:6px 0 0;color:var(--ink-soft);font-size:.92rem">Empresas que enviaram identidade visual aparecem primeiro nesta lista.</p>
           </div>
           <a class="btn btn-secundario btn-sm" href="${url(0, "empresas/")}">Ver o diretório completo</a>
         </div>
