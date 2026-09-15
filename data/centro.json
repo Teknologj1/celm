@@ -25,13 +25,21 @@
       "id": "A",
       "nome": "Torre A",
       "descricao": "Torre com acesso direto pelo hall principal, integrada ao Shopping Liberty Mall pelo piso térreo.",
-      "andares": "2º ao 14º andar"
+      "andares": "2º ao 14º andar",
+      "imagem": {
+        "src": "assets/img/complexo/torre-a.svg",
+        "alt": "Torre A do Centro Empresarial Liberty Mall"
+      }
     },
     {
       "id": "B",
       "nome": "Torre B",
       "descricao": "Torre voltada para o estacionamento coberto, com acesso independente e ligação interna ao shopping.",
-      "andares": "2º ao 14º andar"
+      "andares": "2º ao 14º andar",
+      "imagem": {
+        "src": "assets/img/complexo/torre-b.svg",
+        "alt": "Torre B do Centro Empresarial Liberty Mall"
+      }
     }
   ],
   "estrutura": [
@@ -65,5 +73,32 @@
       "titulo": "Infraestrutura",
       "texto": "Operadoras de fibra óptica, gerador de emergência e central de ar-condicionado."
     }
-  ]
+  ],
+  "imagens": {
+    "fachada": {
+      "src": "assets/img/complexo/fachada.svg",
+      "alt": "Fachada do Centro Empresarial Liberty Mall, com as Torres A e B"
+    },
+    "galeria": [
+      {
+        "src": "assets/img/complexo/hall.svg",
+        "alt": "Hall principal de entrada",
+        "legenda": "Hall principal, com acesso às duas torres"
+      },
+      {
+        "src": "assets/img/complexo/conexao-shopping.svg",
+        "alt": "Ligação interna com o Shopping Liberty Mall",
+        "legenda": "Ligação interna com o Shopping Liberty Mall"
+      },
+      {
+        "src": "assets/img/complexo/estacionamento.svg",
+        "alt": "Estacionamento coberto do complexo",
+        "legenda": "Estacionamento coberto, com acesso direto às torres"
+      }
+    ]
+  },
+  "publicidade": {
+    "mostrarEspacosVazios": true,
+    "contato": "comercial@exemplo.com.br"
+  }
 }

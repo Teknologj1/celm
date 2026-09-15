@@ -33,6 +33,26 @@ function slugificar(texto) {
     .replace(/^-+|-+$/g, "");
 }
 
+/* Ordem alfabética: usada nas buscas encadeadas (torre → categoria). */
+function porNome(a, b) {
+  return a.nome.localeCompare(b.nome, "pt-BR");
+}
+
+/* Ordem da lista geral: quem enviou imagem aparece primeiro; dentro de cada
+   grupo, ordem alfabética. */
+function porVitrine(a, b) {
+  if (a.temImagem !== b.temImagem) return a.temImagem ? -1 : 1;
+  return porNome(a, b);
+}
+
+/* Monograma exibido quando a empresa ainda não enviou logotipo. */
+function iniciaisDe(nome) {
+  const ignorar = new Set(["de", "da", "do", "e", "dos", "das", "&"]);
+  const palavras = String(nome).replace(/&/g, " ").split(/\s+/)
+    .filter((p) => p && !ignorar.has(p.toLowerCase()));
+  return palavras.slice(0, 2).map((p) => p[0]).join("").toUpperCase() || "?";
+}
+
 function validar(centro, categorias, empresas) {
   const problemas = [];
   const slugsCategoria = new Set(categorias.map((c) => c.slug));
@@ -61,6 +81,7 @@ function carregar() {
   const centro = lerJson("centro.json");
   const categorias = lerJson("categorias.json");
   const brutas = lerJson("empresas.json");
+  const anuncios = lerJson("anuncios.json");
 
   validar(centro, categorias, brutas);
 
@@ -75,12 +96,16 @@ function carregar() {
         andar: Number(empresa.andar) || 0,
         demo: empresa.demo === true,
         destaque: empresa.destaque === true,
+        logo: empresa.logo || "",
+        capa: empresa.capa || "",
+        temImagem: Boolean(empresa.logo || empresa.capa),
+        iniciais: iniciaisDe(empresa.nome),
         categoriaNome: categoria.nome,
         categoriaIcone: categoria.icone,
         categoriaSinonimos: categoria.sinonimos || []
       });
     })
-    .sort((a, b) => a.nome.localeCompare(b.nome, "pt-BR"));
+    .sort(porNome);
 
   const categoriasComContagem = categorias
     .map((categoria) =>
@@ -94,14 +119,14 @@ function carregar() {
   /* Cada torre carrega as categorias que existem nela, o que permite a
      navegação encadeada torre → categoria → empresas. */
   const torres = (centro.torres || []).map((torre) => {
-    const daTorre = empresas.filter((e) => e.torre === torre.id);
+    const daTorre = empresas.filter((e) => e.torre === torre.id).sort(porNome);
     return Object.assign({}, torre, {
       total: daTorre.length,
       empresas: daTorre,
       categorias: categoriasComContagem
         .map((categoria) =>
           Object.assign({}, categoria, {
-            empresas: daTorre.filter((e) => e.categoria === categoria.slug)
+            empresas: daTorre.filter((e) => e.categoria === categoria.slug).sort(porNome)
           })
         )
         .filter((categoria) => categoria.empresas.length > 0)
@@ -112,17 +137,27 @@ function carregar() {
     .filter((e) => e.beneficio)
     .sort((a, b) => a.nome.localeCompare(b.nome, "pt-BR"));
 
+  const anunciosPorEspaco = anuncios.reduce((mapa, anuncio) => {
+    if (!mapa[anuncio.espaco]) mapa[anuncio.espaco] = [];
+    mapa[anuncio.espaco].push(anuncio);
+    return mapa;
+  }, {});
+
   return {
     centro,
     torres,
     empresas,
+    /* lista geral: prioriza quem enviou imagem */
+    vitrine: empresas.slice().sort(porVitrine),
+    anuncios: anunciosPorEspaco,
     categorias: categoriasComContagem,
     vantagens,
     estatisticas: {
       empresas: empresas.length,
       categorias: categoriasComContagem.length,
       torres: torres.length,
-      vantagens: vantagens.length
+      vantagens: vantagens.length,
+      comImagem: empresas.filter((e) => e.temImagem).length
     }
   };
 }
@@ -142,8 +177,11 @@ function paraBusca(empresas) {
     andar: e.andar,
     sala: e.sala,
     responsavel: e.responsavel || "",
+    logo: e.logo,
+    iniciais: e.iniciais,
+    temImagem: e.temImagem,
     demo: e.demo
   }));
 }
 
-module.exports = { carregar, paraBusca, slugificar, RAIZ };
+module.exports = { carregar, paraBusca, slugificar, porNome, porVitrine, RAIZ };

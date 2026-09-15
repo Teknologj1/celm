@@ -1,0 +1,26 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 900" width="1600" height="900" role="img">
+  <title>Foto da fachada do complexo</title>
+  <defs>
+    <linearGradient id="ceu" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#0a3352"/><stop offset="100%" stop-color="#14608f"/>
+    </linearGradient>
+  </defs>
+  <rect width="1600" height="900" fill="url(#ceu)"/>
+  <g opacity=".3" fill="#ffffff">
+    <rect x="150" y="300" width="270" height="600" rx="6"/>
+    <rect x="470" y="170" width="330" height="730" rx="6"/>
+    <rect x="850" y="380" width="230" height="520" rx="6"/>
+    <rect x="1130" y="450" width="220" height="450" rx="6"/>
+  </g>
+  <g opacity=".45" fill="#b8862b">
+    <rect x="520" y="230" width="46" height="34"/><rect x="600" y="230" width="46" height="34"/><rect x="680" y="230" width="46" height="34"/><rect x="520" y="326" width="46" height="34"/><rect x="600" y="326" width="46" height="34"/><rect x="680" y="326" width="46" height="34"/><rect x="520" y="422" width="46" height="34"/><rect x="600" y="422" width="46" height="34"/><rect x="680" y="422" width="46" height="34"/><rect x="520" y="518" width="46" height="34"/><rect x="600" y="518" width="46" height="34"/><rect x="680" y="518" width="46" height="34"/><rect x="520" y="614" width="46" height="34"/><rect x="600" y="614" width="46" height="34"/><rect x="680" y="614" width="46" height="34"/><rect x="520" y="710" width="46" height="34"/><rect x="600" y="710" width="46" height="34"/><rect x="680" y="710" width="46" height="34"/><rect x="520" y="806" width="46" height="34"/><rect x="600" y="806" width="46" height="34"/><rect x="680" y="806" width="46" height="34"/>
+  </g>
+  <rect x="40" y="40" width="1520" height="820" rx="14"
+        fill="none" stroke="#ffffff" stroke-opacity=".3" stroke-width="3" stroke-dasharray="14 12"/>
+  <g transform="translate(1530, 830)" text-anchor="end">
+    <text x="0" y="-26" fill="#ffffff" fill-opacity=".85" font-family="system-ui, sans-serif"
+          font-size="34" font-weight="700">Foto da fachada</text>
+    <text x="0" y="6" fill="#ffffff" fill-opacity=".62" font-family="system-ui, sans-serif"
+          font-size="24">Substitua por uma imagem real do complexo (1600×900)</text>
+  </g>
+</svg>

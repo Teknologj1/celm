@@ -43,12 +43,14 @@
         <a href="categorias/">Categorias</a>
         <a href="vantagens/">Vantagens</a>
         <a href="o-centro/">O Centro</a>
+        <a href="anuncie/">Anuncie</a>
         <a class="btn btn-sm" href="cadastro/">Cadastrar empresa</a>
       </nav>
     </div>
   </header>
   <main id="conteudo">
-    <section class="hero">
+    <section class="hero hero-com-foto">
+      <img class="hero-foto" src="assets/img/complexo/fachada.svg" alt="Fachada do Centro Empresarial Liberty Mall, com as Torres A e B" fetchpriority="high">
       <div class="container">
         <span class="hero-etiqueta">🏙️ Torres A e B · Asa Norte, Brasília</span>
         <h1>Quem é quem no Centro Empresarial Liberty Mall</h1>
@@ -148,22 +150,41 @@
       </div>
     </section>
 
+    <section class="secao">
+      <div class="container">
+        <aside class="anuncio anuncio-vazio anuncio-faixa" aria-label="Espaço publicitário disponível">
+        <span class="anuncio-rotulo">Espaço publicitário</span>
+        <div class="anuncio-conteudo">
+          <div>
+            <b>Anuncie para quem trabalha aqui</b>
+            <p>Faixa 970×250 na página inicial, abaixo das categorias.</p>
+            <a href="anuncie/">Ver formatos e condições →</a>
+          </div>
+        </div>
+      </aside>
+      </div>
+    </section>
+
     <section class="secao secao-alt">
       <div class="container">
         <div class="secao-topo">
           <div>
             <span class="olho">Vizinhos em destaque</span>
             <h2>Empresas do complexo</h2>
+            <p style="margin:6px 0 0;color:var(--ink-soft);font-size:.92rem">Empresas que enviaram identidade visual aparecem primeiro nesta lista.</p>
           </div>
           <a class="btn btn-secundario btn-sm" href="empresas/">Ver o diretório completo</a>
         </div>
         <div class="grade grade-3">
-        <a class="cartao" href="empresas/aurora-advocacia/">
+        <a class="cartao cartao-com-imagem" href="empresas/aurora-advocacia/">
           <div class="cartao-topo">
             <span class="cartao-categoria">⚖️ Advocacia e Jurídico</span>
             <span class="etiqueta etiqueta-demo">demo</span>
           </div>
-          <h3>Aurora Advocacia</h3>
+          <div class="cartao-identidade">
+            <img class="marca-empresa" src="assets/img/empresas/aurora-advocacia.svg" alt="Logotipo de Aurora Advocacia" loading="lazy" width="96" height="96">
+            <h3>Aurora Advocacia</h3>
+          </div>
           <p>Banca dedicada a direito empresarial e societário, com atuação em contratos, governança e recuperação de crédito para empresas de médio porte.</p>
           <div class="tags"><span class="etiqueta">direito empresarial</span><span class="etiqueta">contratos</span><span class="etiqueta">societário</span></div>
           <div class="cartao-rodape">
@@ -171,12 +192,31 @@
             <span>Ver ficha →</span>
           </div>
         </a>
-        <a class="cartao" href="empresas/capital-seguros/">
+        <a class="cartao cartao-com-imagem" href="empresas/cafe-do-hall/">
+          <div class="cartao-topo">
+            <span class="cartao-categoria">☕ Alimentação e Café</span>
+            <span class="etiqueta etiqueta-demo">demo</span>
+          </div>
+          <div class="cartao-identidade">
+            <img class="marca-empresa" src="assets/img/empresas/cafe-do-hall.svg" alt="Logotipo de Café do Hall" loading="lazy" width="96" height="96">
+            <h3>Café do Hall</h3>
+          </div>
+          <p>Cafeteria no hall principal com café especial, almoço executivo e coffee break para reuniões.</p>
+          <div class="tags"><span class="etiqueta">café</span><span class="etiqueta">almoço executivo</span><span class="etiqueta">coffee break</span></div>
+          <div class="cartao-rodape">
+            <span class="etiqueta etiqueta-torre">Torre A · Sala Térreo — Hall</span>
+            <span>Ver ficha →</span>
+          </div>
+        </a>
+        <a class="cartao cartao-com-imagem" href="empresas/capital-seguros/">
           <div class="cartao-topo">
             <span class="cartao-categoria">💼 Finanças e Seguros</span>
             <span class="etiqueta etiqueta-demo">demo</span>
           </div>
-          <h3>Capital Corretora de Seguros</h3>
+          <div class="cartao-identidade">
+            <img class="marca-empresa" src="assets/img/empresas/capital-seguros.svg" alt="Logotipo de Capital Corretora de Seguros" loading="lazy" width="96" height="96">
+            <h3>Capital Corretora de Seguros</h3>
+          </div>
           <p>Corretora com carteira de seguros empresariais, planos de saúde coletivos, frota e responsabilidade civil.</p>
           <div class="tags"><span class="etiqueta">seguro empresarial</span><span class="etiqueta">saúde</span><span class="etiqueta">frota</span></div>
           <div class="cartao-rodape">
@@ -184,12 +224,15 @@
             <span>Ver ficha →</span>
           </div>
         </a>
-        <a class="cartao" href="empresas/clinica-cerrado-saude/">
+        <a class="cartao cartao-com-imagem" href="empresas/clinica-cerrado-saude/">
           <div class="cartao-topo">
             <span class="cartao-categoria">🩺 Saúde</span>
             <span class="etiqueta etiqueta-demo">demo</span>
           </div>
-          <h3>Clínica Cerrado Saúde</h3>
+          <div class="cartao-identidade">
+            <img class="marca-empresa" src="assets/img/empresas/clinica-cerrado-saude.svg" alt="Logotipo de Clínica Cerrado Saúde" loading="lazy" width="96" height="96">
+            <h3>Clínica Cerrado Saúde</h3>
+          </div>
           <p>Clínica multiprofissional com clínica geral, cardiologia, nutrição e check-up executivo em sessão única.</p>
           <div class="tags"><span class="etiqueta">clínica geral</span><span class="etiqueta">exames</span><span class="etiqueta">check-up</span></div>
           <div class="cartao-rodape">
@@ -197,12 +240,15 @@
             <span>Ver ficha →</span>
           </div>
         </a>
-        <a class="cartao" href="empresas/codigo-livre-tecnologia/">
+        <a class="cartao cartao-com-imagem" href="empresas/codigo-livre-tecnologia/">
           <div class="cartao-topo">
             <span class="cartao-categoria">💻 Tecnologia e TI</span>
             <span class="etiqueta etiqueta-demo">demo</span>
           </div>
-          <h3>Código Livre Tecnologia</h3>
+          <div class="cartao-identidade">
+            <img class="marca-empresa" src="assets/img/empresas/codigo-livre-tecnologia.svg" alt="Logotipo de Código Livre Tecnologia" loading="lazy" width="96" height="96">
+            <h3>Código Livre Tecnologia</h3>
+          </div>
           <p>Fábrica de software sob demanda: sistemas web, automações de processos e integrações com ERPs.</p>
           <div class="tags"><span class="etiqueta">desenvolvimento de software</span><span class="etiqueta">automação</span><span class="etiqueta">integrações</span></div>
           <div class="cartao-rodape">
@@ -210,29 +256,19 @@
             <span>Ver ficha →</span>
           </div>
         </a>
-        <a class="cartao" href="empresas/grafica-expressa/">
+        <a class="cartao cartao-com-imagem" href="empresas/idiomas-conexao/">
           <div class="cartao-topo">
-            <span class="cartao-categoria">🛎️ Serviços e Conveniência</span>
+            <span class="cartao-categoria">🎓 Educação e Idiomas</span>
             <span class="etiqueta etiqueta-demo">demo</span>
           </div>
-          <h3>Gráfica Expressa</h3>
-          <p>Gráfica rápida com impressão digital, encadernação, plotagem e comunicação visual para escritórios.</p>
-          <div class="tags"><span class="etiqueta">impressão</span><span class="etiqueta">encadernação</span><span class="etiqueta">comunicação visual</span></div>
-          <div class="cartao-rodape">
-            <span class="etiqueta etiqueta-torre">Torre B · Sala 208</span>
-            <span>Ver ficha →</span>
+          <div class="cartao-identidade">
+            <img class="marca-empresa" src="assets/img/empresas/idiomas-conexao.svg" alt="Logotipo de Conexão Idiomas" loading="lazy" width="96" height="96">
+            <h3>Conexão Idiomas</h3>
           </div>
-        </a>
-        <a class="cartao" href="empresas/hub-coworking/">
-          <div class="cartao-topo">
-            <span class="cartao-categoria">🛎️ Serviços e Conveniência</span>
-            <span class="etiqueta etiqueta-demo">demo</span>
-          </div>
-          <h3>Hub Coworking Liberty</h3>
-          <p>Coworking com estações flexíveis, salas de reunião por hora, endereço fiscal e recepção compartilhada.</p>
-          <div class="tags"><span class="etiqueta">coworking</span><span class="etiqueta">sala de reunião</span><span class="etiqueta">endereço fiscal</span></div>
+          <p>Escola de idiomas com turmas executivas, aulas in company e preparação para certificações internacionais.</p>
+          <div class="tags"><span class="etiqueta">inglês</span><span class="etiqueta">espanhol</span><span class="etiqueta">aulas in company</span></div>
           <div class="cartao-rodape">
-            <span class="etiqueta etiqueta-torre">Torre B · Sala 1101</span>
+            <span class="etiqueta etiqueta-torre">Torre B · Sala 709</span>
             <span>Ver ficha →</span>
           </div>
         </a>
@@ -277,7 +313,8 @@
           <p>Conectado ao Shopping Liberty Mall, o centro empresarial reúne escritórios, clínicas e prestadores de serviço em um mesmo endereço — com tudo o que o dia a dia corporativo precisa a poucos passos da sala.</p>
         </div>
         <div class="grade grade-2">
-          <div class="cartao">
+          <div class="cartao cartao-torre">
+            <img class="foto-torre" src="assets/img/complexo/torre-a.svg" alt="Torre A do Centro Empresarial Liberty Mall" loading="lazy">
             <h3>Torre A</h3>
             <p>Torre com acesso direto pelo hall principal, integrada ao Shopping Liberty Mall pelo piso térreo.</p>
             <div class="cartao-rodape">
@@ -285,7 +322,8 @@
               <a href="torres/a/">Ver serviços da torre →</a>
             </div>
           </div>
-          <div class="cartao">
+          <div class="cartao cartao-torre">
+            <img class="foto-torre" src="assets/img/complexo/torre-b.svg" alt="Torre B do Centro Empresarial Liberty Mall" loading="lazy">
             <h3>Torre B</h3>
             <p>Torre voltada para o estacionamento coberto, com acesso independente e ligação interna ao shopping.</p>
             <div class="cartao-rodape">
@@ -326,6 +364,7 @@
             <li><a href="categorias/">Categorias</a></li>
             <li><a href="vantagens/">Vantagens</a></li>
             <li><a href="o-centro/">O Centro</a></li>
+            <li><a href="anuncie/">Anuncie</a></li>
           </ul>
         </div>
         <div>

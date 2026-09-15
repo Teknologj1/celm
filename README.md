@@ -23,9 +23,20 @@ também trabalha no complexo.
 | Vantagens | `/vantagens/` | Todas as condições especiais oferecidas entre condôminos |
 | O Centro | `/o-centro/` | Torres, estrutura, localização e contato da administração |
 | Cadastro | `/cadastro/` | Formulário que gera o e-mail de cadastro para a administração |
+| Anuncie | `/anuncie/` | Espaços publicitários disponíveis e contato comercial |
 
 Detalhes de implementação:
 
+- **Imagens**: o complexo tem espaço para foto de fachada (no topo da página
+  inicial), foto de cada torre e uma galeria interna; cada empresa tem espaço
+  para logotipo. Enquanto as fotos reais não chegam, marcadores visuais ocupam
+  o lugar, com a medida recomendada escrita na própria imagem.
+- **Prioridade de quem envia imagem**: na lista geral (`/empresas/` e a vitrine
+  da página inicial) as empresas com logotipo aparecem primeiro, em ordem
+  alfabética entre si, seguidas das demais também em ordem alfabética. Já as
+  **buscas encadeadas** (torre → categoria) e as páginas de categoria usam
+  ordem alfabética pura, sem privilegiar quem tem imagem.
+- **Espaços publicitários** em quatro pontos do site, prontos para monetização.
 - **Busca encadeada (torre → tipo de serviço → empresa)**: além das páginas
   de `/torres/`, os filtros do diretório se ajustam uns aos outros — ao
   escolher a Torre B, a lista de categorias passa a mostrar apenas as que
@@ -50,9 +61,10 @@ final na raiz do projeto, pronto para o GitHub Pages.
 
 ```
 data/            ← a fonte da verdade (é aqui que se edita o conteúdo)
-  centro.json      dados do complexo: endereço, torres, estrutura, contato
+  centro.json      dados do complexo: endereço, torres, estrutura, imagens, contato
   categorias.json  áreas de atuação e sinônimos usados na busca
   empresas.json    as empresas do guia
+  anuncios.json    os espaços publicitários e as campanhas em cartaz
 build.js         ← gerador: lê data/ e escreve as páginas
 build/
   dados.js         carrega, valida e normaliza os dados
@@ -96,6 +108,7 @@ Acrescente um objeto ao vetor em `data/empresas.json`:
   "instagram": "@empresa",
   "horario": "Seg a sex, 9h às 18h",
   "responsavel": "Nome do responsável",
+  "logo": "assets/img/empresas/aurora-advocacia.svg",
   "beneficio": "Condição especial oferecida aos condôminos.",
   "destaque": false,
   "demo": false
@@ -109,6 +122,7 @@ Acrescente um objeto ao vetor em `data/empresas.json`:
 | `whatsapp` | não | só dígitos, com código do país: `5561900001208` |
 | `beneficio` | não | preenchido, a empresa aparece na página **Vantagens** |
 | `destaque` | não | `true` coloca a empresa na vitrine da página inicial |
+| `logo` | não | caminho do logotipo; **com logo, a empresa sobe na lista geral** |
 | `demo` | não | `true` exibe a etiqueta de dado fictício |
 
 Depois, rode `npm run build` e faça commit das alterações (incluindo o HTML
@@ -129,6 +143,70 @@ gerado).
 O gerador valida os dados e interrompe o build com uma mensagem clara se uma
 categoria não existir, um `slug` estiver repetido ou um campo obrigatório
 faltar.
+
+## Imagens
+
+### Fotos do complexo
+
+Ficam em `assets/img/complexo/` e são declaradas em `data/centro.json`, no
+objeto `imagens` (fachada e galeria) e em `torres[].imagem`. Hoje são
+marcadores de espaço; substitua cada arquivo por uma foto real mantendo o
+mesmo nome, ou aponte para outro arquivo no JSON.
+
+| Onde aparece | Arquivo atual | Medida sugerida |
+| --- | --- | --- |
+| Topo da página inicial | `complexo/fachada.svg` | 1600×900 |
+| Cartão e página de cada torre | `complexo/torre-a.svg`, `torre-b.svg` | 1200×800 |
+| Galeria em "O Centro" | `complexo/hall.svg` e outros | 1200×800 |
+
+A foto do topo recebe um véu escuro por cima para que o título continue
+legível — o contraste medido hoje é de 11,9:1. Ainda assim, prefira uma
+imagem que não seja predominantemente clara no lado esquerdo.
+
+### Logotipos das empresas
+
+Ficam em `assets/img/empresas/` e são apontados pelo campo `logo`. O formato
+quadrado (400×400, PNG ou SVG) é o que melhor se encaixa no cartão e na ficha.
+
+Empresa sem `logo` não fica sem nada: o site desenha um monograma com as
+iniciais dela. Mas **só quem envia imagem aparece primeiro na lista geral** —
+é o incentivo para que os condôminos mandem o material. A ficha de quem ainda
+não enviou exibe um convite discreto para fazê-lo.
+
+## Espaços publicitários
+
+São quatro, definidos em `data/anuncios.json`:
+
+| `espaco` | Onde aparece |
+| --- | --- |
+| `home` | Faixa na página inicial, abaixo das categorias |
+| `diretorio` | Ao final da lista de resultados do diretório |
+| `empresa` | Bloco na lateral de cada ficha de empresa |
+| `torre` | Faixa ao final das páginas de torre e de categoria |
+
+Para colocar uma campanha no ar, preencha o registro correspondente e marque
+`"ativo": true`:
+
+```json
+{
+  "id": "home-destaque",
+  "espaco": "home",
+  "ativo": true,
+  "titulo": "Título da campanha",
+  "texto": "Uma linha de apoio.",
+  "imagem": "assets/img/anuncios/campanha.png",
+  "link": "https://anunciante.com.br",
+  "anunciante": "Nome do anunciante"
+}
+```
+
+Enquanto nenhum anúncio está ativo, o espaço mostra um convite para anunciar,
+que leva à página `/anuncie/` — o layout nunca fica com um buraco. Para ocultar
+os espaços vazios, mude `publicidade.mostrarEspacosVazios` para `false` em
+`data/centro.json`; ali também fica o e-mail comercial exibido na página.
+
+Os blocos são marcados como "Publicidade" e os links levam `rel="sponsored"`,
+como manda a recomendação do Google para conteúdo pago.
 
 ## Publicação
 

@@ -5,18 +5,76 @@ const { paraBusca } = require("./dados");
 
 /* ---------- componentes reutilizáveis ------------------------------------ */
 
+/* Logotipo da empresa; sem imagem enviada, cai no monograma. */
+function marcaEmpresa(empresa, profundidade, tamanho) {
+  const classe = "marca-empresa" + (tamanho ? " marca-empresa-" + tamanho : "");
+  if (empresa.logo) {
+    return `<img class="${classe}" src="${url(profundidade, empresa.logo)}" alt="Logotipo de ${escapar(empresa.nome)}" loading="lazy" width="96" height="96">`;
+  }
+  return `<span class="${classe} monograma" aria-hidden="true">${escapar(empresa.iniciais)}</span>`;
+}
+
+/* Espaço publicitário. Sem anúncio ativo, mostra o espaço disponível —
+   o que serve tanto de reserva no layout quanto de vitrine comercial. */
+function anuncio(dados, espaco, profundidade, extra) {
+  const publicidade = dados.centro.publicidade || {};
+  const ativo = (dados.anuncios[espaco] || []).find((a) => a.ativo);
+
+  if (ativo) {
+    const interno = `
+      ${ativo.imagem ? `<img src="${url(profundidade, ativo.imagem)}" alt="${escapar(ativo.titulo || ativo.anunciante)}" loading="lazy">` : ""}
+      <div>
+        <b>${escapar(ativo.titulo)}</b>
+        ${ativo.texto ? `<p>${escapar(ativo.texto)}</p>` : ""}
+        ${ativo.anunciante ? `<small>${escapar(ativo.anunciante)}</small>` : ""}
+      </div>`;
+
+    return `<aside class="anuncio ${extra || ""}" aria-label="Publicidade">
+        <span class="anuncio-rotulo">Publicidade</span>
+        ${ativo.link
+          ? `<a class="anuncio-conteudo" href="${escapar(ativo.link)}" rel="noopener sponsored" target="_blank">${interno}</a>`
+          : `<div class="anuncio-conteudo">${interno}</div>`}
+      </aside>`;
+  }
+
+  if (!publicidade.mostrarEspacosVazios) return "";
+
+  const modelo = (dados.anuncios[espaco] || [])[0] || {};
+  return `<aside class="anuncio anuncio-vazio ${extra || ""}" aria-label="Espaço publicitário disponível">
+        <span class="anuncio-rotulo">Espaço publicitário</span>
+        <div class="anuncio-conteudo">
+          <div>
+            <b>Anuncie para quem trabalha aqui</b>
+            <p>${escapar(modelo.formato || "Espaço disponível nesta página")}.</p>
+            <a href="${url(profundidade, "anuncie/")}">Ver formatos e condições →</a>
+          </div>
+        </div>
+      </aside>`;
+}
+
+function figuraComplexo(imagem, profundidade, classe) {
+  if (!imagem || !imagem.src) return "";
+  return `<figure class="${classe || "figura"}">
+        <img src="${url(profundidade, imagem.src)}" alt="${escapar(imagem.alt || "")}" loading="lazy">
+        ${imagem.legenda ? `<figcaption>${escapar(imagem.legenda)}</figcaption>` : ""}
+      </figure>`;
+}
+
 function cartaoEmpresa(empresa, profundidade) {
   const u = (caminho) => url(profundidade, caminho);
   const tags = empresa.tags.slice(0, 3)
     .map((tag) => `<span class="etiqueta">${escapar(tag)}</span>`)
     .join("");
 
-  return `<a class="cartao" href="${u("empresas/" + empresa.slug + "/")}">
+  return `<a class="cartao${empresa.temImagem ? " cartao-com-imagem" : ""}" href="${u("empresas/" + empresa.slug + "/")}">
           <div class="cartao-topo">
             <span class="cartao-categoria">${escapar(empresa.categoriaIcone)} ${escapar(empresa.categoriaNome)}</span>
             ${empresa.demo ? '<span class="etiqueta etiqueta-demo">demo</span>' : ""}
           </div>
-          <h3>${escapar(empresa.nome)}</h3>
+          <div class="cartao-identidade">
+            ${marcaEmpresa(empresa, profundidade)}
+            <h3>${escapar(empresa.nome)}</h3>
+          </div>
           <p>${escapar(empresa.descricao)}</p>
           ${tags ? `<div class="tags">${tags}</div>` : ""}
           <div class="cartao-rodape">
@@ -41,10 +99,12 @@ function linkMaps(centro) {
 
 function home(dados) {
   const { centro, estatisticas, categorias, torres } = dados;
-  const destaques = dados.empresas.filter((e) => e.destaque).slice(0, 6);
+  /* a vitrine já vem com quem enviou imagem na frente */
+  const destaques = dados.vitrine.slice(0, 6);
   const vantagens = dados.vantagens.slice(0, 3);
 
-  const conteudo = `    <section class="hero">
+  const conteudo = `    <section class="hero${centro.imagens && centro.imagens.fachada ? " hero-com-foto" : ""}">
+      ${centro.imagens && centro.imagens.fachada ? `<img class="hero-foto" src="${url(0, centro.imagens.fachada.src)}" alt="${escapar(centro.imagens.fachada.alt)}" fetchpriority="high">` : ""}
       <div class="container">
         <span class="hero-etiqueta">🏙️ Torres A e B · ${escapar(centro.endereco.bairro)}, ${escapar(centro.endereco.cidade)}</span>
         <h1>Quem é quem no ${escapar(centro.nome)}</h1>
@@ -94,12 +154,19 @@ function home(dados) {
       </div>
     </section>
 
+    <section class="secao">
+      <div class="container">
+        ${anuncio(dados, "home", 0, "anuncio-faixa")}
+      </div>
+    </section>
+
     <section class="secao secao-alt">
       <div class="container">
         <div class="secao-topo">
           <div>
             <span class="olho">Vizinhos em destaque</span>
             <h2>Empresas do complexo</h2>
+            <p style="margin:6px 0 0;color:var(--ink-soft);font-size:.92rem">Empresas que enviaram identidade visual aparecem primeiro nesta lista.</p>
           </div>
           <a class="btn btn-secundario btn-sm" href="${url(0, "empresas/")}">Ver o diretório completo</a>
         </div>
@@ -134,7 +201,8 @@ function home(dados) {
           <p>Conectado ao Shopping Liberty Mall, o centro empresarial reúne escritórios, clínicas e prestadores de serviço em um mesmo endereço — com tudo o que o dia a dia corporativo precisa a poucos passos da sala.</p>
         </div>
         <div class="grade grade-2">
-          ${torres.map((t) => `<div class="cartao">
+          ${torres.map((t) => `<div class="cartao cartao-torre">
+            ${t.imagem ? `<img class="foto-torre" src="${url(0, t.imagem.src)}" alt="${escapar(t.imagem.alt)}" loading="lazy">` : ""}
             <h3>${escapar(t.nome)}</h3>
             <p>${escapar(t.descricao)}</p>
             <div class="cartao-rodape">
@@ -213,7 +281,8 @@ function diretorio(dados) {
           <div class="campo">
             <label for="filtro-ordem">Ordenar por</label>
             <select id="filtro-ordem">
-              <option value="nome">Nome</option>
+              <option value="vitrine">Destaque (com foto primeiro)</option>
+              <option value="nome">Nome (A–Z)</option>
               <option value="torre">Torre e andar</option>
               <option value="categoria">Categoria</option>
             </select>
@@ -231,8 +300,10 @@ function diretorio(dados) {
         </div>
 
         <div id="resultados" class="grade grade-3" data-base="${url(1, "")}">
-          ${dados.empresas.map((e) => cartaoEmpresa(e, 1)).join("\n          ")}
+          ${dados.vitrine.map((e) => cartaoEmpresa(e, 1)).join("\n          ")}
         </div>
+
+        ${anuncio(dados, "diretorio", 1, "anuncio-faixa")}
 
         <noscript>
           <p class="vazio" style="margin-top:20px">A busca e os filtros precisam de JavaScript. A lista completa de empresas continua visível acima.</p>
@@ -240,7 +311,7 @@ function diretorio(dados) {
       </div>
     </section>
 
-    <script id="dados-empresas" type="application/json">${JSON.stringify(paraBusca(dados.empresas))}</script>`;
+    <script id="dados-empresas" type="application/json">${JSON.stringify(paraBusca(dados.vitrine))}</script>`;
 
   return pagina(dados, {
     profundidade: 1,
@@ -305,7 +376,9 @@ function empresa(dados, item) {
         ${escapar(item.nome)}
       </nav>
 
-      <header class="empresa-topo">
+      <header class="empresa-topo empresa-topo-com-marca">
+        ${marcaEmpresa(item, 2, "grande")}
+        <div class="empresa-cabecalho-texto">
         <div class="empresa-meta">
           <span class="cartao-categoria">${escapar(item.categoriaIcone)} ${escapar(item.categoriaNome)}</span>
           <span class="etiqueta etiqueta-torre">Torre ${escapar(item.torre)} · Sala ${escapar(item.sala)}</span>
@@ -313,6 +386,8 @@ function empresa(dados, item) {
         </div>
         <h1>${escapar(item.nome)}</h1>
         <p class="empresa-resumo">${escapar(item.descricao)}</p>
+        ${!item.logo ? `<p class="aviso-imagem">Esta empresa ainda não enviou logotipo. <a href="${u("cadastro/")}">Envie o seu</a> para aparecer com imagem e ter prioridade na lista geral.</p>` : ""}
+        </div>
       </header>
 
       <div class="colunas">
@@ -349,6 +424,8 @@ function empresa(dados, item) {
               <a class="btn btn-secundario btn-sm" href="${escapar(linkMaps(centro))}" rel="noopener" target="_blank">Abrir no mapa</a>
             </div>
           </div>
+
+          ${anuncio(dados, "empresa", 2, "anuncio-lateral")}
 
           <div class="bloco">
             <h2>Está aqui também</h2>
@@ -446,6 +523,7 @@ function categoria(dados, cat) {
           <h1>${escapar(cat.nome)}</h1>
           <p>${escapar(cat.descricao)} São ${cat.empresas.length} ${cat.empresas.length === 1 ? "empresa cadastrada" : "empresas cadastradas"} nas Torres A e B.</p>
         </div>
+        <p class="nota-ordem">Empresas em ordem alfabética.</p>
         ${grade(cat.empresas, 2)}
       </div>
     </section>`;
@@ -514,10 +592,13 @@ function torre(dados, item) {
     </div>
     <section class="secao" style="padding-top:22px">
       <div class="container">
-        <div class="secao-cabecalho">
-          <span class="olho">Passo 2 de 3 · Tipo de serviço</span>
-          <h1>${escapar(item.nome)}</h1>
-          <p>${escapar(item.descricao)} São ${item.total} ${item.total === 1 ? "empresa" : "empresas"} em ${item.categorias.length} ${item.categorias.length === 1 ? "categoria" : "categorias"}, do ${escapar(item.andares)}.</p>
+        <div class="cabecalho-com-foto">
+          ${item.imagem ? `<img class="foto-torre" src="${url(2, item.imagem.src)}" alt="${escapar(item.imagem.alt)}">` : ""}
+          <div class="secao-cabecalho" style="margin-bottom:0">
+            <span class="olho">Passo 2 de 3 · Tipo de serviço</span>
+            <h1>${escapar(item.nome)}</h1>
+            <p>${escapar(item.descricao)} São ${item.total} ${item.total === 1 ? "empresa" : "empresas"} em ${item.categorias.length} ${item.categorias.length === 1 ? "categoria" : "categorias"}, do ${escapar(item.andares)}.</p>
+          </div>
         </div>
 
         <div class="grade grade-3" style="margin-bottom:30px">
@@ -534,6 +615,8 @@ function torre(dados, item) {
           <span>Prefere ver tudo de uma vez?</span>
           <a href="${url(2, "empresas/?torre=" + encodeURIComponent(item.id))}">Abrir as ${item.total} empresas da ${escapar(item.nome)} no diretório →</a>
         </div>
+
+        ${anuncio(dados, "torre", 2, "anuncio-faixa")}
       </div>
     </section>`;
 
@@ -576,7 +659,10 @@ function torreCategoria(dados, item, cat) {
           <a class="chip" href="${url(3, "categorias/" + cat.slug + "/")}">Ver nas duas torres</a>
         </div>
 
+        <p class="nota-ordem">Empresas em ordem alfabética.</p>
         ${grade(cat.empresas, 3)}
+
+        ${anuncio(dados, "torre", 3, "anuncio-faixa")}
       </div>
     </section>`;
 
@@ -646,8 +732,11 @@ function oCentro(dados) {
           <p>${escapar(centro.descricaoCurta)}</p>
         </div>
 
+        ${figuraComplexo(centro.imagens && centro.imagens.fachada, 1, "figura figura-larga")}
+
         <div class="grade grade-2" style="margin-bottom:34px">
-          ${torres.map((t) => `<div class="cartao">
+          ${torres.map((t) => `<div class="cartao cartao-torre">
+            ${t.imagem ? `<img class="foto-torre" src="${url(1, t.imagem.src)}" alt="${escapar(t.imagem.alt)}" loading="lazy">` : ""}
             <h3>${escapar(t.nome)}</h3>
             <p>${escapar(t.descricao)}</p>
             <div class="cartao-rodape">
@@ -656,6 +745,11 @@ function oCentro(dados) {
             </div>
           </div>`).join("\n          ")}
         </div>
+
+        ${centro.imagens && centro.imagens.galeria && centro.imagens.galeria.length ? `<h2>O complexo por dentro</h2>
+        <div class="grade grade-3" style="margin-bottom:34px">
+          ${centro.imagens.galeria.map((img) => figuraComplexo(img, 1)).join("\n          ")}
+        </div>` : ""}
 
         <h2>Estrutura</h2>
         <div class="grade grade-3" style="margin-bottom:34px">
@@ -837,6 +931,64 @@ function cadastro(dados) {
   });
 }
 
+function anuncie(dados) {
+  const publicidade = dados.centro.publicidade || {};
+  const espacos = Object.keys(dados.anuncios).map((espaco) => ({
+    espaco,
+    modelo: dados.anuncios[espaco][0] || {},
+    ocupado: dados.anuncios[espaco].some((a) => a.ativo)
+  }));
+
+  const nomes = {
+    home: "Página inicial",
+    diretorio: "Diretório de empresas",
+    empresa: "Fichas de empresa",
+    torre: "Páginas de torre e categoria"
+  };
+
+  const conteudo = `    <section class="secao">
+      <div class="container">
+        <div class="secao-cabecalho">
+          <span class="olho">Mídia</span>
+          <h1>Anuncie no guia do complexo</h1>
+          <p>O guia é consultado por quem já está dentro do ${escapar(dados.centro.nome)}: condôminos procurando fornecedor, clientes localizando uma sala e visitantes decidindo onde almoçar. São ${dados.estatisticas.empresas} empresas cadastradas em ${dados.estatisticas.torres} torres.</p>
+        </div>
+
+        <div class="grade grade-2">
+          ${espacos.map((item) => `<div class="cartao">
+            <div class="cartao-topo">
+              <span class="cartao-categoria">📢 ${escapar(nomes[item.espaco] || item.espaco)}</span>
+              <span class="etiqueta ${item.ocupado ? "" : "etiqueta-destaque"}">${item.ocupado ? "ocupado" : "disponível"}</span>
+            </div>
+            <p>${escapar(item.modelo.formato || "Formato a definir")}.</p>
+          </div>`).join("\n          ")}
+        </div>
+
+        <div class="chamada" style="margin-top:32px">
+          <div>
+            <h2>Quer reservar um espaço?</h2>
+            <p>Fale com a administração do guia para receber formatos, medidas e valores. Condôminos têm condição diferenciada.</p>
+          </div>
+          <a class="btn btn-accent" href="mailto:${escapar(publicidade.contato || dados.centro.contato.administracao)}">Falar com o comercial</a>
+        </div>
+
+        <div class="bloco" style="margin-top:28px">
+          <h2>Como funciona na prática</h2>
+          <p style="color:var(--ink-soft)">Cada espaço é um registro em <code>data/anuncios.json</code>. Para colocar uma campanha no ar, basta preencher o anúncio correspondente com título, texto, imagem e link, marcar <code>"ativo": true</code> e publicar. Enquanto nenhum anúncio está ativo, o espaço exibe um convite para anunciar, sem quebrar o layout da página.</p>
+        </div>
+      </div>
+    </section>`;
+
+  return pagina(dados, {
+    profundidade: 1,
+    caminho: "anuncie/",
+    atual: "anuncie",
+    titulo: "Anuncie",
+    descricao: `Espaços publicitários disponíveis no guia de empresas do ${dados.centro.nome}.`,
+    conteudo
+  });
+}
+
 /* O 404 pode ser servido a partir de qualquer caminho, então seus links
    precisam ser absolutos em relação à raiz do site. */
 function naoEncontrado(dados) {
@@ -873,4 +1025,4 @@ function naoEncontrado(dados) {
   });
 }
 
-module.exports = { home, diretorio, empresa, listaCategorias, categoria, listaTorres, torre, torreCategoria, vantagens, oCentro, cadastro, naoEncontrado };
+module.exports = { home, diretorio, empresa, listaCategorias, categoria, listaTorres, torre, torreCategoria, vantagens, oCentro, cadastro, anuncie, naoEncontrado };

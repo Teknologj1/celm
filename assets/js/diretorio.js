@@ -19,7 +19,7 @@
   var contador = document.getElementById("contador");
   var botaoLimpar = document.getElementById("limpar-filtros");
 
-  var estado = { q: "", categoria: "", torre: "", ordem: "nome" };
+  var estado = { q: "", categoria: "", torre: "", ordem: "vitrine" };
 
   function carregarEmpresas() {
     if (!fonte) return [];
@@ -72,7 +72,7 @@
     estado.q = params.get("q") || "";
     estado.categoria = params.get("categoria") || "";
     estado.torre = params.get("torre") || "";
-    estado.ordem = params.get("ordem") || "nome";
+    estado.ordem = params.get("ordem") || "vitrine";
   }
 
   function escreverUrl() {
@@ -80,7 +80,7 @@
     if (estado.q) params.set("q", estado.q);
     if (estado.categoria) params.set("categoria", estado.categoria);
     if (estado.torre) params.set("torre", estado.torre);
-    if (estado.ordem && estado.ordem !== "nome") params.set("ordem", estado.ordem);
+    if (estado.ordem && estado.ordem !== "vitrine") params.set("ordem", estado.ordem);
     var query = params.toString();
     history.replaceState(null, "", query ? "?" + query : window.location.pathname);
   }
@@ -106,6 +106,10 @@
 
   function ordenar(lista) {
     return lista.sort(function (a, b) {
+      /* lista geral: quem enviou imagem aparece primeiro */
+      if (estado.ordem === "vitrine" && a.temImagem !== b.temImagem) {
+        return a.temImagem ? -1 : 1;
+      }
       if (estado.ordem === "torre") {
         if (a.torre !== b.torre) return a.torre.localeCompare(b.torre);
         if (a.andar !== b.andar) return a.andar - b.andar;
@@ -146,18 +150,27 @@
       .replace(/"/g, "&quot;").replace(/'/g, "&#39;");
   }
 
+  function marca(empresa) {
+    if (empresa.logo) {
+      return '<img class="marca-empresa" src="' + baseUrl + escapar(empresa.logo) +
+             '" alt="Logotipo de ' + escapar(empresa.nome) + '" loading="lazy" width="96" height="96">';
+    }
+    return '<span class="marca-empresa monograma" aria-hidden="true">' + escapar(empresa.iniciais) + "</span>";
+  }
+
   function cartao(empresa) {
     var tags = (empresa.tags || []).slice(0, 3).map(function (tag) {
       return '<span class="etiqueta">' + escapar(tag) + "</span>";
     }).join("");
 
     return (
-      '<a class="cartao" href="' + baseUrl + "empresas/" + escapar(empresa.slug) + '/">' +
+      '<a class="cartao' + (empresa.temImagem ? " cartao-com-imagem" : "") +
+        '" href="' + baseUrl + "empresas/" + escapar(empresa.slug) + '/">' +
         '<div class="cartao-topo">' +
           '<span class="cartao-categoria">' + escapar(empresa.categoriaIcone) + " " + escapar(empresa.categoriaNome) + "</span>" +
           (empresa.demo ? '<span class="etiqueta etiqueta-demo">demo</span>' : "") +
         "</div>" +
-        "<h3>" + escapar(empresa.nome) + "</h3>" +
+        '<div class="cartao-identidade">' + marca(empresa) + "<h3>" + escapar(empresa.nome) + "</h3></div>" +
         "<p>" + escapar(empresa.descricao) + "</p>" +
         (tags ? '<div class="tags">' + tags + "</div>" : "") +
         '<div class="cartao-rodape">' +
@@ -255,7 +268,7 @@
   });
   if (botaoLimpar) {
     botaoLimpar.addEventListener("click", function () {
-      estado = { q: "", categoria: "", torre: "", ordem: "nome" };
+      estado = { q: "", categoria: "", torre: "", ordem: "vitrine" };
       atualizar();
       if (campoBusca) campoBusca.focus();
     });

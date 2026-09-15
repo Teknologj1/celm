@@ -13,7 +13,7 @@ const { carregar, RAIZ } = require("./build/dados");
 const paginas = require("./build/paginas");
 
 /* Diretórios gerados — apagados e reescritos a cada build. */
-const GERADOS = ["empresas", "categorias", "torres", "vantagens", "o-centro", "cadastro"];
+const GERADOS = ["empresas", "categorias", "torres", "vantagens", "o-centro", "cadastro", "anuncie"];
 const ARQUIVOS_RAIZ = ["index.html", "404.html", "sitemap.xml", "robots.txt"];
 
 function escrever(destinoRelativo, conteudo) {
@@ -64,6 +64,7 @@ function construir() {
   registrar("vantagens/", "vantagens/index.html", paginas.vantagens(dados));
   registrar("o-centro/", "o-centro/index.html", paginas.oCentro(dados));
   registrar("cadastro/", "cadastro/index.html", paginas.cadastro(dados));
+  registrar("anuncie/", "anuncie/index.html", paginas.anuncie(dados));
 
   dados.empresas.forEach((empresa) => {
     registrar(

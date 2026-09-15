@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 400" width="400" height="400" role="img">
+  <title>Vetor Engenharia</title>
+  <rect width="400" height="400" rx="72" fill="#b8862b"/>
+  <rect x="28" y="28" width="344" height="344" rx="52" fill="none" stroke="#ffffff" stroke-opacity=".28" stroke-width="3"/>
+  <text x="200" y="200" text-anchor="middle" dominant-baseline="central" fill="#ffffff"
+        font-family="Georgia, 'Times New Roman', serif" font-size="150" font-weight="700"
+        letter-spacing="4">VE</text>
+</svg>

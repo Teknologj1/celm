@@ -1,0 +1,46 @@
+[
+  {
+    "id": "home-destaque",
+    "espaco": "home",
+    "ativo": false,
+    "titulo": "",
+    "texto": "",
+    "imagem": "",
+    "link": "",
+    "anunciante": "",
+    "formato": "Faixa 970×250 na página inicial, abaixo das categorias"
+  },
+  {
+    "id": "diretorio-lista",
+    "espaco": "diretorio",
+    "ativo": false,
+    "titulo": "",
+    "texto": "",
+    "imagem": "",
+    "link": "",
+    "anunciante": "",
+    "formato": "Cartão dentro da lista de resultados, após a primeira linha"
+  },
+  {
+    "id": "empresa-lateral",
+    "espaco": "empresa",
+    "ativo": false,
+    "titulo": "",
+    "texto": "",
+    "imagem": "",
+    "link": "",
+    "anunciante": "",
+    "formato": "Bloco 300×250 na lateral das fichas de empresa"
+  },
+  {
+    "id": "torre-rodape",
+    "espaco": "torre",
+    "ativo": false,
+    "titulo": "",
+    "texto": "",
+    "imagem": "",
+    "link": "",
+    "anunciante": "",
+    "formato": "Faixa ao final das páginas de torre e categoria"
+  }
+]
