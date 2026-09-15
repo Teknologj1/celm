@@ -1,0 +1,69 @@
+{
+  "nome": "Centro Empresarial Liberty Mall",
+  "sigla": "CELM",
+  "tagline": "O guia de empresas das Torres A e B",
+  "descricaoCurta": "Diretório oficial dos condôminos do Centro Empresarial Liberty Mall: encontre escritórios, clínicas e serviços por torre, andar e categoria — e descubra o que o vizinho de andar pode fazer por você.",
+  "demoMode": true,
+  "siteUrl": "https://teknologj1.github.io/celm",
+  "atualizadoEm": "2026-09-15",
+  "endereco": {
+    "logradouro": "SCN Quadra 5, Bloco A",
+    "complemento": "Torres A e B — Centro Empresarial Liberty Mall",
+    "bairro": "Asa Norte",
+    "cidade": "Brasília",
+    "uf": "DF",
+    "cep": "70715-900",
+    "mapsQuery": "Liberty Mall Brasília"
+  },
+  "contato": {
+    "administracao": "administracao@exemplo.com.br",
+    "telefone": "(61) 3000-0000",
+    "horarioPortaria": "24 horas"
+  },
+  "torres": [
+    {
+      "id": "A",
+      "nome": "Torre A",
+      "descricao": "Torre com acesso direto pelo hall principal, integrada ao Shopping Liberty Mall pelo piso térreo.",
+      "andares": "2º ao 14º andar"
+    },
+    {
+      "id": "B",
+      "nome": "Torre B",
+      "descricao": "Torre voltada para o estacionamento coberto, com acesso independente e ligação interna ao shopping.",
+      "andares": "2º ao 14º andar"
+    }
+  ],
+  "estrutura": [
+    {
+      "icone": "🅿️",
+      "titulo": "Estacionamento coberto",
+      "texto": "Vagas rotativas e mensalistas com acesso direto às duas torres."
+    },
+    {
+      "icone": "🛍️",
+      "titulo": "Integrado ao shopping",
+      "texto": "Conexão interna com o Shopping Liberty Mall: praça de alimentação, bancos, farmácia e serviços."
+    },
+    {
+      "icone": "🛗",
+      "titulo": "Elevadores e acessibilidade",
+      "texto": "Bancos de elevadores em cada torre, rampas e sanitários acessíveis nos pavimentos comuns."
+    },
+    {
+      "icone": "🔐",
+      "titulo": "Segurança 24h",
+      "texto": "Portaria, monitoramento por câmeras e controle de acesso de visitantes."
+    },
+    {
+      "icone": "🤝",
+      "titulo": "Espaços de convivência",
+      "texto": "Hall de eventos e salas de reunião compartilhadas para uso dos condôminos."
+    },
+    {
+      "icone": "📶",
+      "titulo": "Infraestrutura",
+      "texto": "Operadoras de fibra óptica, gerador de emergência e central de ar-condicionado."
+    }
+  ]
+}

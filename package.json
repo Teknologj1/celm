@@ -1,0 +1,16 @@
+{
+  "name": "celm-guia",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Guia de empresas do Centro Empresarial Liberty Mall — site estático gerado a partir de arquivos JSON.",
+  "scripts": {
+    "build": "node build.js",
+    "test": "node build/verificar.js",
+    "check": "npm run build && npm test",
+    "start": "npm run build && npx --yes http-server . -p 8080 -c-1 -o"
+  },
+  "engines": {
+    "node": ">=18"
+  },
+  "license": "MIT"
+}

@@ -1,0 +1,58 @@
+name: Site
+
+on:
+  push:
+    branches: ["**"]
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+jobs:
+  verificar:
+    name: Gerar e verificar
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+
+      - name: Gerar o site
+        run: node build.js
+
+      - name: Verificar links e metadados
+        run: node build/verificar.js
+
+      - name: Conferir se o HTML commitado está atualizado
+        run: |
+          if ! git diff --quiet; then
+            echo "::error::As páginas geradas estão desatualizadas. Rode 'npm run build' e faça commit do resultado."
+            git diff --stat
+            exit 1
+          fi
+
+  publicar:
+    name: Publicar no GitHub Pages
+    needs: verificar
+    if: github.ref == format('refs/heads/{0}', github.event.repository.default_branch)
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deploy.outputs.page_url }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/configure-pages@v5
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: .
+      - id: deploy
+        uses: actions/deploy-pages@v4

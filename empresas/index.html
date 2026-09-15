@@ -1,0 +1,580 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Empresas | CELM — Centro Empresarial Liberty Mall</title>
+  <meta name="description" content="Diretório com 32 empresas do Centro Empresarial Liberty Mall, buscável por nome, serviço, torre e categoria.">
+  <meta name="theme-color" content="#0f4c75">
+  <link rel="canonical" href="https://teknologj1.github.io/celm/empresas/">
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="Empresas | CELM — Centro Empresarial Liberty Mall">
+  <meta property="og:description" content="Diretório com 32 empresas do Centro Empresarial Liberty Mall, buscável por nome, serviço, torre e categoria.">
+  <meta property="og:locale" content="pt_BR">
+  <meta property="og:url" content="https://teknologj1.github.io/celm/empresas/">
+  <link rel="icon" href="../assets/img/favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="../assets/css/style.css">
+</head>
+<body>
+  <a class="skip-link" href="#conteudo">Ir para o conteúdo</a>
+<div class="aviso-demo">
+    <div class="container">
+      <strong>Conteúdo de demonstração.</strong>
+      <span>As empresas listadas são fictícias e servem apenas para ilustrar o formato do guia, até que os dados reais dos condôminos sejam cadastrados.</span>
+    </div>
+  </div>
+  <header class="topo">
+    <div class="container">
+      <a class="marca" href="../">
+        <span class="marca-sigla" aria-hidden="true">CELM</span>
+        <span class="marca-texto">
+          <b>Centro Empresarial Liberty Mall</b>
+          <span>O guia de empresas das Torres A e B</span>
+        </span>
+      </a>
+      <button class="nav-toggle" type="button" aria-expanded="false" aria-controls="nav-principal">
+        ☰ <span class="sr-only">Abrir menu</span>
+      </button>
+      <nav class="nav" id="nav-principal" aria-label="Navegação principal">
+        <a href="../">Início</a>
+        <a href="../empresas/" aria-current="page">Empresas</a>
+        <a href="../categorias/">Categorias</a>
+        <a href="../vantagens/">Vantagens</a>
+        <a href="../o-centro/">O Centro</a>
+        <a class="btn btn-sm" href="../cadastro/">Cadastrar empresa</a>
+      </nav>
+    </div>
+  </header>
+  <main id="conteudo">
+    <section class="secao">
+      <div class="container">
+        <div class="secao-cabecalho">
+          <span class="olho">Diretório</span>
+          <h1>Empresas do complexo</h1>
+          <p>Busque por nome, serviço ou profissional. Também dá para filtrar por torre e por área de atuação — o resultado muda enquanto você digita.</p>
+        </div>
+
+        <form class="painel-filtros" id="form-filtros" role="search">
+          <div class="campo">
+            <label for="filtro-busca">Buscar</label>
+            <input id="filtro-busca" type="search" autocomplete="off" placeholder="Ex.: contador, odontologia, sala 1208">
+          </div>
+          <div class="campo">
+            <label for="filtro-categoria">Categoria</label>
+            <select id="filtro-categoria">
+              <option value="">Todas as categorias</option>
+              <option value="advocacia">Advocacia e Jurídico (3)</option>
+              <option value="alimentacao">Alimentação e Café (2)</option>
+              <option value="consultoria">Consultoria e Gestão (2)</option>
+              <option value="contabilidade">Contabilidade e Fiscal (1)</option>
+              <option value="educacao">Educação e Idiomas (2)</option>
+              <option value="engenharia">Engenharia e Arquitetura (2)</option>
+              <option value="estetica">Estética e Bem-estar (2)</option>
+              <option value="financeiro">Finanças e Seguros (2)</option>
+              <option value="imobiliario">Imobiliário (1)</option>
+              <option value="marketing">Marketing e Comunicação (2)</option>
+              <option value="odontologia">Odontologia (1)</option>
+              <option value="psicologia">Psicologia e Terapias (1)</option>
+              <option value="rh">Recursos Humanos (2)</option>
+              <option value="saude">Saúde (3)</option>
+              <option value="servicos">Serviços e Conveniência (3)</option>
+              <option value="tecnologia">Tecnologia e TI (3)</option>
+            </select>
+          </div>
+          <div class="campo">
+            <label for="filtro-ordem">Ordenar por</label>
+            <select id="filtro-ordem">
+              <option value="nome">Nome</option>
+              <option value="torre">Torre e andar</option>
+              <option value="categoria">Categoria</option>
+            </select>
+          </div>
+          <button class="btn btn-secundario" type="button" id="limpar-filtros">Limpar</button>
+        </form>
+
+        <div class="chips">
+          <button class="chip" type="button" data-torre="A" aria-pressed="false">Torre A · 17</button>
+          <button class="chip" type="button" data-torre="B" aria-pressed="false">Torre B · 15</button>
+        </div>
+
+        <div class="resultado-info">
+          <span id="contador" role="status" aria-live="polite">32 empresas encontradas</span>
+          <a href="../cadastro/">Não encontrou sua empresa? Cadastre-se →</a>
+        </div>
+
+        <div id="resultados" class="grade grade-3" data-base="../">
+          <a class="cartao" href="../empresas/despachante-agil/">
+          <div class="cartao-topo">
+            <span class="cartao-categoria">🛎️ Serviços e Conveniência</span>
+            <span class="etiqueta etiqueta-demo">demo</span>
+          </div>
+          <h3>Ágil Despachante</h3>
+          <p>Despachante documentalista: licenciamento de veículos, alvarás, certidões e regularização de documentos.</p>
+          <div class="tags"><span class="etiqueta">documentação</span><span class="etiqueta">licenças</span><span class="etiqueta">certidões</span></div>
+          <div class="cartao-rodape">
+            <span class="etiqueta etiqueta-torre">Torre A · Sala 203</span>
+            <span>Ver ficha →</span>
+          </div>
+        </a>
+          <a class="cartao" href="../empresas/cartorio-apoio-juridico/">
+          <div class="cartao-topo">
+            <span class="cartao-categoria">⚖️ Advocacia e Jurídico</span>
+            <span class="etiqueta etiqueta-demo">demo</span>
+          </div>
+          <h3>Apoio Jurídico e Correspondência</h3>
+          <p>Correspondência jurídica em Brasília: protocolos, diligências, cópias de processos e acompanhamento de audiências.</p>
+          <div class="tags"><span class="etiqueta">correspondente jurídico</span><span class="etiqueta">protocolo</span><span class="etiqueta">audiências</span></div>
+          <div class="cartao-rodape">
+            <span class="etiqueta etiqueta-torre">Torre A · Sala 815</span>
+            <span>Ver ficha →</span>
+          </div>
+        </a>
+          <a class="cartao" href="../empresas/atelie-arquitetura-corporativa/">
+          <div class="cartao-topo">
+            <span class="cartao-categoria">📐 Engenharia e Arquitetura</span>
+            <span class="etiqueta etiqueta-demo">demo</span>
+          </div>
+          <h3>Ateliê Arquitetura Corporativa</h3>
+          <p>Projetos de arquitetura e interiores para escritórios, consultórios e lojas, do layout ao acompanhamento de obra.</p>
+          <div class="tags"><span class="etiqueta">arquitetura</span><span class="etiqueta">design de interiores</span><span class="etiqueta">layout de escritório</span></div>
+          <div class="cartao-rodape">
+            <span class="etiqueta etiqueta-torre">Torre B · Sala 806</span>
+            <span>Ver ficha →</span>
+          </div>
+        </a>
+          <a class="cartao" href="../empresas/ativa-treinamentos/">
+          <div class="cartao-topo">
+            <span class="cartao-categoria">👥 Recursos Humanos</span>
+            <span class="etiqueta etiqueta-demo">demo</span>
+          </div>
+          <h3>Ativa Treinamentos Corporativos</h3>
+          <p>Treinamentos in company de liderança, atendimento, segurança do trabalho e normas regulamentadoras.</p>
+          <div class="tags"><span class="etiqueta">treinamento</span><span class="etiqueta">liderança</span><span class="etiqueta">NR</span></div>
+          <div class="cartao-rodape">
+            <span class="etiqueta etiqueta-torre">Torre B · Sala 914</span>
+            <span>Ver ficha →</span>
+          </div>
+        </a>
+          <a class="cartao" href="../empresas/aurora-advocacia/">
+          <div class="cartao-topo">
+            <span class="cartao-categoria">⚖️ Advocacia e Jurídico</span>
+            <span class="etiqueta etiqueta-demo">demo</span>
+          </div>
+          <h3>Aurora Advocacia</h3>
+          <p>Banca dedicada a direito empresarial e societário, com atuação em contratos, governança e recuperação de crédito para empresas de médio porte.</p>
+          <div class="tags"><span class="etiqueta">direito empresarial</span><span class="etiqueta">contratos</span><span class="etiqueta">societário</span></div>
+          <div class="cartao-rodape">
+            <span class="etiqueta etiqueta-torre">Torre A · Sala 1208</span>
+            <span>Ver ficha →</span>
+          </div>
+        </a>
+          <a class="cartao" href="../empresas/barbearia-classica/">
+          <div class="cartao-topo">
+            <span class="cartao-categoria">✨ Estética e Bem-estar</span>
+            <span class="etiqueta etiqueta-demo">demo</span>
+          </div>
+          <h3>Barbearia Clássica CELM</h3>
+          <p>Barbearia com atendimento por agendamento, pensada para a rotina de quem trabalha no complexo.</p>
+          <div class="tags"><span class="etiqueta">barbearia</span><span class="etiqueta">corte masculino</span><span class="etiqueta">barba</span></div>
+          <div class="cartao-rodape">
+            <span class="etiqueta etiqueta-torre">Torre A · Sala 212</span>
+            <span>Ver ficha →</span>
+          </div>
+        </a>
+          <a class="cartao" href="../empresas/bistro-torre-b/">
+          <div class="cartao-topo">
+            <span class="cartao-categoria">☕ Alimentação e Café</span>
+            <span class="etiqueta etiqueta-demo">demo</span>
+          </div>
+          <h3>Bistrô Torre B</h3>
+          <p>Bistrô com buffet no almoço, marmitas executivas e encomendas para eventos corporativos.</p>
+          <div class="tags"><span class="etiqueta">almoço</span><span class="etiqueta">marmita executiva</span><span class="etiqueta">encomendas</span></div>
+          <div class="cartao-rodape">
+            <span class="etiqueta etiqueta-torre">Torre B · Sala Térreo — Loja 3</span>
+            <span>Ver ficha →</span>
+          </div>
+        </a>
+          <a class="cartao" href="../empresas/cafe-do-hall/">
+          <div class="cartao-topo">
+            <span class="cartao-categoria">☕ Alimentação e Café</span>
+            <span class="etiqueta etiqueta-demo">demo</span>
+          </div>
+          <h3>Café do Hall</h3>
+          <p>Cafeteria no hall principal com café especial, almoço executivo e coffee break para reuniões.</p>
+          <div class="tags"><span class="etiqueta">café</span><span class="etiqueta">almoço executivo</span><span class="etiqueta">coffee break</span></div>
+          <div class="cartao-rodape">
+            <span class="etiqueta etiqueta-torre">Torre A · Sala Térreo — Hall</span>
+            <span>Ver ficha →</span>
+          </div>
+        </a>
+          <a class="cartao" href="../empresas/capital-seguros/">
+          <div class="cartao-topo">
+            <span class="cartao-categoria">💼 Finanças e Seguros</span>
+            <span class="etiqueta etiqueta-demo">demo</span>
+          </div>
+          <h3>Capital Corretora de Seguros</h3>
+          <p>Corretora com carteira de seguros empresariais, planos de saúde coletivos, frota e responsabilidade civil.</p>
+          <div class="tags"><span class="etiqueta">seguro empresarial</span><span class="etiqueta">saúde</span><span class="etiqueta">frota</span></div>
+          <div class="cartao-rodape">
+            <span class="etiqueta etiqueta-torre">Torre A · Sala 408</span>
+            <span>Ver ficha →</span>
+          </div>
+        </a>
+          <a class="cartao" href="../empresas/clinica-cerrado-saude/">
+          <div class="cartao-topo">
+            <span class="cartao-categoria">🩺 Saúde</span>
+            <span class="etiqueta etiqueta-demo">demo</span>
+          </div>
+          <h3>Clínica Cerrado Saúde</h3>
+          <p>Clínica multiprofissional com clínica geral, cardiologia, nutrição e check-up executivo em sessão única.</p>
+          <div class="tags"><span class="etiqueta">clínica geral</span><span class="etiqueta">exames</span><span class="etiqueta">check-up</span></div>
+          <div class="cartao-rodape">
+            <span class="etiqueta etiqueta-torre">Torre B · Sala 302</span>
+            <span>Ver ficha →</span>
+          </div>
+        </a>
+          <a class="cartao" href="../empresas/codigo-livre-tecnologia/">
+          <div class="cartao-topo">
+            <span class="cartao-categoria">💻 Tecnologia e TI</span>
+            <span class="etiqueta etiqueta-demo">demo</span>
+          </div>
+          <h3>Código Livre Tecnologia</h3>
+          <p>Fábrica de software sob demanda: sistemas web, automações de processos e integrações com ERPs.</p>
+          <div class="tags"><span class="etiqueta">desenvolvimento de software</span><span class="etiqueta">automação</span><span class="etiqueta">integrações</span></div>
+          <div class="cartao-rodape">
+            <span class="etiqueta etiqueta-torre">Torre A · Sala 1305</span>
+            <span>Ver ficha →</span>
+          </div>
+        </a>
+          <a class="cartao" href="../empresas/idiomas-conexao/">
+          <div class="cartao-topo">
+            <span class="cartao-categoria">🎓 Educação e Idiomas</span>
+            <span class="etiqueta etiqueta-demo">demo</span>
+          </div>
+          <h3>Conexão Idiomas</h3>
+          <p>Escola de idiomas com turmas executivas, aulas in company e preparação para certificações internacionais.</p>
+          <div class="tags"><span class="etiqueta">inglês</span><span class="etiqueta">espanhol</span><span class="etiqueta">aulas in company</span></div>
+          <div class="cartao-rodape">
+            <span class="etiqueta etiqueta-torre">Torre B · Sala 709</span>
+            <span>Ver ficha →</span>
+          </div>
+        </a>
+          <a class="cartao" href="../empresas/dados-claros-bi/">
+          <div class="cartao-topo">
+            <span class="cartao-categoria">💻 Tecnologia e TI</span>
+            <span class="etiqueta etiqueta-demo">demo</span>
+          </div>
+          <h3>Dados Claros BI</h3>
+          <p>Consultoria de dados: modelagem, dashboards gerenciais e integração de fontes para decisões baseadas em números.</p>
+          <div class="tags"><span class="etiqueta">business intelligence</span><span class="etiqueta">dashboards</span><span class="etiqueta">dados</span></div>
+          <div class="cartao-rodape">
+            <span class="etiqueta etiqueta-torre">Torre A · Sala 1310</span>
+            <span>Ver ficha →</span>
+          </div>
+        </a>
+          <a class="cartao" href="../empresas/espaco-mente-psicologia/">
+          <div class="cartao-topo">
+            <span class="cartao-categoria">🧠 Psicologia e Terapias</span>
+            <span class="etiqueta etiqueta-demo">demo</span>
+          </div>
+          <h3>Espaço Mente Psicologia</h3>
+          <p>Clínica de psicologia com atendimento individual, de casal e programas de saúde mental para equipes.</p>
+          <div class="tags"><span class="etiqueta">terapia individual</span><span class="etiqueta">saúde mental corporativa</span><span class="etiqueta">burnout</span></div>
+          <div class="cartao-rodape">
+            <span class="etiqueta etiqueta-torre">Torre A · Sala 907</span>
+            <span>Ver ficha →</span>
+          </div>
+        </a>
+          <a class="cartao" href="../empresas/estudio-quadrante-audiovisual/">
+          <div class="cartao-topo">
+            <span class="cartao-categoria">📣 Marketing e Comunicação</span>
+            <span class="etiqueta etiqueta-demo">demo</span>
+          </div>
+          <h3>Estúdio Quadrante Audiovisual</h3>
+          <p>Produtora audiovisual com estúdio próprio para vídeos institucionais, ensaios corporativos e gravação de podcasts.</p>
+          <div class="tags"><span class="etiqueta">vídeo institucional</span><span class="etiqueta">fotografia</span><span class="etiqueta">podcast</span></div>
+          <div class="cartao-rodape">
+            <span class="etiqueta etiqueta-torre">Torre B · Sala 1002</span>
+            <span>Ver ficha →</span>
+          </div>
+        </a>
+          <a class="cartao" href="../empresas/fisio-movimento/">
+          <div class="cartao-topo">
+            <span class="cartao-categoria">🩺 Saúde</span>
+            <span class="etiqueta etiqueta-demo">demo</span>
+          </div>
+          <h3>Fisio Movimento</h3>
+          <p>Fisioterapia ortopédica, pilates clínico e avaliação ergonômica de postos de trabalho.</p>
+          <div class="tags"><span class="etiqueta">fisioterapia</span><span class="etiqueta">pilates</span><span class="etiqueta">ergonomia</span></div>
+          <div class="cartao-rodape">
+            <span class="etiqueta etiqueta-torre">Torre B · Sala 603</span>
+            <span>Ver ficha →</span>
+          </div>
+        </a>
+          <a class="cartao" href="../empresas/fonseca-lima-advogados/">
+          <div class="cartao-topo">
+            <span class="cartao-categoria">⚖️ Advocacia e Jurídico</span>
+            <span class="etiqueta etiqueta-demo">demo</span>
+          </div>
+          <h3>Fonseca &amp; Lima Advogados</h3>
+          <p>Atuação em direito do trabalho e previdenciário, com consultivo preventivo para departamentos de RH.</p>
+          <div class="tags"><span class="etiqueta">direito trabalhista</span><span class="etiqueta">previdenciário</span><span class="etiqueta">consultivo</span></div>
+          <div class="cartao-rodape">
+            <span class="etiqueta etiqueta-torre">Torre B · Sala 1404</span>
+            <span>Ver ficha →</span>
+          </div>
+        </a>
+          <a class="cartao" href="../empresas/grafica-expressa/">
+          <div class="cartao-topo">
+            <span class="cartao-categoria">🛎️ Serviços e Conveniência</span>
+            <span class="etiqueta etiqueta-demo">demo</span>
+          </div>
+          <h3>Gráfica Expressa</h3>
+          <p>Gráfica rápida com impressão digital, encadernação, plotagem e comunicação visual para escritórios.</p>
+          <div class="tags"><span class="etiqueta">impressão</span><span class="etiqueta">encadernação</span><span class="etiqueta">comunicação visual</span></div>
+          <div class="cartao-rodape">
+            <span class="etiqueta etiqueta-torre">Torre B · Sala 208</span>
+            <span>Ver ficha →</span>
+          </div>
+        </a>
+          <a class="cartao" href="../empresas/horizonte-investimentos/">
+          <div class="cartao-topo">
+            <span class="cartao-categoria">💼 Finanças e Seguros</span>
+            <span class="etiqueta etiqueta-demo">demo</span>
+          </div>
+          <h3>Horizonte Assessoria de Investimentos</h3>
+          <p>Assessoria de investimentos para pessoa física e jurídica, gestão de caixa e planejamento sucessório.</p>
+          <div class="tags"><span class="etiqueta">investimentos</span><span class="etiqueta">previdência</span><span class="etiqueta">planejamento financeiro</span></div>
+          <div class="cartao-rodape">
+            <span class="etiqueta etiqueta-torre">Torre B · Sala 1307</span>
+            <span>Ver ficha →</span>
+          </div>
+        </a>
+          <a class="cartao" href="../empresas/hub-coworking/">
+          <div class="cartao-topo">
+            <span class="cartao-categoria">🛎️ Serviços e Conveniência</span>
+            <span class="etiqueta etiqueta-demo">demo</span>
+          </div>
+          <h3>Hub Coworking Liberty</h3>
+          <p>Coworking com estações flexíveis, salas de reunião por hora, endereço fiscal e recepção compartilhada.</p>
+          <div class="tags"><span class="etiqueta">coworking</span><span class="etiqueta">sala de reunião</span><span class="etiqueta">endereço fiscal</span></div>
+          <div class="cartao-rodape">
+            <span class="etiqueta etiqueta-torre">Torre B · Sala 1101</span>
+            <span>Ver ficha →</span>
+          </div>
+        </a>
+          <a class="cartao" href="../empresas/instituto-carreira/">
+          <div class="cartao-topo">
+            <span class="cartao-categoria">🎓 Educação e Idiomas</span>
+            <span class="etiqueta etiqueta-demo">demo</span>
+          </div>
+          <h3>Instituto Carreira</h3>
+          <p>Centro de estudos com pós-graduações a distância, preparatórios para concursos e cursos livres de gestão.</p>
+          <div class="tags"><span class="etiqueta">pós-graduação</span><span class="etiqueta">concursos</span><span class="etiqueta">cursos livres</span></div>
+          <div class="cartao-rodape">
+            <span class="etiqueta etiqueta-torre">Torre A · Sala 310</span>
+            <span>Ver ficha →</span>
+          </div>
+        </a>
+          <a class="cartao" href="../empresas/meridiano-consultoria/">
+          <div class="cartao-topo">
+            <span class="cartao-categoria">📈 Consultoria e Gestão</span>
+            <span class="etiqueta etiqueta-demo">demo</span>
+          </div>
+          <h3>Meridiano Consultoria</h3>
+          <p>Consultoria empresarial especializada em licitações públicas, compliance e estruturação de planejamento estratégico.</p>
+          <div class="tags"><span class="etiqueta">licitações</span><span class="etiqueta">compliance</span><span class="etiqueta">planejamento estratégico</span></div>
+          <div class="cartao-rodape">
+            <span class="etiqueta etiqueta-torre">Torre A · Sala 1401</span>
+            <span>Ver ficha →</span>
+          </div>
+        </a>
+          <a class="cartao" href="../empresas/norte-comunicacao/">
+          <div class="cartao-topo">
+            <span class="cartao-categoria">📣 Marketing e Comunicação</span>
+            <span class="etiqueta etiqueta-demo">demo</span>
+          </div>
+          <h3>Norte Comunicação</h3>
+          <p>Agência de comunicação e performance: identidade visual, gestão de redes sociais e campanhas de mídia paga.</p>
+          <div class="tags"><span class="etiqueta">mídias sociais</span><span class="etiqueta">branding</span><span class="etiqueta">tráfego pago</span></div>
+          <div class="cartao-rodape">
+            <span class="etiqueta etiqueta-torre">Torre A · Sala 704</span>
+            <span>Ver ficha →</span>
+          </div>
+        </a>
+          <a class="cartao" href="../empresas/nutricao-integrada/">
+          <div class="cartao-topo">
+            <span class="cartao-categoria">🩺 Saúde</span>
+            <span class="etiqueta etiqueta-demo">demo</span>
+          </div>
+          <h3>Nutrição Integrada</h3>
+          <p>Consultório de nutrição clínica e esportiva, com avaliação de composição corporal e planos alimentares para rotina de escritório.</p>
+          <div class="tags"><span class="etiqueta">nutrição</span><span class="etiqueta">emagrecimento</span><span class="etiqueta">nutrição esportiva</span></div>
+          <div class="cartao-rodape">
+            <span class="etiqueta etiqueta-torre">Torre A · Sala 1006</span>
+            <span>Ver ficha →</span>
+          </div>
+        </a>
+          <a class="cartao" href="../empresas/planalto-contabilidade/">
+          <div class="cartao-topo">
+            <span class="cartao-categoria">📊 Contabilidade e Fiscal</span>
+            <span class="etiqueta etiqueta-demo">demo</span>
+          </div>
+          <h3>Planalto Contabilidade</h3>
+          <p>Escritório contábil full service: abertura e regularização de empresas, escrituração fiscal, folha de pagamento e planejamento tributário.</p>
+          <div class="tags"><span class="etiqueta">contabilidade</span><span class="etiqueta">imposto de renda</span><span class="etiqueta">folha de pagamento</span></div>
+          <div class="cartao-rodape">
+            <span class="etiqueta etiqueta-torre">Torre A · Sala 512</span>
+            <span>Ver ficha →</span>
+          </div>
+        </a>
+          <a class="cartao" href="../empresas/ponte-gestao-projetos/">
+          <div class="cartao-topo">
+            <span class="cartao-categoria">📈 Consultoria e Gestão</span>
+            <span class="etiqueta etiqueta-demo">demo</span>
+          </div>
+          <h3>Ponte Gestão de Projetos</h3>
+          <p>Implantação de PMO, mapeamento de processos e painéis de indicadores para pequenas e médias empresas.</p>
+          <div class="tags"><span class="etiqueta">PMO</span><span class="etiqueta">processos</span><span class="etiqueta">indicadores</span></div>
+          <div class="cartao-rodape">
+            <span class="etiqueta etiqueta-torre">Torre B · Sala 1210</span>
+            <span>Ver ficha →</span>
+          </div>
+        </a>
+          <a class="cartao" href="../empresas/liberty-imoveis/">
+          <div class="cartao-topo">
+            <span class="cartao-categoria">🏢 Imobiliário</span>
+            <span class="etiqueta etiqueta-demo">demo</span>
+          </div>
+          <h3>Portal Imóveis Corporativos</h3>
+          <p>Imobiliária especializada em salas comerciais, locação corporativa e administração de carteiras de imóveis.</p>
+          <div class="tags"><span class="etiqueta">locação</span><span class="etiqueta">venda de salas</span><span class="etiqueta">administração predial</span></div>
+          <div class="cartao-rodape">
+            <span class="etiqueta etiqueta-torre">Torre A · Sala 205</span>
+            <span>Ver ficha →</span>
+          </div>
+        </a>
+          <a class="cartao" href="../empresas/redeforte-ti/">
+          <div class="cartao-topo">
+            <span class="cartao-categoria">💻 Tecnologia e TI</span>
+            <span class="etiqueta etiqueta-demo">demo</span>
+          </div>
+          <h3>RedeForte TI</h3>
+          <p>Suporte de TI terceirizado, infraestrutura de redes, servidores, backup em nuvem e segurança da informação.</p>
+          <div class="tags"><span class="etiqueta">suporte técnico</span><span class="etiqueta">redes</span><span class="etiqueta">backup</span></div>
+          <div class="cartao-rodape">
+            <span class="etiqueta etiqueta-torre">Torre B · Sala 615</span>
+            <span>Ver ficha →</span>
+          </div>
+        </a>
+          <a class="cartao" href="../empresas/sorriso-norte-odontologia/">
+          <div class="cartao-topo">
+            <span class="cartao-categoria">🦷 Odontologia</span>
+            <span class="etiqueta etiqueta-demo">demo</span>
+          </div>
+          <h3>Sorriso Norte Odontologia</h3>
+          <p>Consultório odontológico com foco em implantodontia, ortodontia e odontologia estética.</p>
+          <div class="tags"><span class="etiqueta">implantes</span><span class="etiqueta">ortodontia</span><span class="etiqueta">clareamento</span></div>
+          <div class="cartao-rodape">
+            <span class="etiqueta etiqueta-torre">Torre B · Sala 410</span>
+            <span>Ver ficha →</span>
+          </div>
+        </a>
+          <a class="cartao" href="../empresas/studio-bem-estar/">
+          <div class="cartao-topo">
+            <span class="cartao-categoria">✨ Estética e Bem-estar</span>
+            <span class="etiqueta etiqueta-demo">demo</span>
+          </div>
+          <h3>Studio Bem-Estar</h3>
+          <p>Studio de massoterapia e estética com quick massage no local para empresas e pacotes de autocuidado.</p>
+          <div class="tags"><span class="etiqueta">massoterapia</span><span class="etiqueta">quick massage</span><span class="etiqueta">estética</span></div>
+          <div class="cartao-rodape">
+            <span class="etiqueta etiqueta-torre">Torre B · Sala 504</span>
+            <span>Ver ficha →</span>
+          </div>
+        </a>
+          <a class="cartao" href="../empresas/talento-rh/">
+          <div class="cartao-topo">
+            <span class="cartao-categoria">👥 Recursos Humanos</span>
+            <span class="etiqueta etiqueta-demo">demo</span>
+          </div>
+          <h3>Talento RH</h3>
+          <p>Recrutamento e seleção para posições administrativas e técnicas, com testes de perfil e onboarding estruturado.</p>
+          <div class="tags"><span class="etiqueta">recrutamento</span><span class="etiqueta">seleção</span><span class="etiqueta">avaliação de perfil</span></div>
+          <div class="cartao-rodape">
+            <span class="etiqueta etiqueta-torre">Torre A · Sala 610</span>
+            <span>Ver ficha →</span>
+          </div>
+        </a>
+          <a class="cartao" href="../empresas/vetor-engenharia/">
+          <div class="cartao-topo">
+            <span class="cartao-categoria">📐 Engenharia e Arquitetura</span>
+            <span class="etiqueta etiqueta-demo">demo</span>
+          </div>
+          <h3>Vetor Engenharia</h3>
+          <p>Engenharia civil com foco em laudos técnicos, projetos executivos e gerenciamento de reformas corporativas.</p>
+          <div class="tags"><span class="etiqueta">laudos técnicos</span><span class="etiqueta">projetos</span><span class="etiqueta">gerenciamento de obras</span></div>
+          <div class="cartao-rodape">
+            <span class="etiqueta etiqueta-torre">Torre A · Sala 1103</span>
+            <span>Ver ficha →</span>
+          </div>
+        </a>
+        </div>
+
+        <noscript>
+          <p class="vazio" style="margin-top:20px">A busca e os filtros precisam de JavaScript. A lista completa de empresas continua visível acima.</p>
+        </noscript>
+      </div>
+    </section>
+
+    <script id="dados-empresas" type="application/json">[{"slug":"despachante-agil","nome":"Ágil Despachante","descricao":"Despachante documentalista: licenciamento de veículos, alvarás, certidões e regularização de documentos.","categoria":"servicos","categoriaNome":"Serviços e Conveniência","categoriaIcone":"🛎️","sinonimos":["gráfica","impressão","xerox","despachante","coworking","cartório","documento"],"tags":["documentação","licenças","certidões"],"torre":"A","andar":2,"sala":"203","responsavel":"Wagner Silveira","demo":true},{"slug":"cartorio-apoio-juridico","nome":"Apoio Jurídico e Correspondência","descricao":"Correspondência jurídica em Brasília: protocolos, diligências, cópias de processos e acompanhamento de audiências.","categoria":"advocacia","categoriaNome":"Advocacia e Jurídico","categoriaIcone":"⚖️","sinonimos":["advogado","advogada","jurídico","juridico","processo","justiça","escritório de advocacia"],"tags":["correspondente jurídico","protocolo","audiências"],"torre":"A","andar":8,"sala":"815","responsavel":"Dra. Nair Bastos","demo":true},{"slug":"atelie-arquitetura-corporativa","nome":"Ateliê Arquitetura Corporativa","descricao":"Projetos de arquitetura e interiores para escritórios, consultórios e lojas, do layout ao acompanhamento de obra.","categoria":"engenharia","categoriaNome":"Engenharia e Arquitetura","categoriaIcone":"📐","sinonimos":["engenheiro","arquiteto","arquiteta","obra","reforma","projeto","laudo"],"tags":["arquitetura","design de interiores","layout de escritório"],"torre":"B","andar":8,"sala":"806","responsavel":"Arq. Larissa Moura","demo":true},{"slug":"ativa-treinamentos","nome":"Ativa Treinamentos Corporativos","descricao":"Treinamentos in company de liderança, atendimento, segurança do trabalho e normas regulamentadoras.","categoria":"rh","categoriaNome":"Recursos Humanos","categoriaIcone":"👥","sinonimos":["recursos humanos","recrutador","vaga","emprego","currículo","treinamento"],"tags":["treinamento","liderança","NR"],"torre":"B","andar":9,"sala":"914","responsavel":"Paulo Serrano","demo":true},{"slug":"aurora-advocacia","nome":"Aurora Advocacia","descricao":"Banca dedicada a direito empresarial e societário, com atuação em contratos, governança e recuperação de crédito para empresas de médio porte.","categoria":"advocacia","categoriaNome":"Advocacia e Jurídico","categoriaIcone":"⚖️","sinonimos":["advogado","advogada","jurídico","juridico","processo","justiça","escritório de advocacia"],"tags":["direito empresarial","contratos","societário"],"torre":"A","andar":12,"sala":"1208","responsavel":"Dra. Helena Fontes","demo":true},{"slug":"barbearia-classica","nome":"Barbearia Clássica CELM","descricao":"Barbearia com atendimento por agendamento, pensada para a rotina de quem trabalha no complexo.","categoria":"estetica","categoriaNome":"Estética e Bem-estar","categoriaIcone":"✨","sinonimos":["salão","beleza","massagem","barbeiro","cabelo","estética","spa"],"tags":["barbearia","corte masculino","barba"],"torre":"A","andar":2,"sala":"212","responsavel":"Alan Prado","demo":true},{"slug":"bistro-torre-b","nome":"Bistrô Torre B","descricao":"Bistrô com buffet no almoço, marmitas executivas e encomendas para eventos corporativos.","categoria":"alimentacao","categoriaNome":"Alimentação e Café","categoriaIcone":"☕","sinonimos":["restaurante","lanche","café","almoço","comida","cafeteria","marmita"],"tags":["almoço","marmita executiva","encomendas"],"torre":"B","andar":1,"sala":"Térreo — Loja 3","responsavel":"Chef Aline Castro","demo":true},{"slug":"cafe-do-hall","nome":"Café do Hall","descricao":"Cafeteria no hall principal com café especial, almoço executivo e coffee break para reuniões.","categoria":"alimentacao","categoriaNome":"Alimentação e Café","categoriaIcone":"☕","sinonimos":["restaurante","lanche","café","almoço","comida","cafeteria","marmita"],"tags":["café","almoço executivo","coffee break"],"torre":"A","andar":1,"sala":"Térreo — Hall","responsavel":"Otávio Brandão","demo":true},{"slug":"capital-seguros","nome":"Capital Corretora de Seguros","descricao":"Corretora com carteira de seguros empresariais, planos de saúde coletivos, frota e responsabilidade civil.","categoria":"financeiro","categoriaNome":"Finanças e Seguros","categoriaIcone":"💼","sinonimos":["corretor","seguro","investimento","banco","finanças","plano de saúde","previdência"],"tags":["seguro empresarial","saúde","frota"],"torre":"A","andar":4,"sala":"408","responsavel":"Eduardo Nunes","demo":true},{"slug":"clinica-cerrado-saude","nome":"Clínica Cerrado Saúde","descricao":"Clínica multiprofissional com clínica geral, cardiologia, nutrição e check-up executivo em sessão única.","categoria":"saude","categoriaNome":"Saúde","categoriaIcone":"🩺","sinonimos":["médico","medica","doutor","consulta","clínica","exame","nutricionista","fisioterapeuta"],"tags":["clínica geral","exames","check-up"],"torre":"B","andar":3,"sala":"302","responsavel":"Dr. Rafael Queiroz","demo":true},{"slug":"codigo-livre-tecnologia","nome":"Código Livre Tecnologia","descricao":"Fábrica de software sob demanda: sistemas web, automações de processos e integrações com ERPs.","categoria":"tecnologia","categoriaNome":"Tecnologia e TI","categoriaIcone":"💻","sinonimos":["informática","computador","sistema","site","aplicativo","programador","ti","suporte"],"tags":["desenvolvimento de software","automação","integrações"],"torre":"A","andar":13,"sala":"1305","responsavel":"Diego Sampaio","demo":true},{"slug":"idiomas-conexao","nome":"Conexão Idiomas","descricao":"Escola de idiomas com turmas executivas, aulas in company e preparação para certificações internacionais.","categoria":"educacao","categoriaNome":"Educação e Idiomas","categoriaIcone":"🎓","sinonimos":["curso","escola","professor","aula","inglês","faculdade","pós","concurso"],"tags":["inglês","espanhol","aulas in company"],"torre":"B","andar":7,"sala":"709","responsavel":"Beatriz Camargo","demo":true},{"slug":"dados-claros-bi","nome":"Dados Claros BI","descricao":"Consultoria de dados: modelagem, dashboards gerenciais e integração de fontes para decisões baseadas em números.","categoria":"tecnologia","categoriaNome":"Tecnologia e TI","categoriaIcone":"💻","sinonimos":["informática","computador","sistema","site","aplicativo","programador","ti","suporte"],"tags":["business intelligence","dashboards","dados"],"torre":"A","andar":13,"sala":"1310","responsavel":"Priscila Machado","demo":true},{"slug":"espaco-mente-psicologia","nome":"Espaço Mente Psicologia","descricao":"Clínica de psicologia com atendimento individual, de casal e programas de saúde mental para equipes.","categoria":"psicologia","categoriaNome":"Psicologia e Terapias","categoriaIcone":"🧠","sinonimos":["psicólogo","psicologa","terapia","terapeuta","saúde mental","ansiedade"],"tags":["terapia individual","saúde mental corporativa","burnout"],"torre":"A","andar":9,"sala":"907","responsavel":"Dra. Camila Andrade","demo":true},{"slug":"estudio-quadrante-audiovisual","nome":"Estúdio Quadrante Audiovisual","descricao":"Produtora audiovisual com estúdio próprio para vídeos institucionais, ensaios corporativos e gravação de podcasts.","categoria":"marketing","categoriaNome":"Marketing e Comunicação","categoriaIcone":"📣","sinonimos":["publicidade","propaganda","agência","social media","designer","fotógrafo","vídeo"],"tags":["vídeo institucional","fotografia","podcast"],"torre":"B","andar":10,"sala":"1002","responsavel":"Felipe Nardes","demo":true},{"slug":"fisio-movimento","nome":"Fisio Movimento","descricao":"Fisioterapia ortopédica, pilates clínico e avaliação ergonômica de postos de trabalho.","categoria":"saude","categoriaNome":"Saúde","categoriaIcone":"🩺","sinonimos":["médico","medica","doutor","consulta","clínica","exame","nutricionista","fisioterapeuta"],"tags":["fisioterapia","pilates","ergonomia"],"torre":"B","andar":6,"sala":"603","responsavel":"Dr. Leandro Pires","demo":true},{"slug":"fonseca-lima-advogados","nome":"Fonseca & Lima Advogados","descricao":"Atuação em direito do trabalho e previdenciário, com consultivo preventivo para departamentos de RH.","categoria":"advocacia","categoriaNome":"Advocacia e Jurídico","categoriaIcone":"⚖️","sinonimos":["advogado","advogada","jurídico","juridico","processo","justiça","escritório de advocacia"],"tags":["direito trabalhista","previdenciário","consultivo"],"torre":"B","andar":14,"sala":"1404","responsavel":"Dr. Otávio Lima","demo":true},{"slug":"grafica-expressa","nome":"Gráfica Expressa","descricao":"Gráfica rápida com impressão digital, encadernação, plotagem e comunicação visual para escritórios.","categoria":"servicos","categoriaNome":"Serviços e Conveniência","categoriaIcone":"🛎️","sinonimos":["gráfica","impressão","xerox","despachante","coworking","cartório","documento"],"tags":["impressão","encadernação","comunicação visual"],"torre":"B","andar":2,"sala":"208","responsavel":"Cristina Alencar","demo":true},{"slug":"horizonte-investimentos","nome":"Horizonte Assessoria de Investimentos","descricao":"Assessoria de investimentos para pessoa física e jurídica, gestão de caixa e planejamento sucessório.","categoria":"financeiro","categoriaNome":"Finanças e Seguros","categoriaIcone":"💼","sinonimos":["corretor","seguro","investimento","banco","finanças","plano de saúde","previdência"],"tags":["investimentos","previdência","planejamento financeiro"],"torre":"B","andar":13,"sala":"1307","responsavel":"Renata Duarte","demo":true},{"slug":"hub-coworking","nome":"Hub Coworking Liberty","descricao":"Coworking com estações flexíveis, salas de reunião por hora, endereço fiscal e recepção compartilhada.","categoria":"servicos","categoriaNome":"Serviços e Conveniência","categoriaIcone":"🛎️","sinonimos":["gráfica","impressão","xerox","despachante","coworking","cartório","documento"],"tags":["coworking","sala de reunião","endereço fiscal"],"torre":"B","andar":11,"sala":"1101","responsavel":"Marina Belfort","demo":true},{"slug":"instituto-carreira","nome":"Instituto Carreira","descricao":"Centro de estudos com pós-graduações a distância, preparatórios para concursos e cursos livres de gestão.","categoria":"educacao","categoriaNome":"Educação e Idiomas","categoriaIcone":"🎓","sinonimos":["curso","escola","professor","aula","inglês","faculdade","pós","concurso"],"tags":["pós-graduação","concursos","cursos livres"],"torre":"A","andar":3,"sala":"310","responsavel":"Prof. Sérgio Maranhão","demo":true},{"slug":"meridiano-consultoria","nome":"Meridiano Consultoria","descricao":"Consultoria empresarial especializada em licitações públicas, compliance e estruturação de planejamento estratégico.","categoria":"consultoria","categoriaNome":"Consultoria e Gestão","categoriaIcone":"📈","sinonimos":["consultor","assessoria","gestão","licitação","estratégia"],"tags":["licitações","compliance","planejamento estratégico"],"torre":"A","andar":14,"sala":"1401","responsavel":"Ana Cláudia Terra","demo":true},{"slug":"norte-comunicacao","nome":"Norte Comunicação","descricao":"Agência de comunicação e performance: identidade visual, gestão de redes sociais e campanhas de mídia paga.","categoria":"marketing","categoriaNome":"Marketing e Comunicação","categoriaIcone":"📣","sinonimos":["publicidade","propaganda","agência","social media","designer","fotógrafo","vídeo"],"tags":["mídias sociais","branding","tráfego pago"],"torre":"A","andar":7,"sala":"704","responsavel":"Juliana Peixoto","demo":true},{"slug":"nutricao-integrada","nome":"Nutrição Integrada","descricao":"Consultório de nutrição clínica e esportiva, com avaliação de composição corporal e planos alimentares para rotina de escritório.","categoria":"saude","categoriaNome":"Saúde","categoriaIcone":"🩺","sinonimos":["médico","medica","doutor","consulta","clínica","exame","nutricionista","fisioterapeuta"],"tags":["nutrição","emagrecimento","nutrição esportiva"],"torre":"A","andar":10,"sala":"1006","responsavel":"Dra. Isabela Ferraz","demo":true},{"slug":"planalto-contabilidade","nome":"Planalto Contabilidade","descricao":"Escritório contábil full service: abertura e regularização de empresas, escrituração fiscal, folha de pagamento e planejamento tributário.","categoria":"contabilidade","categoriaNome":"Contabilidade e Fiscal","categoriaIcone":"📊","sinonimos":["contador","contadora","contábil","imposto","mei","simples nacional","abrir empresa","declaração"],"tags":["contabilidade","imposto de renda","folha de pagamento"],"torre":"A","andar":5,"sala":"512","responsavel":"Marcos Vilela","demo":true},{"slug":"ponte-gestao-projetos","nome":"Ponte Gestão de Projetos","descricao":"Implantação de PMO, mapeamento de processos e painéis de indicadores para pequenas e médias empresas.","categoria":"consultoria","categoriaNome":"Consultoria e Gestão","categoriaIcone":"📈","sinonimos":["consultor","assessoria","gestão","licitação","estratégia"],"tags":["PMO","processos","indicadores"],"torre":"B","andar":12,"sala":"1210","responsavel":"Rodrigo Bittencourt","demo":true},{"slug":"liberty-imoveis","nome":"Portal Imóveis Corporativos","descricao":"Imobiliária especializada em salas comerciais, locação corporativa e administração de carteiras de imóveis.","categoria":"imobiliario","categoriaNome":"Imobiliário","categoriaIcone":"🏢","sinonimos":["imobiliária","corretor de imóveis","aluguel","locação","sala comercial","imóvel"],"tags":["locação","venda de salas","administração predial"],"torre":"A","andar":2,"sala":"205","responsavel":"Gustavo Lins","demo":true},{"slug":"redeforte-ti","nome":"RedeForte TI","descricao":"Suporte de TI terceirizado, infraestrutura de redes, servidores, backup em nuvem e segurança da informação.","categoria":"tecnologia","categoriaNome":"Tecnologia e TI","categoriaIcone":"💻","sinonimos":["informática","computador","sistema","site","aplicativo","programador","ti","suporte"],"tags":["suporte técnico","redes","backup"],"torre":"B","andar":6,"sala":"615","responsavel":"Thiago Lemos","demo":true},{"slug":"sorriso-norte-odontologia","nome":"Sorriso Norte Odontologia","descricao":"Consultório odontológico com foco em implantodontia, ortodontia e odontologia estética.","categoria":"odontologia","categoriaNome":"Odontologia","categoriaIcone":"🦷","sinonimos":["dentista","dente","aparelho","implante","odonto"],"tags":["implantes","ortodontia","clareamento"],"torre":"B","andar":4,"sala":"410","responsavel":"Dra. Paula Ribeiro","demo":true},{"slug":"studio-bem-estar","nome":"Studio Bem-Estar","descricao":"Studio de massoterapia e estética com quick massage no local para empresas e pacotes de autocuidado.","categoria":"estetica","categoriaNome":"Estética e Bem-estar","categoriaIcone":"✨","sinonimos":["salão","beleza","massagem","barbeiro","cabelo","estética","spa"],"tags":["massoterapia","quick massage","estética"],"torre":"B","andar":5,"sala":"504","responsavel":"Tatiana Rocha","demo":true},{"slug":"talento-rh","nome":"Talento RH","descricao":"Recrutamento e seleção para posições administrativas e técnicas, com testes de perfil e onboarding estruturado.","categoria":"rh","categoriaNome":"Recursos Humanos","categoriaIcone":"👥","sinonimos":["recursos humanos","recrutador","vaga","emprego","currículo","treinamento"],"tags":["recrutamento","seleção","avaliação de perfil"],"torre":"A","andar":6,"sala":"610","responsavel":"Simone Vasques","demo":true},{"slug":"vetor-engenharia","nome":"Vetor Engenharia","descricao":"Engenharia civil com foco em laudos técnicos, projetos executivos e gerenciamento de reformas corporativas.","categoria":"engenharia","categoriaNome":"Engenharia e Arquitetura","categoriaIcone":"📐","sinonimos":["engenheiro","arquiteto","arquiteta","obra","reforma","projeto","laudo"],"tags":["laudos técnicos","projetos","gerenciamento de obras"],"torre":"A","andar":11,"sala":"1103","responsavel":"Eng. Bruno Tavares","demo":true}]</script>
+  </main>
+<footer class="rodape">
+    <div class="container">
+      <div class="rodape-grade">
+        <div>
+          <h4>CELM</h4>
+          <p style="color: var(--ink-soft); margin: 0 0 12px;">Diretório oficial dos condôminos do Centro Empresarial Liberty Mall: encontre escritórios, clínicas e serviços por torre, andar e categoria — e descubra o que o vizinho de andar pode fazer por você.</p>
+          <a class="btn btn-sm btn-secundario" href="../cadastro/">Cadastrar ou atualizar empresa</a>
+        </div>
+        <div>
+          <h4>Navegar</h4>
+          <ul>
+            <li><a href="../">Início</a></li>
+            <li><a href="../empresas/">Empresas</a></li>
+            <li><a href="../categorias/">Categorias</a></li>
+            <li><a href="../vantagens/">Vantagens</a></li>
+            <li><a href="../o-centro/">O Centro</a></li>
+          </ul>
+        </div>
+        <div>
+          <h4>Categorias em destaque</h4>
+          <ul>
+            <li><a href="../categorias/advocacia/">Advocacia e Jurídico</a></li>
+            <li><a href="../categorias/saude/">Saúde</a></li>
+            <li><a href="../categorias/servicos/">Serviços e Conveniência</a></li>
+            <li><a href="../categorias/tecnologia/">Tecnologia e TI</a></li>
+            <li><a href="../categorias/alimentacao/">Alimentação e Café</a></li>
+            <li><a href="../categorias/consultoria/">Consultoria e Gestão</a></li>
+          </ul>
+        </div>
+        <div>
+          <h4>Onde estamos</h4>
+          <address>
+            SCN Quadra 5, Bloco A<br>
+            Torres A e B — Centro Empresarial Liberty Mall<br>
+            Asa Norte — Brasília/DF<br>
+            CEP 70715-900
+          </address>
+        </div>
+      </div>
+      <div class="rodape-base">
+        <span>Guia de empresas mantido pelos condôminos do Centro Empresarial Liberty Mall.</span>
+        <span>Atualizado em 15 de setembro de 2026.</span>
+      </div>
+    </div>
+  </footer>
+  <script src="../assets/js/app.js" defer></script>
+  <script src="../assets/js/diretorio.js" defer></script>
+</body>
+</html>
