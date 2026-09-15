@@ -91,11 +91,22 @@ function carregar() {
     .filter((categoria) => categoria.empresas.length > 0)
     .sort((a, b) => a.nome.localeCompare(b.nome, "pt-BR"));
 
-  const torres = (centro.torres || []).map((torre) =>
-    Object.assign({}, torre, {
-      total: empresas.filter((e) => e.torre === torre.id).length
-    })
-  );
+  /* Cada torre carrega as categorias que existem nela, o que permite a
+     navegação encadeada torre → categoria → empresas. */
+  const torres = (centro.torres || []).map((torre) => {
+    const daTorre = empresas.filter((e) => e.torre === torre.id);
+    return Object.assign({}, torre, {
+      total: daTorre.length,
+      empresas: daTorre,
+      categorias: categoriasComContagem
+        .map((categoria) =>
+          Object.assign({}, categoria, {
+            empresas: daTorre.filter((e) => e.categoria === categoria.slug)
+          })
+        )
+        .filter((categoria) => categoria.empresas.length > 0)
+    });
+  });
 
   const vantagens = empresas
     .filter((e) => e.beneficio)

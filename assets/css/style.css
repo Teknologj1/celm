@@ -333,12 +333,16 @@ a.cartao:hover { transform: translateY(-2px); box-shadow: var(--shadow-lg); bord
   cursor: pointer; font-family: inherit;
 }
 .chip:hover { background: var(--surface-alt); }
-.chip[aria-pressed="true"] { background: var(--brand); border-color: var(--brand); color: #fff; }
+.chip[aria-pressed="true"] { background: var(--brand); border-color: var(--brand); color: var(--btn-texto); }
+.chip:disabled { opacity: .45; cursor: not-allowed; }
+a.chip:hover { text-decoration: none; }
 
 .resultado-info {
   display: flex; align-items: center; justify-content: space-between; gap: 12px;
   flex-wrap: wrap; margin: 24px 0 16px; color: var(--muted); font-size: .9rem;
 }
+
+.resultado-info.compacto { justify-content: flex-start; gap: 10px; }
 
 .vazio {
   text-align: center; padding: 48px 20px; color: var(--muted);

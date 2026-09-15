@@ -33,6 +33,7 @@ function dataPorExtenso(iso) {
 const MENU = [
   { href: "", rotulo: "Início", chave: "inicio" },
   { href: "empresas/", rotulo: "Empresas", chave: "empresas" },
+  { href: "torres/", rotulo: "Torres", chave: "torres" },
   { href: "categorias/", rotulo: "Categorias", chave: "categorias" },
   { href: "vantagens/", rotulo: "Vantagens", chave: "vantagens" },
   { href: "o-centro/", rotulo: "O Centro", chave: "centro" }

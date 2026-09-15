@@ -58,6 +58,15 @@
     empresa._indice = indexar(empresa);
   });
 
+  var catalogoCategorias = (function () {
+    var vistos = {};
+    empresas.forEach(function (e) {
+      if (!vistos[e.categoria]) vistos[e.categoria] = { slug: e.categoria, nome: e.categoriaNome };
+    });
+    return Object.keys(vistos).map(function (slug) { return vistos[slug]; })
+      .sort(function (a, b) { return a.nome.localeCompare(b.nome, "pt-BR"); });
+  })();
+
   function lerUrl() {
     var params = new URLSearchParams(window.location.search);
     estado.q = params.get("q") || "";
@@ -84,16 +93,19 @@
     return new RegExp(termo.length <= 2 ? "(^| )" + escapado + "( |$)" : "(^| )" + escapado);
   }
 
-  function filtrar() {
-    var padroes = normalizar(estado.q).split(/\s+/).filter(Boolean).map(padraoDoTermo);
+  function passaTexto(empresa, padroes) {
+    return padroes.every(function (padrao) { return padrao.test(empresa._indice); });
+  }
 
-    var lista = empresas.filter(function (empresa) {
-      if (estado.categoria && empresa.categoria !== estado.categoria) return false;
-      if (estado.torre && empresa.torre !== estado.torre) return false;
-      return padroes.every(function (padrao) { return padrao.test(empresa._indice); });
-    });
+  function contar(lista, campo) {
+    return lista.reduce(function (acumulado, empresa) {
+      acumulado[empresa[campo]] = (acumulado[empresa[campo]] || 0) + 1;
+      return acumulado;
+    }, {});
+  }
 
-    lista.sort(function (a, b) {
+  function ordenar(lista) {
+    return lista.sort(function (a, b) {
       if (estado.ordem === "torre") {
         if (a.torre !== b.torre) return a.torre.localeCompare(b.torre);
         if (a.andar !== b.andar) return a.andar - b.andar;
@@ -103,8 +115,29 @@
       }
       return a.nome.localeCompare(b.nome, "pt-BR");
     });
+  }
 
-    return lista;
+  /* Filtros encadeados: cada controle é contado sobre o resultado dos
+     outros, de modo que as categorias oferecidas são só as que existem na
+     torre escolhida — e as contagens por torre respeitam a categoria. */
+  function calcular() {
+    var padroes = normalizar(estado.q).split(/\s+/).filter(Boolean).map(padraoDoTermo);
+    var base = empresas.filter(function (empresa) { return passaTexto(empresa, padroes); });
+
+    var naTorre = estado.torre
+      ? base.filter(function (e) { return e.torre === estado.torre; })
+      : base;
+    var naCategoria = estado.categoria
+      ? base.filter(function (e) { return e.categoria === estado.categoria; })
+      : base;
+
+    return {
+      lista: ordenar(naTorre.filter(function (e) {
+        return !estado.categoria || e.categoria === estado.categoria;
+      })),
+      categoriasDisponiveis: contar(naTorre, "categoria"),
+      torresDisponiveis: contar(naCategoria, "torre")
+    };
   }
 
   function escapar(texto) {
@@ -135,8 +168,8 @@
     );
   }
 
-  function renderizar() {
-    var lista = filtrar();
+  function renderizar(resultado) {
+    var lista = resultado.lista;
 
     contador.textContent = lista.length === 1
       ? "1 empresa encontrada"
@@ -156,26 +189,49 @@
     raiz.innerHTML = lista.map(cartao).join("");
   }
 
-  function sincronizarControles() {
-    if (campoBusca) campoBusca.value = estado.q;
-    if (campoCategoria) campoCategoria.value = estado.categoria;
+  function sincronizarControles(resultado) {
+    if (campoBusca && campoBusca.value !== estado.q) campoBusca.value = estado.q;
     if (campoOrdem) campoOrdem.value = estado.ordem;
+
+    if (campoCategoria) {
+      var disponiveis = resultado.categoriasDisponiveis;
+      var opcoes = ['<option value="">Todas as categorias</option>'];
+
+      catalogoCategorias.forEach(function (categoria) {
+        var quantidade = disponiveis[categoria.slug] || 0;
+        /* a categoria escolhida continua na lista mesmo se zerar, para que
+           o usuário veja o que aconteceu com o filtro dele */
+        if (!quantidade && categoria.slug !== estado.categoria) return;
+        opcoes.push(
+          '<option value="' + escapar(categoria.slug) + '">' +
+          escapar(categoria.nome) + " (" + quantidade + ")</option>"
+        );
+      });
+
+      campoCategoria.innerHTML = opcoes.join("");
+      campoCategoria.value = estado.categoria;
+    }
+
     chipsTorre.forEach(function (chip) {
-      chip.setAttribute("aria-pressed", String(chip.getAttribute("data-torre") === estado.torre));
+      var torre = chip.getAttribute("data-torre");
+      var quantidade = resultado.torresDisponiveis[torre] || 0;
+      chip.setAttribute("aria-pressed", String(torre === estado.torre));
+      chip.textContent = "Torre " + torre + " · " + quantidade;
+      chip.disabled = quantidade === 0 && torre !== estado.torre;
     });
   }
 
   function atualizar() {
-    sincronizarControles();
+    var resultado = calcular();
+    sincronizarControles(resultado);
     escreverUrl();
-    renderizar();
+    renderizar(resultado);
   }
 
   if (campoBusca) {
     campoBusca.addEventListener("input", function () {
       estado.q = campoBusca.value;
-      escreverUrl();
-      renderizar();
+      atualizar();
     });
   }
   if (campoCategoria) {

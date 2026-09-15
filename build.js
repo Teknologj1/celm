@@ -13,7 +13,7 @@ const { carregar, RAIZ } = require("./build/dados");
 const paginas = require("./build/paginas");
 
 /* Diretórios gerados — apagados e reescritos a cada build. */
-const GERADOS = ["empresas", "categorias", "vantagens", "o-centro", "cadastro"];
+const GERADOS = ["empresas", "categorias", "torres", "vantagens", "o-centro", "cadastro"];
 const ARQUIVOS_RAIZ = ["index.html", "404.html", "sitemap.xml", "robots.txt"];
 
 function escrever(destinoRelativo, conteudo) {
@@ -60,6 +60,7 @@ function construir() {
   registrar("", "index.html", paginas.home(dados));
   registrar("empresas/", "empresas/index.html", paginas.diretorio(dados));
   registrar("categorias/", "categorias/index.html", paginas.listaCategorias(dados));
+  registrar("torres/", "torres/index.html", paginas.listaTorres(dados));
   registrar("vantagens/", "vantagens/index.html", paginas.vantagens(dados));
   registrar("o-centro/", "o-centro/index.html", paginas.oCentro(dados));
   registrar("cadastro/", "cadastro/index.html", paginas.cadastro(dados));
@@ -70,6 +71,19 @@ function construir() {
       `empresas/${empresa.slug}/index.html`,
       paginas.empresa(dados, empresa)
     );
+  });
+
+  dados.torres.forEach((torre) => {
+    const base = `torres/${torre.id.toLowerCase()}/`;
+    registrar(base, `${base}index.html`, paginas.torre(dados, torre));
+
+    torre.categorias.forEach((categoria) => {
+      registrar(
+        `${base}${categoria.slug}/`,
+        `${base}${categoria.slug}/index.html`,
+        paginas.torreCategoria(dados, torre, categoria)
+      );
+    });
   });
 
   dados.categorias.forEach((categoria) => {

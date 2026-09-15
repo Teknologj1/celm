@@ -59,8 +59,7 @@ function home(dados) {
 
         <div class="hero-atalhos">
           <span>Atalhos:</span>
-          <a href="${url(0, "empresas/?torre=A")}">Torre A</a>
-          <a href="${url(0, "empresas/?torre=B")}">Torre B</a>
+          ${dados.torres.map((t) => `<a href="${url(0, "torres/" + t.id.toLowerCase() + "/")}">Serviços da ${escapar(t.nome)}</a>`).join("\n          ")}
           <a href="${url(0, "vantagens/")}">Vantagens entre condôminos</a>
           <a href="${url(0, "cadastro/")}">Cadastrar minha empresa</a>
         </div>
@@ -140,7 +139,7 @@ function home(dados) {
             <p>${escapar(t.descricao)}</p>
             <div class="cartao-rodape">
               <span class="etiqueta etiqueta-torre">${t.total} ${t.total === 1 ? "empresa" : "empresas"} · ${escapar(t.andares)}</span>
-              <a href="${url(0, "empresas/?torre=" + encodeURIComponent(t.id))}">Ver empresas →</a>
+              <a href="${url(0, "torres/" + t.id.toLowerCase() + "/")}">Ver serviços da torre →</a>
             </div>
           </div>`).join("\n          ")}
         </div>
@@ -228,7 +227,7 @@ function diretorio(dados) {
 
         <div class="resultado-info">
           <span id="contador" role="status" aria-live="polite">${dados.estatisticas.empresas} empresas encontradas</span>
-          <a href="${url(1, "cadastro/")}">Não encontrou sua empresa? Cadastre-se →</a>
+          <a href="${url(1, "torres/")}">Prefere navegar por torre e tipo de serviço? →</a>
         </div>
 
         <div id="resultados" class="grade grade-3" data-base="${url(1, "")}">
@@ -461,6 +460,136 @@ function categoria(dados, cat) {
   });
 }
 
+/* ---------- navegação encadeada: torre → categoria → empresas ----------- */
+
+function listaTorres(dados) {
+  const conteudo = `    <section class="secao">
+      <div class="container">
+        <div class="secao-cabecalho">
+          <span class="olho">Navegação por torre</span>
+          <h1>Escolha a torre</h1>
+          <p>Comece pela torre e desça até o tipo de serviço. É o caminho mais rápido para achar quem resolve o seu problema sem sair do prédio.</p>
+        </div>
+
+        <div class="grade grade-2">
+          ${dados.torres.map((t) => `<div class="cartao">
+            <div class="cartao-topo">
+              <span class="cartao-categoria">🏢 ${escapar(t.nome)}</span>
+              <span class="etiqueta">${escapar(t.andares)}</span>
+            </div>
+            <h3><a href="${url(1, "torres/" + t.id.toLowerCase() + "/")}">${escapar(t.nome)}</a></h3>
+            <p>${escapar(t.descricao)}</p>
+            <div class="tags">
+              ${t.categorias.slice(0, 6).map((c) => `<a class="etiqueta" href="${url(1, "torres/" + t.id.toLowerCase() + "/" + c.slug + "/")}">${escapar(c.icone)} ${escapar(c.nome)} (${c.empresas.length})</a>`).join("")}
+              ${t.categorias.length > 6 ? `<span class="etiqueta">+${t.categorias.length - 6}</span>` : ""}
+            </div>
+            <div class="cartao-rodape">
+              <span class="etiqueta etiqueta-torre">${t.total} ${t.total === 1 ? "empresa" : "empresas"} · ${t.categorias.length} categorias</span>
+              <a href="${url(1, "torres/" + t.id.toLowerCase() + "/")}">Ver serviços →</a>
+            </div>
+          </div>`).join("\n          ")}
+        </div>
+      </div>
+    </section>`;
+
+  return pagina(dados, {
+    profundidade: 1,
+    caminho: "torres/",
+    atual: "torres",
+    titulo: "Torres",
+    descricao: `Empresas do ${dados.centro.nome} organizadas por torre e por tipo de serviço.`,
+    conteudo
+  });
+}
+
+function torre(dados, item) {
+  const base = "torres/" + item.id.toLowerCase() + "/";
+
+  const conteudo = `    <div class="container">
+      <nav class="migalhas" aria-label="Trilha de navegação">
+        <a href="${url(2, "")}">Início</a><span>›</span>
+        <a href="${url(2, "torres/")}">Torres</a><span>›</span>
+        ${escapar(item.nome)}
+      </nav>
+    </div>
+    <section class="secao" style="padding-top:22px">
+      <div class="container">
+        <div class="secao-cabecalho">
+          <span class="olho">Passo 2 de 3 · Tipo de serviço</span>
+          <h1>${escapar(item.nome)}</h1>
+          <p>${escapar(item.descricao)} São ${item.total} ${item.total === 1 ? "empresa" : "empresas"} em ${item.categorias.length} ${item.categorias.length === 1 ? "categoria" : "categorias"}, do ${escapar(item.andares)}.</p>
+        </div>
+
+        <div class="grade grade-3" style="margin-bottom:30px">
+          ${item.categorias.map((c) => `<a class="cartao-cat" href="${url(2, base + c.slug + "/")}">
+            <span class="icone" aria-hidden="true">${escapar(c.icone)}</span>
+            <span>
+              <b>${escapar(c.nome)}</b>
+              <small>${c.empresas.length} ${c.empresas.length === 1 ? "empresa" : "empresas"} nesta torre</small>
+            </span>
+          </a>`).join("\n          ")}
+        </div>
+
+        <div class="resultado-info compacto">
+          <span>Prefere ver tudo de uma vez?</span>
+          <a href="${url(2, "empresas/?torre=" + encodeURIComponent(item.id))}">Abrir as ${item.total} empresas da ${escapar(item.nome)} no diretório →</a>
+        </div>
+      </div>
+    </section>`;
+
+  return pagina(dados, {
+    profundidade: 2,
+    caminho: base,
+    atual: "torres",
+    titulo: item.nome,
+    descricao: `Serviços disponíveis na ${item.nome} do ${dados.centro.nome}: ${item.categorias.map((c) => c.nome).join(", ")}.`.slice(0, 300),
+    conteudo
+  });
+}
+
+function torreCategoria(dados, item, cat) {
+  const base = "torres/" + item.id.toLowerCase() + "/";
+  const naOutraTorre = dados.torres
+    .filter((t) => t.id !== item.id)
+    .map((t) => ({ torre: t, cat: t.categorias.find((c) => c.slug === cat.slug) }))
+    .filter((par) => par.cat);
+
+  const conteudo = `    <div class="container">
+      <nav class="migalhas" aria-label="Trilha de navegação">
+        <a href="${url(3, "")}">Início</a><span>›</span>
+        <a href="${url(3, "torres/")}">Torres</a><span>›</span>
+        <a href="${url(3, base)}">${escapar(item.nome)}</a><span>›</span>
+        ${escapar(cat.nome)}
+      </nav>
+    </div>
+    <section class="secao" style="padding-top:22px">
+      <div class="container">
+        <div class="secao-cabecalho">
+          <span class="olho">${escapar(item.nome)} · ${escapar(cat.icone)} ${escapar(cat.nome)}</span>
+          <h1>${escapar(cat.nome)} na ${escapar(item.nome)}</h1>
+          <p>${escapar(cat.descricao)}</p>
+        </div>
+
+        <div class="chips" style="margin-bottom:24px">
+          <a class="chip" href="${url(3, base)}">← Outras categorias da ${escapar(item.nome)}</a>
+          ${naOutraTorre.map((par) => `<a class="chip" href="${url(3, "torres/" + par.torre.id.toLowerCase() + "/" + cat.slug + "/")}">${escapar(cat.nome)} na ${escapar(par.torre.nome)} (${par.cat.empresas.length})</a>`).join("\n          ")}
+          <a class="chip" href="${url(3, "categorias/" + cat.slug + "/")}">Ver nas duas torres</a>
+        </div>
+
+        ${grade(cat.empresas, 3)}
+      </div>
+    </section>`;
+
+  return pagina(dados, {
+    profundidade: 3,
+    caminho: base + cat.slug + "/",
+    atual: "torres",
+    titulo: `${cat.nome} na ${item.nome}`,
+    descricao: `${cat.empresas.length} ${cat.empresas.length === 1 ? "empresa" : "empresas"} de ${cat.nome} na ${item.nome} do ${dados.centro.nome}.`,
+    conteudo
+  });
+}
+
 function vantagens(dados) {
   const porTorre = dados.torres.map((torre) => ({
     torre,
@@ -523,7 +652,7 @@ function oCentro(dados) {
             <p>${escapar(t.descricao)}</p>
             <div class="cartao-rodape">
               <span class="etiqueta etiqueta-torre">${escapar(t.andares)}</span>
-              <a href="${url(1, "empresas/?torre=" + encodeURIComponent(t.id))}">${t.total} ${t.total === 1 ? "empresa" : "empresas"} →</a>
+              <a href="${url(1, "torres/" + t.id.toLowerCase() + "/")}">${t.total} ${t.total === 1 ? "empresa" : "empresas"} →</a>
             </div>
           </div>`).join("\n          ")}
         </div>
@@ -744,4 +873,4 @@ function naoEncontrado(dados) {
   });
 }
 
-module.exports = { home, diretorio, empresa, listaCategorias, categoria, vantagens, oCentro, cadastro, naoEncontrado };
+module.exports = { home, diretorio, empresa, listaCategorias, categoria, listaTorres, torre, torreCategoria, vantagens, oCentro, cadastro, naoEncontrado };

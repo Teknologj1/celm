@@ -18,6 +18,7 @@ também trabalha no complexo.
 | Início | `/` | Busca, números do complexo, categorias, destaques e vantagens |
 | Diretório | `/empresas/` | Lista completa com busca instantânea e filtros por torre, categoria e ordenação |
 | Ficha da empresa | `/empresas/<slug>/` | Contato, localização, serviços, vantagem para condôminos e vizinhos |
+| Torres | `/torres/`, `/torres/<a\|b>/` e `/torres/<a\|b>/<categoria>/` | Busca encadeada: escolhe a torre, depois o tipo de serviço, depois a empresa |
 | Categorias | `/categorias/` e `/categorias/<slug>/` | Navegação por área de atuação |
 | Vantagens | `/vantagens/` | Todas as condições especiais oferecidas entre condôminos |
 | O Centro | `/o-centro/` | Torres, estrutura, localização e contato da administração |
@@ -25,6 +26,11 @@ também trabalha no complexo.
 
 Detalhes de implementação:
 
+- **Busca encadeada (torre → tipo de serviço → empresa)**: além das páginas
+  de `/torres/`, os filtros do diretório se ajustam uns aos outros — ao
+  escolher a Torre B, a lista de categorias passa a mostrar apenas as que
+  existem nela, com as contagens recalculadas; e ao escolher uma categoria,
+  as torres sem aquela atividade aparecem zeradas e desabilitadas.
 - **Busca tolerante**: ignora acentos e entende sinônimos — procurar por
   "dentista" encontra a categoria Odontologia, "contador" encontra
   Contabilidade. Também aceita "sala 1208", "torre B" e "12º andar".
