@@ -5,9 +5,12 @@
   "description": "Guia de empresas do Centro Empresarial Liberty Mall — site estático gerado a partir de arquivos JSON.",
   "scripts": {
     "build": "node build.js",
+    "build:vercel": "node build.js --out dist",
     "test": "node build/verificar.js",
     "check": "npm run build && npm test",
-    "start": "npm run build && npx --yes http-server . -p 8080 -c-1 -o"
+    "start": "npm run build && npx --yes http-server . -p 8080 -c-1 -o",
+    "dev": "node scripts/dev.js",
+    "usuario": "node scripts/criar-usuario.js"
   },
   "engines": {
     "node": ">=18"

@@ -3,8 +3,13 @@
 
 /* Gerador do site estático.
  *
- * Lê os arquivos de /data e escreve as páginas HTML na raiz do projeto,
- * prontas para o GitHub Pages. Uso: `npm run build`. */
+ * Lê os arquivos de /data e escreve as páginas HTML.
+ *
+ *   node build.js              → escreve na raiz (GitHub Pages)
+ *   node build.js --out dist   → escreve em dist/ (Vercel)
+ *
+ * Na saída separada os assets são copiados junto, de modo que o diretório
+ * se basta como site. */
 
 const fs = require("fs");
 const path = require("path");
@@ -12,24 +17,53 @@ const path = require("path");
 const { carregar, RAIZ } = require("./build/dados");
 const paginas = require("./build/paginas");
 
+/* Destino da geração. Sem --out, escreve na própria raiz do projeto. */
+const argumentoSaida = (() => {
+  const i = process.argv.indexOf("--out");
+  return i !== -1 ? process.argv[i + 1] : null;
+})();
+
+const SAIDA = argumentoSaida ? path.resolve(RAIZ, argumentoSaida) : RAIZ;
+const SAIDA_SEPARADA = SAIDA !== RAIZ;
+
+/* Copiados para a saída separada; na raiz já estão no lugar. */
+const ESTATICOS = ["assets", "admin"];
+
 /* Diretórios gerados — apagados e reescritos a cada build. */
 const GERADOS = ["empresas", "categorias", "torres", "vantagens", "o-centro", "cadastro", "anuncie"];
 const ARQUIVOS_RAIZ = ["index.html", "404.html", "sitemap.xml", "robots.txt"];
 
 function escrever(destinoRelativo, conteudo) {
-  const destino = path.join(RAIZ, destinoRelativo);
+  const destino = path.join(SAIDA, destinoRelativo);
   fs.mkdirSync(path.dirname(destino), { recursive: true });
   fs.writeFileSync(destino, conteudo, "utf8");
   return destinoRelativo;
 }
 
 function limpar() {
+  if (SAIDA_SEPARADA) {
+    fs.rmSync(SAIDA, { recursive: true, force: true });
+    fs.mkdirSync(SAIDA, { recursive: true });
+    return;
+  }
   GERADOS.forEach((dir) => {
     fs.rmSync(path.join(RAIZ, dir), { recursive: true, force: true });
   });
   ARQUIVOS_RAIZ.forEach((arquivo) => {
     fs.rmSync(path.join(RAIZ, arquivo), { force: true });
   });
+}
+
+function copiarEstaticos() {
+  if (!SAIDA_SEPARADA) return 0;
+  let copiados = 0;
+  ESTATICOS.forEach((dir) => {
+    const origem = path.join(RAIZ, dir);
+    if (!fs.existsSync(origem)) return;
+    fs.cpSync(origem, path.join(SAIDA, dir), { recursive: true });
+    copiados += 1;
+  });
+  return copiados;
 }
 
 function sitemap(dados, rotas) {
@@ -103,7 +137,15 @@ function construir() {
     escritos.push(
       escrever(
         "robots.txt",
-        `User-agent: *\nAllow: /\n\nSitemap: ${dados.centro.siteUrl.replace(/\/$/, "")}/sitemap.xml\n`
+        [
+          "User-agent: *",
+          "Allow: /",
+          "Disallow: /admin/",
+          "Disallow: /api/",
+          "",
+          `Sitemap: ${dados.centro.siteUrl.replace(/\/$/, "")}/sitemap.xml`,
+          ""
+        ].join("\n")
       )
     );
   }
@@ -111,7 +153,9 @@ function construir() {
   /* Evita que o GitHub Pages processe o site com Jekyll. */
   escrever(".nojekyll", "");
 
-  console.log(`✓ ${escritos.length} arquivos gerados`);
+  copiarEstaticos();
+
+  console.log(`✓ ${escritos.length} arquivos gerados em ${SAIDA_SEPARADA ? path.relative(RAIZ, SAIDA) + "/" : "."}`);
   console.log(`  ${dados.estatisticas.empresas} empresas · ${dados.estatisticas.categorias} categorias · ${dados.estatisticas.torres} torres`);
   if (dados.centro.demoMode) {
     console.log("  ⚠ demoMode ativo: o site exibe o aviso de conteúdo de demonstração.");

@@ -24,6 +24,7 @@ também trabalha no complexo.
 | O Centro | `/o-centro/` | Torres, estrutura, localização e contato da administração |
 | Cadastro | `/cadastro/` | Formulário que gera o e-mail de cadastro para a administração |
 | Anuncie | `/anuncie/` | Espaços publicitários disponíveis e contato comercial |
+| **Painel** | `/admin/` | Área restrita da administração para incluir, editar e remover empresas |
 
 Detalhes de implementação:
 
@@ -60,7 +61,7 @@ O site é **estático**: não há servidor nem banco de dados. Um gerador em Nod
 final na raiz do projeto, pronto para o GitHub Pages.
 
 ```
-data/            ← a fonte da verdade (é aqui que se edita o conteúdo)
+data/            ← a fonte da verdade (conteúdo do guia)
   centro.json      dados do complexo: endereço, torres, estrutura, imagens, contato
   categorias.json  áreas de atuação e sinônimos usados na busca
   empresas.json    as empresas do guia
@@ -72,8 +73,18 @@ build/
   paginas.js       o HTML de cada tipo de página
   verificar.js     confere links internos, títulos e metadados
 assets/          ← CSS, JavaScript e imagens
-index.html, empresas/, categorias/, ...   ← gerados, não edite à mão
+admin/           ← painel da administração (login e tela de cadastro)
+api/             ← funções da Vercel que atendem o painel
+  login.js, logout.js, sessao.js, empresas.js
+  _lib/            autenticação, armazenamento e validação
+scripts/
+  dev.js           servidor local com site + API
+  criar-usuario.js gera a conta de acesso ao painel
 ```
+
+As páginas HTML (`index.html`, `empresas/`, `categorias/`…) **não são
+versionadas**: cada publicação reconstrói o site a partir de `data/`. Isso é o
+que permite ao painel alterar só os dados e o site sair atualizado.
 
 ### Comandos
 
@@ -82,7 +93,12 @@ npm run build   # gera o site a partir de data/
 npm test        # verifica links internos, <h1> e meta description
 npm run check   # build + verificação (o que o CI roda)
 npm start       # gera e abre o site em http://localhost:8080
+npm run dev     # site + painel em http://localhost:3000 (com API)
+npm run usuario # cria uma conta de acesso ao painel
 ```
+
+`npm run dev` sobe o site e as funções da API no mesmo processo, gravando nos
+arquivos de `data/` — nada é enviado ao GitHub. É o modo de trabalho local.
 
 Não é preciso instalar nada: o gerador usa apenas a biblioteca padrão do Node
 (versão 18 ou superior).
@@ -207,7 +223,97 @@ os espaços vazios, mude `publicidade.mostrarEspacosVazios` para `false` em
 Os blocos são marcados como "Publicidade" e os links levam `rel="sponsored"`,
 como manda a recomendação do Google para conteúdo pago.
 
-## Publicação
+## Painel da administração
+
+Em `/admin/`, a administração inclui, edita e remove empresas pelo navegador,
+sem precisar mexer em arquivo nenhum. Cada alteração vira um **commit** em
+`data/empresas.json` e dispara a republicação do site — em torno de um minuto
+até aparecer no ar.
+
+O histórico do Git é a auditoria: dá para ver quem alterou o quê, quando, e
+reverter qualquer edição.
+
+### Como funciona a segurança
+
+- Senhas guardadas com **scrypt** (sal por conta, custo alto), nunca em texto.
+- Sessão em cookie `HttpOnly`, `Secure`, `SameSite=Strict`, válida por 8 horas.
+- Toda rota da API exige sessão — inclusive a de leitura.
+- Escritas só são aceitas vindas da própria origem do site (defesa contra CSRF).
+- Usuário inexistente e senha errada devolvem a mesma mensagem, para não
+  revelar quais contas existem.
+- Oito tentativas erradas bloqueiam aquele usuário e IP por 15 minutos.
+
+Duas limitações que convém conhecer:
+
+1. O bloqueio por tentativas vive na memória da instância. Com várias
+   instâncias ativas, o limite é por instância — o custo do scrypt é a defesa
+   principal contra força bruta.
+2. O HTML do painel é público (só o conteúdo é protegido). Isso é intencional:
+   o que guarda os dados é a API, não a página.
+
+### Criar uma conta de acesso
+
+```bash
+npm run usuario sindico "Maria Silva"
+```
+
+O comando pede a senha (mínimo de 12 caracteres), não a salva em lugar nenhum
+e imprime um JSON. Esse JSON vai na variável `ADMIN_USERS`, na Vercel — **não
+comite esse valor**: o repositório é público, e um hash versionado é material
+para ataque offline.
+
+Para várias contas, junte os objetos no mesmo vetor:
+
+```json
+[{"usuario":"sindico","nome":"Maria Silva","salt":"...","hash":"..."},
+ {"usuario":"zelador","nome":"João Souza","salt":"...","hash":"..."}]
+```
+
+Para remover o acesso de alguém, tire o objeto da variável e publique de novo.
+
+## Publicação na Vercel
+
+O projeto já vem com `vercel.json`. Ao importar o repositório, a Vercel usa
+`node build.js --out dist` como build e serve `dist/`, com as funções de `api/`
+atendendo o painel.
+
+### Variáveis de ambiente obrigatórias
+
+Em **Settings → Environment Variables**, para os ambientes Production e Preview:
+
+| Variável | O que é | Como obter |
+| --- | --- | --- |
+| `SESSION_SECRET` | Chave que assina os cookies de sessão | `openssl rand -base64 48` |
+| `ADMIN_USERS` | Contas do painel, em JSON | `npm run usuario` |
+| `GITHUB_TOKEN` | Token com permissão de gravar no repositório | Veja abaixo |
+| `GITHUB_REPO` | `dono/repositorio` | Ex.: `Teknologj1/celm` |
+| `GITHUB_BRANCH` | Branch que o site publica | Ex.: `main` |
+| `SITE_URL` | Endereço final do site | Ex.: `https://celm.com.br` |
+
+`SITE_URL` é opcional, mas sem ela o endereço canônico, o `sitemap.xml` e o
+`robots.txt` continuam apontando para o GitHub Pages — o que confunde o Google
+quando o site oficial passa a ser outro.
+
+O token deve ser um **fine-grained personal access token** restrito a este
+repositório, com a permissão **Contents: Read and write** — nada além disso.
+Defina uma validade e anote a data de renovação; quando ele expira, o painel
+para de salvar e devolve "o servidor não tem permissão de gravação".
+
+Trocar `SESSION_SECRET` derruba todas as sessões abertas — é o jeito rápido de
+expulsar todo mundo caso desconfie de algum acesso.
+
+### Depois do deploy
+
+1. Abra `https://<seu-dominio>/admin/` e entre com a conta criada.
+2. Inclua uma empresa de teste e confira se o commit apareceu no repositório.
+3. Espere a republicação e veja a empresa no site.
+4. Remova a empresa de teste.
+
+Enquanto o site também estiver no GitHub Pages, as duas publicações convivem:
+o Pages reconstrói pelo workflow, a Vercel pelo próprio build. O painel só
+existe na Vercel, porque o Pages não executa funções.
+
+## Publicação no GitHub Pages
 
 O workflow `.github/workflows/site.yml` roda a cada push: gera o site, verifica
 os links e confere se o HTML commitado está atualizado. Quando o push é para o
@@ -225,23 +331,21 @@ Se o endereço final não for `https://teknologj1.github.io/celm`, ajuste
 `siteUrl` em `data/centro.json` — esse valor alimenta as URLs canônicas, o
 `sitemap.xml` e os links absolutos da página 404.
 
-## Evoluir para um backend
+## Próximos passos possíveis
 
-A estrutura já está preparada para isso. Toda a leitura de dados está isolada em
-`build/dados.js`, na função `carregar()`: trocar os `lerJson()` por chamadas a
-uma API (ou a um banco) mantém o resto do gerador intacto, desde que o formato
-devolvido seja o mesmo.
+O painel hoje cobre o cadastro de empresas. A mesma estrutura atende, sem
+mudança de arquitetura:
 
-Do lado do navegador, dois pontos são os candidatos naturais:
+- **Categorias, anúncios e dados do complexo** pelo painel: cada um é outro
+  arquivo em `data/`, e `api/_lib/armazenamento.js` já sabe gravar qualquer um
+  deles.
+- **Envio de logotipo pelo navegador**, gravando a imagem no repositório pela
+  mesma API — hoje o painel recebe o caminho do arquivo.
+- **Cadastro pelo próprio condômino**, com a solicitação entrando numa fila que
+  a administração aprova antes de publicar.
+- **Banco de dados**, se o volume crescer: trocar o backend em
+  `api/_lib/armazenamento.js` não afeta nem o painel nem o gerador.
 
-- `assets/js/diretorio.js` lê os dados de um `<script type="application/json">`
-  embutido na página. Para busca no servidor, basta trocar `carregarEmpresas()`
-  por um `fetch` ao endpoint.
-- `assets/js/cadastro.js` monta hoje um e-mail com os dados do formulário. A
-  função `coletar()` já devolve o objeto pronto para um `POST`, permitindo que
-  o próprio condômino cadastre sua empresa sem intermediários.
-
-Um caminho de migração de baixo custo é manter o site estático e acrescentar
-apenas um painel de cadastro que escreva de volta em `data/empresas.json`,
-disparando o build — preservando a hospedagem gratuita e o histórico de
-alterações no Git.
+Se um dia o site sair do modelo estático, o ponto de troca do lado público é
+`assets/js/diretorio.js`, que lê os dados de um `<script type="application/json">`
+embutido na página e passaria a consumir um endpoint.

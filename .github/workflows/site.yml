@@ -26,37 +26,33 @@ jobs:
         with:
           node-version: "22"
 
+      # O HTML não é versionado: cada publicação reconstrói o site a partir
+      # de data/, que é o que o painel da administração altera.
       - name: Gerar o site
         run: node build.js
 
       - name: Verificar links e metadados
         run: node build/verificar.js
 
-      - name: Conferir se o HTML commitado está atualizado
-        run: |
-          if ! git diff --quiet; then
-            echo "::error::As páginas geradas estão desatualizadas. Rode 'npm run build' e faça commit do resultado."
-            git diff --stat
-            exit 1
-          fi
+      - name: Preparar o artefato do Pages
+        if: github.event_name == 'push'
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: .
 
   publicar:
     name: Publicar no GitHub Pages
     needs: verificar
-    if: github.ref == format('refs/heads/{0}', github.event.repository.default_branch)
+    if: github.event_name == 'push' && github.ref == format('refs/heads/{0}', github.event.repository.default_branch)
     runs-on: ubuntu-latest
     environment:
       name: github-pages
       url: ${{ steps.deploy.outputs.page_url }}
     steps:
-      - uses: actions/checkout@v4
       # O Pages precisa estar ligado em Settings → Pages → Source: GitHub
       # Actions. O GITHUB_TOKEN não consegue ligá-lo sozinho (enablement: true
       # devolve "Resource not accessible by integration"), porque criar o site
       # exige permissão de administração do repositório.
       - uses: actions/configure-pages@v5
-      - uses: actions/upload-pages-artifact@v3
-        with:
-          path: .
       - id: deploy
         uses: actions/deploy-pages@v4

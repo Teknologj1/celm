@@ -79,6 +79,11 @@ function validar(centro, categorias, empresas) {
 
 function carregar() {
   const centro = lerJson("centro.json");
+
+  /* Na Vercel o endereço é outro. Definir SITE_URL nas variáveis de ambiente
+     faz o canonical, o sitemap e o robots apontarem para o domínio certo,
+     sem precisar editar o JSON a cada mudança de hospedagem. */
+  if (process.env.SITE_URL) centro.siteUrl = process.env.SITE_URL.replace(/\/$/, "");
   const categorias = lerJson("categorias.json");
   const brutas = lerJson("empresas.json");
   const anuncios = lerJson("anuncios.json");

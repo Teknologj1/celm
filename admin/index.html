@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Painel — Guia CELM</title>
+  <meta name="robots" content="noindex, nofollow">
+  <link rel="icon" href="../assets/img/favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="../assets/css/style.css">
+  <link rel="stylesheet" href="admin.css">
+</head>
+<body class="tela-painel" hidden>
+  <header class="topo">
+    <div class="container">
+      <a class="marca" href="../">
+        <span class="marca-sigla" aria-hidden="true">CELM</span>
+        <span class="marca-texto">
+          <b>Painel da administração</b>
+          <span>Empresas do guia</span>
+        </span>
+      </a>
+      <div class="acoes-topo">
+        <span id="quem" class="etiqueta"></span>
+        <a class="btn btn-secundario btn-sm" href="../" target="_blank" rel="noopener">Ver o site</a>
+        <button class="btn btn-secundario btn-sm" type="button" id="sair">Sair</button>
+      </div>
+    </div>
+  </header>
+
+  <main class="container" id="conteudo">
+    <div class="secao-topo" style="margin-top:28px">
+      <div>
+        <span class="olho">Cadastro</span>
+        <h1 style="margin:0">Empresas do complexo</h1>
+        <p id="resumo" style="color:var(--ink-soft);margin:6px 0 0"></p>
+      </div>
+      <button class="btn" type="button" id="nova">+ Incluir empresa</button>
+    </div>
+
+    <div class="painel-filtros filtros-painel">
+      <div class="campo">
+        <label for="busca">Buscar</label>
+        <input id="busca" type="search" placeholder="Nome, sala, responsável...">
+      </div>
+      <div class="campo">
+        <label for="filtro-torre">Torre</label>
+        <select id="filtro-torre"><option value="">Todas</option></select>
+      </div>
+      <div class="campo">
+        <label for="filtro-categoria">Categoria</label>
+        <select id="filtro-categoria"><option value="">Todas</option></select>
+      </div>
+    </div>
+
+    <p id="estado" class="estado-carregando">Carregando cadastro...</p>
+
+    <div class="tabela-rolagem">
+      <table class="tabela" id="tabela" hidden>
+        <thead>
+          <tr>
+            <th>Empresa</th>
+            <th>Categoria</th>
+            <th>Local</th>
+            <th>Contato</th>
+            <th><span class="sr-only">Ações</span></th>
+          </tr>
+        </thead>
+        <tbody id="linhas"></tbody>
+      </table>
+    </div>
+  </main>
+
+  <!-- Formulário de inclusão e edição -->
+  <div class="modal" id="modal" hidden>
+    <div class="modal-caixa" role="dialog" aria-modal="true" aria-labelledby="modal-titulo">
+      <div class="modal-topo">
+        <h2 id="modal-titulo">Incluir empresa</h2>
+        <button class="btn btn-secundario btn-sm" type="button" id="fechar">Fechar</button>
+      </div>
+
+      <form id="form-empresa" novalidate>
+        <input type="hidden" id="slugAtual">
+
+        <div class="grade-form">
+          <div class="campo campo-largo">
+            <label for="nome">Nome da empresa *</label>
+            <input id="nome" name="nome" type="text" required maxlength="120">
+          </div>
+
+          <div class="campo">
+            <label for="categoria">Categoria *</label>
+            <select id="categoria" name="categoria" required></select>
+          </div>
+          <div class="campo">
+            <label for="torre">Torre *</label>
+            <select id="torre" name="torre" required></select>
+          </div>
+          <div class="campo">
+            <label for="andar">Andar *</label>
+            <input id="andar" name="andar" type="number" min="0" max="100" required>
+          </div>
+          <div class="campo">
+            <label for="sala">Sala *</label>
+            <input id="sala" name="sala" type="text" required maxlength="40">
+          </div>
+
+          <div class="campo campo-largo">
+            <label for="descricao">Descrição *</label>
+            <textarea id="descricao" name="descricao" required maxlength="600"
+                      placeholder="Duas ou três linhas sobre o que a empresa faz."></textarea>
+          </div>
+
+          <div class="campo">
+            <label for="responsavel">Responsável</label>
+            <input id="responsavel" name="responsavel" type="text" maxlength="120">
+          </div>
+          <div class="campo">
+            <label for="telefone">Telefone</label>
+            <input id="telefone" name="telefone" type="text" maxlength="40" placeholder="(61) 3000-0000">
+          </div>
+          <div class="campo">
+            <label for="whatsapp">WhatsApp</label>
+            <input id="whatsapp" name="whatsapp" type="text" maxlength="20"
+                   placeholder="5561900000000" inputmode="numeric">
+            <small class="dica">Só números, com 55 e DDD.</small>
+          </div>
+          <div class="campo">
+            <label for="email">E-mail</label>
+            <input id="email" name="email" type="email" maxlength="160">
+          </div>
+          <div class="campo">
+            <label for="site">Site</label>
+            <input id="site" name="site" type="url" maxlength="300" placeholder="https://">
+          </div>
+          <div class="campo">
+            <label for="instagram">Instagram</label>
+            <input id="instagram" name="instagram" type="text" maxlength="80" placeholder="@perfil">
+          </div>
+          <div class="campo campo-largo">
+            <label for="horario">Horário de atendimento</label>
+            <input id="horario" name="horario" type="text" maxlength="160"
+                   placeholder="Seg a sex, 9h às 18h">
+          </div>
+          <div class="campo campo-largo">
+            <label for="tags">Serviços (separados por vírgula)</label>
+            <input id="tags" name="tags" type="text" maxlength="400">
+          </div>
+          <div class="campo campo-largo">
+            <label for="beneficio">Vantagem para condôminos</label>
+            <textarea id="beneficio" name="beneficio" maxlength="400"
+                      placeholder="Aparece na página de Vantagens."></textarea>
+          </div>
+          <div class="campo campo-largo">
+            <label for="logo">Caminho do logotipo</label>
+            <input id="logo" name="logo" type="text" maxlength="300"
+                   placeholder="assets/img/empresas/nome-da-empresa.svg">
+            <small class="dica">Com logotipo, a empresa aparece antes na lista geral.</small>
+          </div>
+
+          <div class="campo campo-largo caixas">
+            <label class="caixa">
+              <input type="checkbox" id="destaque" name="destaque">
+              <span>Exibir na vitrine da página inicial</span>
+            </label>
+            <label class="caixa">
+              <input type="checkbox" id="demo" name="demo">
+              <span>Marcar como dado de demonstração</span>
+            </label>
+          </div>
+        </div>
+
+        <div id="problemas" class="aviso-erro" role="alert" hidden></div>
+
+        <div class="modal-rodape">
+          <button class="btn" type="submit" id="salvar">Salvar</button>
+          <button class="btn btn-secundario" type="button" id="cancelar">Cancelar</button>
+          <span id="salvando" class="dica" hidden>Gravando e republicando o site...</span>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <script src="admin.js" defer></script>
+</body>
+</html>

@@ -1,3 +1,23 @@
 node_modules/
 .DS_Store
 *.log
+
+dist/
+.vercel/
+.env*.local
+.env
+
+# Páginas geradas por `npm run build`. Não são versionadas: tanto a Vercel
+# quanto o GitHub Pages constroem o site a partir de data/ a cada publicação.
+/index.html
+/404.html
+/sitemap.xml
+/robots.txt
+/.nojekyll
+/empresas/
+/categorias/
+/torres/
+/vantagens/
+/o-centro/
+/cadastro/
+/anuncie/

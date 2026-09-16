@@ -23,7 +23,8 @@ const BASE_PUBLICA = (() => {
 
 function listarHtml(dir, encontrados = []) {
   for (const entrada of fs.readdirSync(dir, { withFileTypes: true })) {
-    if (entrada.name.startsWith(".") || entrada.name === "node_modules") continue;
+    /* dist/ é a saída do build para a Vercel: uma cópia do que já se verifica. */
+    if (entrada.name.startsWith(".") || entrada.name === "node_modules" || entrada.name === "dist") continue;
     const completo = path.join(dir, entrada.name);
     if (entrada.isDirectory()) listarHtml(completo, encontrados);
     else if (entrada.name.endsWith(".html")) encontrados.push(completo);
@@ -74,6 +75,15 @@ for (const arquivo of arquivos) {
     for (const m of html.matchAll(/href="((?!https?:|mailto:|tel:|#|\/)[^"]+)"/g)) {
       problemas.push(`404.html: link relativo -> ${m[1]}`);
     }
+  }
+
+  /* O painel é tela de aplicação, fora do índice de busca: as exigências de
+     SEO valem para as páginas do guia, não para ele. */
+  if (relativo.startsWith("admin/")) {
+    if (!/<meta name="robots" content="noindex/.test(html)) {
+      problemas.push(`${relativo}: falta <meta name="robots" content="noindex"> numa página do painel`);
+    }
+    continue;
   }
 
   const titulos = html.match(/<h1[ >]/g) || [];

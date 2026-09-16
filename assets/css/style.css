@@ -55,6 +55,10 @@
 
 *, *::before, *::after { box-sizing: border-box; }
 
+/* Qualquer `display` declarado numa classe vence o [hidden] do navegador —
+   e um elemento "escondido" com display ativo continua capturando cliques. */
+[hidden] { display: none !important; }
+
 html { scroll-behavior: smooth; }
 
 body {
