@@ -1,35 +1,61 @@
 "use strict";
 
-/* Autenticação do painel: senhas com scrypt, sessão em cookie assinado.
+/* Autenticação do painel: senhas derivadas com PBKDF2, sessão em cookie
+ * assinado.
  *
  * As contas ficam na variável de ambiente ADMIN_USERS (JSON), nunca no
  * repositório — o repositório é público e um hash de senha versionado é
- * material para ataque offline. Gere cada conta com `npm run usuario`. */
+ * material para ataque offline.
+ *
+ * Por que PBKDF2 e não scrypt: o PBKDF2 existe tanto no Node quanto na Web
+ * Crypto do navegador, o que permite gerar a conta em /admin/nova-conta.html
+ * sem a senha sair do computador de quem cria. O scrypt resiste melhor a
+ * ataque com hardware dedicado, então contas geradas com ele continuam
+ * válidas — o campo `algoritmo` diz qual usar em cada uma. */
 
 const crypto = require("crypto");
 
 const DURACAO_SESSAO_S = 8 * 60 * 60; /* 8 horas */
 const NOME_COOKIE = "celm_sessao";
+
+const PBKDF2_ITERACOES = 600000; /* recomendação atual do OWASP para SHA-256 */
+const PBKDF2_BYTES = 32;
 const CUSTO_SCRYPT = { N: 16384, r: 8, p: 1, maxmem: 64 * 1024 * 1024 };
 
-function derivar(senha, salt) {
+function derivarPbkdf2(senha, salt, iteracoes) {
+  return crypto.pbkdf2Sync(
+    String(senha), Buffer.from(salt, "hex"),
+    iteracoes || PBKDF2_ITERACOES, PBKDF2_BYTES, "sha256"
+  );
+}
+
+function derivarScrypt(senha, salt) {
   return crypto.scryptSync(String(senha), Buffer.from(salt, "hex"), 64, CUSTO_SCRYPT);
 }
 
 function criarHash(senha) {
   const salt = crypto.randomBytes(16).toString("hex");
-  return { salt, hash: derivar(senha, salt).toString("hex") };
+  return {
+    algoritmo: "pbkdf2",
+    iteracoes: PBKDF2_ITERACOES,
+    salt,
+    hash: derivarPbkdf2(senha, salt, PBKDF2_ITERACOES).toString("hex")
+  };
 }
 
 /* Comparação em tempo constante: evita descobrir a senha pelo tempo de resposta. */
 function senhaConfere(senha, conta) {
   if (!conta || !conta.salt || !conta.hash) return false;
+
   let candidato;
   try {
-    candidato = derivar(senha, conta.salt);
+    candidato = conta.algoritmo === "scrypt" || !conta.algoritmo && conta.hash.length === 128
+      ? derivarScrypt(senha, conta.salt)
+      : derivarPbkdf2(senha, conta.salt, conta.iteracoes);
   } catch (falha) {
     return false;
   }
+
   const esperado = Buffer.from(conta.hash, "hex");
   if (candidato.length !== esperado.length) return false;
   return crypto.timingSafeEqual(candidato, esperado);

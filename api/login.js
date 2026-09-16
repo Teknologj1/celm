@@ -26,6 +26,14 @@ module.exports = async function (req, res) {
         return erro(res, 400, "Informe usuário e senha.");
       }
 
+      /* Antes de qualquer conta existir, dizer isso poupa muito tempo de
+         quem está configurando — e não há segredo a proteger ainda. */
+      if (!auth.contas().length) {
+        return erro(res, 503,
+          "Nenhuma conta configurada. Gere uma em /admin/nova-conta.html e " +
+          "defina ADMIN_USERS nas variáveis de ambiente.");
+      }
+
       const conta = auth.acharConta(usuario);
 
       /* A mesma mensagem para usuário inexistente e senha errada: não

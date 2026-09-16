@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Criar conta do painel — CELM</title>
+  <meta name="robots" content="noindex, nofollow">
+  <link rel="icon" href="../assets/img/favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="../assets/css/style.css">
+  <link rel="stylesheet" href="admin.css">
+</head>
+<body class="tela-gerador">
+  <main class="container" style="max-width:780px">
+    <header style="padding:36px 0 8px">
+      <span class="olho">Configuração</span>
+      <h1>Criar conta de acesso ao painel</h1>
+      <p style="color:var(--ink-soft)">
+        Preencha os dados e copie o resultado para as variáveis de ambiente da Vercel.
+        Esta página não cria a conta sozinha — quem a ativa é você, ao colar o valor lá.
+      </p>
+    </header>
+
+    <div class="bloco destaque-beneficio" style="margin-bottom:24px">
+      <b>🔒 A senha não sai deste computador</b>
+      <p>
+        O cálculo acontece aqui no seu navegador e nada é enviado pela rede.
+        O que você copia é apenas o resultado embaralhado, do qual não se
+        recupera a senha original.
+      </p>
+    </div>
+
+    <section class="bloco">
+      <h2>1. Chave de assinatura das sessões</h2>
+      <p style="color:var(--ink-soft)">
+        Valor aleatório usado para assinar os cookies de quem entra no painel.
+        Gere uma vez e guarde: trocá-la depois desconecta todo mundo.
+      </p>
+      <div class="campo">
+        <label for="segredo">SESSION_SECRET</label>
+        <input id="segredo" type="text" readonly>
+      </div>
+      <div class="acoes" style="margin-top:14px">
+        <button class="btn btn-secundario" type="button" id="gerar-segredo">Gerar outra</button>
+        <button class="btn btn-secundario" type="button" data-copiar="segredo">Copiar</button>
+      </div>
+    </section>
+
+    <section class="bloco">
+      <h2>2. Contas da administração</h2>
+
+      <form id="form-conta" novalidate>
+        <div class="grade-form">
+          <div class="campo">
+            <label for="usuario">Usuário *</label>
+            <input id="usuario" type="text" required autocapitalize="none" spellcheck="false"
+                   placeholder="sindico" pattern="[a-z0-9._-]{3,40}">
+            <small class="dica">Minúsculas, números, ponto, hífen ou sublinhado.</small>
+          </div>
+          <div class="campo">
+            <label for="nome">Nome de quem acessa *</label>
+            <input id="nome" type="text" required placeholder="Maria Silva" maxlength="80">
+          </div>
+          <div class="campo">
+            <label for="senha">Senha *</label>
+            <input id="senha" type="password" required minlength="12" autocomplete="new-password">
+            <small class="dica">No mínimo 12 caracteres. Uma frase com quatro palavras funciona bem.</small>
+          </div>
+          <div class="campo">
+            <label for="senha2">Repita a senha *</label>
+            <input id="senha2" type="password" required autocomplete="new-password">
+          </div>
+        </div>
+
+        <label class="caixa" style="margin-top:12px">
+          <input type="checkbox" id="mostrar">
+          <span>Mostrar as senhas enquanto digito</span>
+        </label>
+
+        <div id="erro" class="aviso-erro" role="alert" hidden></div>
+
+        <div class="acoes" style="margin-top:18px">
+          <button class="btn" type="submit" id="adicionar">Adicionar conta</button>
+          <span id="calculando" class="dica" hidden>Calculando...</span>
+        </div>
+      </form>
+
+      <div id="lista-contas" hidden style="margin-top:22px">
+        <h3 style="font-size:.95rem">Contas nesta lista</h3>
+        <ul id="contas" class="contas"></ul>
+      </div>
+    </section>
+
+    <section class="bloco" id="saida" hidden>
+      <h2>3. Copiar para a Vercel</h2>
+      <p style="color:var(--ink-soft)">
+        Em <strong>Settings → Environment Variables</strong>, crie as duas variáveis abaixo.
+        Guarde também uma cópia em lugar seguro: o valor não é recuperável depois.
+      </p>
+
+      <div class="campo" style="margin-bottom:16px">
+        <label for="valor-segredo">SESSION_SECRET</label>
+        <textarea id="valor-segredo" readonly rows="2"></textarea>
+        <div class="acoes" style="margin-top:8px">
+          <button class="btn btn-secundario btn-sm" type="button" data-copiar="valor-segredo">Copiar</button>
+        </div>
+      </div>
+
+      <div class="campo">
+        <label for="valor-usuarios">ADMIN_USERS</label>
+        <textarea id="valor-usuarios" readonly rows="6"></textarea>
+        <div class="acoes" style="margin-top:8px">
+          <button class="btn btn-secundario btn-sm" type="button" data-copiar="valor-usuarios">Copiar</button>
+        </div>
+      </div>
+
+      <p class="dica" style="margin-top:16px">
+        Depois de salvar as variáveis, publique de novo na Vercel para que passem a valer.
+      </p>
+    </section>
+
+    <p style="margin:28px 0 48px"><a href="login.html">← Ir para a tela de entrada</a></p>
+  </main>
+
+  <script src="nova-conta.js" defer></script>
+</body>
+</html>

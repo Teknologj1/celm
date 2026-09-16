@@ -139,3 +139,24 @@
 .caixas { display: flex; flex-wrap: wrap; gap: 18px; }
 .caixa { display: flex; align-items: center; gap: 8px; font-size: .92rem; color: var(--ink); }
 .caixa input { width: 18px; height: 18px; }
+
+/* ---------- Gerador de contas ------------------------------------------- */
+.tela-gerador { padding-bottom: 40px; }
+.tela-gerador textarea {
+  font-family: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+  font-size: .82rem;
+  word-break: break-all;
+}
+.tela-gerador input[readonly] {
+  font-family: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+  font-size: .85rem;
+  background: var(--surface-alt);
+}
+.contas { list-style: none; margin: 0; padding: 0; display: grid; gap: 8px; }
+.contas li {
+  display: flex; align-items: center; gap: 10px; flex-wrap: wrap;
+  padding: 10px 14px; border: 1px solid var(--border);
+  border-radius: var(--radius-sm); background: var(--surface-alt);
+  font-size: .92rem;
+}
+.contas li button { margin-left: auto; }

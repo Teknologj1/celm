@@ -253,23 +253,48 @@ Duas limitações que convém conhecer:
 
 ### Criar uma conta de acesso
 
+Abra **`/admin/nova-conta.html`** no site publicado. A página gera tudo o que
+as variáveis de ambiente precisam:
+
+- `SESSION_SECRET`, já sorteado;
+- `ADMIN_USERS`, com uma ou várias contas.
+
+O cálculo acontece dentro do navegador, pela Web Crypto — a senha não é
+enviada a lugar nenhum (dá para conferir na aba de rede: nenhuma requisição
+sai). O que se copia é só o resultado derivado, do qual não se recupera a
+senha.
+
+A página não cria a conta sozinha: ela só produz o texto. Quem ativa o acesso
+é quem cola o valor na Vercel e publica de novo.
+
+> Na primeira vez, o site precisa estar publicado para você abrir essa página.
+> É esperado: faça o deploy sem as variáveis, gere as contas, salve e publique
+> de novo. Enquanto `ADMIN_USERS` estiver vazio, a tela de entrada avisa
+> exatamente isso.
+
+Quem preferir o terminal tem o mesmo resultado por linha de comando:
+
 ```bash
 npm run usuario sindico "Maria Silva"
 ```
 
-O comando pede a senha (mínimo de 12 caracteres), não a salva em lugar nenhum
-e imprime um JSON. Esse JSON vai na variável `ADMIN_USERS`, na Vercel — **não
-comite esse valor**: o repositório é público, e um hash versionado é material
-para ataque offline.
+**Nunca comite esses valores**: o repositório é público, e um hash versionado é
+material para ataque offline.
 
-Para várias contas, junte os objetos no mesmo vetor:
+Para remover o acesso de alguém, tire o objeto do vetor em `ADMIN_USERS` e
+publique de novo. Para trocar uma senha, gere a conta outra vez e substitua o
+objeto correspondente.
 
-```json
-[{"usuario":"sindico","nome":"Maria Silva","salt":"...","hash":"..."},
- {"usuario":"zelador","nome":"João Souza","salt":"...","hash":"..."}]
-```
+### Sobre o algoritmo das senhas
 
-Para remover o acesso de alguém, tire o objeto da variável e publique de novo.
+As senhas são derivadas com **PBKDF2-SHA256, 600 mil iterações** (recomendação
+do OWASP), com sal próprio por conta. A escolha do PBKDF2 em vez do scrypt tem
+um motivo prático: ele existe tanto no Node quanto na Web Crypto do navegador,
+que é o que permite gerar contas sem a senha sair do computador de quem cria.
+
+O scrypt resiste melhor a ataques com hardware dedicado; se em algum momento
+isso pesar mais que a conveniência, contas no formato antigo continuam
+funcionando — o campo `algoritmo` de cada conta diz como verificá-la.
 
 ## Publicação na Vercel
 
