@@ -54,7 +54,7 @@
           senha: document.getElementById("senha").value
         })
       }).then(function () {
-        window.location.href = "./";
+        window.location.href = "/admin/";
       }).catch(function (falha) {
         aviso.textContent = falha.message;
         aviso.hidden = false;
@@ -291,7 +291,7 @@
 
   document.getElementById("sair").addEventListener("click", function () {
     api("logout", { method: "POST" }).then(function () {
-      window.location.href = "login.html";
+      window.location.href = "/admin/login";
     });
   });
 
@@ -302,7 +302,7 @@
     return carregar();
   }).catch(function (falha) {
     if (falha.status === 401) {
-      window.location.replace("login.html");
+      window.location.replace("/admin/login");
       return;
     }
     corpo.hidden = false;

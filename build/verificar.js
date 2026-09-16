@@ -46,9 +46,14 @@ function resolver(arquivoHtml, href) {
     base = path.resolve(path.dirname(arquivoHtml), semQuery);
   }
 
-  return semQuery.endsWith("/") || !path.extname(base)
-    ? path.join(base, "index.html")
-    : base;
+  if (semQuery.endsWith("/") || !path.extname(base)) {
+    /* Como na Vercel (cleanUrls): /admin/login serve admin/login.html, e
+       /empresas/ serve empresas/index.html. */
+    const comoIndice = path.join(base, "index.html");
+    const comoPagina = base.replace(/\/$/, "") + ".html";
+    return fs.existsSync(comoIndice) ? comoIndice : comoPagina;
+  }
+  return base;
 }
 
 const arquivos = listarHtml(RAIZ);

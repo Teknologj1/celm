@@ -87,10 +87,15 @@ const servidor = http.createServer(async (req, res) => {
     }
   }
 
-  /* Estático, com as mesmas regras de URL da Vercel. */
-  if (caminho.endsWith("/")) caminho += "index.html";
-
+  /* Estático, com as mesmas regras de URL da Vercel (cleanUrls +
+     trailingSlash): /admin/login.html é servido em /admin/login/. */
   let arquivo = path.join(SAIDA, caminho);
+
+  if (caminho.endsWith("/")) {
+    const comoIndice = path.join(SAIDA, caminho, "index.html");
+    const comoPagina = path.join(SAIDA, caminho.replace(/\/$/, "") + ".html");
+    arquivo = fs.existsSync(comoIndice) ? comoIndice : comoPagina;
+  }
   if (!arquivo.startsWith(SAIDA)) {
     res.statusCode = 403;
     return res.end("Acesso negado.");
