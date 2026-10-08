@@ -38,6 +38,20 @@ Detalhes de implementação:
   **buscas encadeadas** (torre → categoria) e as páginas de categoria usam
   ordem alfabética pura, sem privilegiar quem tem imagem.
 - **Espaços publicitários** em quatro pontos do site, prontos para monetização.
+- **Busca rápida de qualquer página**: pelo botão do cabeçalho, pela tecla
+  `/` ou por `Ctrl/Cmd+K`. Os resultados aparecem enquanto se digita, com
+  navegação por setas e `Enter` para abrir. O índice é um arquivo só
+  (`assets/busca.json`), buscado na primeira abertura e reaproveitado do
+  cache — embuti-lo em cada página somaria ~10 kB a toda visita e cresceria
+  junto com o cadastro.
+- **Movimento contido**: seções e cartões entram conforme a página rola, os
+  números do topo contam até o valor e o cabeçalho ganha relevo ao sair do
+  topo. Tudo isso é desligado por completo quando o sistema do visitante pede
+  menos animação (`prefers-reduced-motion`), e nada depende de animação para
+  funcionar.
+- **Tipografia própria**: a fonte Inter é servida pelo próprio site
+  (`assets/fonts/`), sem pedir nada ao Google — mais rápido e sem enviar o IP
+  de quem visita a terceiros.
 - **Busca encadeada (torre → tipo de serviço → empresa)**: além das páginas
   de `/torres/`, os filtros do diretório se ajustam uns aos outros — ao
   escolher a Torre B, a lista de categorias passa a mostrar apenas as que
@@ -72,7 +86,7 @@ build/
   layout.js        cabeçalho, rodapé e <head> comuns
   paginas.js       o HTML de cada tipo de página
   verificar.js     confere links internos, títulos e metadados
-assets/          ← CSS, JavaScript e imagens
+assets/          ← CSS, JavaScript, fontes e imagens
 admin/           ← painel da administração (login e tela de cadastro)
 api/             ← funções da Vercel que atendem o painel
   login.js, logout.js, sessao.js, empresas.js
@@ -282,8 +296,32 @@ npm run usuario sindico "Maria Silva"
 material para ataque offline.
 
 Para remover o acesso de alguém, tire o objeto do vetor em `ADMIN_USERS` e
-publique de novo. Para trocar uma senha, gere a conta outra vez e substitua o
-objeto correspondente.
+publique de novo.
+
+### Trocar a própria senha
+
+Quem já está no painel troca a própria senha pelo botão **Trocar senha**, sem
+depender de quem administra a Vercel. É preciso informar a senha atual — assim
+uma sessão esquecida aberta não vira porta para tomar a conta.
+
+Como isso funciona por baixo: uma função serverless não consegue alterar a
+variável `ADMIN_USERS`, então a senha nova é guardada em
+`data/contas.enc.json`, no próprio repositório. Como o repositório é público, o
+arquivo vai **cifrado com AES-256-GCM**, com a chave derivada do
+`SESSION_SECRET` — que só existe no servidor. Quem abrir o arquivo encontra
+bytes embaralhados.
+
+Na hora de entrar, valem as contas de `ADMIN_USERS` com as senhas desse cofre
+sobrepostas.
+
+Duas consequências a conhecer:
+
+1. **Trocar o `SESSION_SECRET` torna o cofre ilegível** e as senhas voltam a
+   ser as de `ADMIN_USERS`. É um retorno seguro — ninguém fica trancado para
+   fora — mas surpreende quem não souber.
+2. Trocar a senha **não encerra as sessões já abertas**, porque elas são
+   assinadas pelo `SESSION_SECRET`, não pela senha. Para derrubar todas,
+   troque o `SESSION_SECRET`.
 
 ### Sobre o algoritmo das senhas
 

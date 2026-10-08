@@ -85,7 +85,7 @@ function cartaoEmpresa(empresa, profundidade) {
 }
 
 function grade(empresas, profundidade) {
-  return `<div class="grade grade-3">
+  return `<div class="grade grade-3 revelar-fila">
         ${empresas.map((e) => cartaoEmpresa(e, profundidade)).join("\n        ")}
       </div>`;
 }
@@ -104,6 +104,7 @@ function home(dados) {
   const vantagens = dados.vantagens.slice(0, 3);
 
   const conteudo = `    <section class="hero${centro.imagens && centro.imagens.fachada ? " hero-com-foto" : ""}">
+      <span class="hero-brilho" aria-hidden="true"></span>
       ${centro.imagens && centro.imagens.fachada ? `<img class="hero-foto" src="${url(0, centro.imagens.fachada.src)}" alt="${escapar(centro.imagens.fachada.alt)}" fetchpriority="high">` : ""}
       <div class="container">
         <span class="hero-etiqueta">🏙️ Torres A e B · ${escapar(centro.endereco.bairro)}, ${escapar(centro.endereco.cidade)}</span>
@@ -124,25 +125,25 @@ function home(dados) {
           <a href="${url(0, "cadastro/")}">Cadastrar minha empresa</a>
         </div>
 
-        <div class="numeros">
-          <div class="numero"><b>${estatisticas.empresas}</b><span>empresas cadastradas</span></div>
-          <div class="numero"><b>${estatisticas.categorias}</b><span>áreas de atuação</span></div>
-          <div class="numero"><b>${estatisticas.torres}</b><span>torres empresariais</span></div>
-          <div class="numero"><b>${estatisticas.vantagens}</b><span>vantagens entre vizinhos</span></div>
+        <div class="numeros revelar-fila">
+          <div class="numero"><b data-contar="${estatisticas.empresas}">0</b><span>empresas cadastradas</span></div>
+          <div class="numero"><b data-contar="${estatisticas.categorias}">0</b><span>áreas de atuação</span></div>
+          <div class="numero"><b data-contar="${estatisticas.torres}">0</b><span>torres empresariais</span></div>
+          <div class="numero"><b data-contar="${estatisticas.vantagens}">0</b><span>vantagens entre vizinhos</span></div>
         </div>
       </div>
     </section>
 
     <section class="secao">
       <div class="container">
-        <div class="secao-topo">
+        <div class="secao-topo revelar">
           <div>
             <span class="olho">Navegue por área</span>
             <h2>Encontre pela categoria</h2>
           </div>
           <a class="btn btn-secundario btn-sm" href="${url(0, "categorias/")}">Ver todas as categorias</a>
         </div>
-        <div class="grade grade-4">
+        <div class="grade grade-4 revelar-fila">
           ${categorias.slice().sort((a, b) => b.empresas.length - a.empresas.length || a.nome.localeCompare(b.nome, "pt-BR")).slice(0, 8).map((c) => `<a class="cartao-cat" href="${url(0, "categorias/" + c.slug + "/")}">
             <span class="icone" aria-hidden="true">${escapar(c.icone)}</span>
             <span>
@@ -162,7 +163,7 @@ function home(dados) {
 
     <section class="secao secao-alt">
       <div class="container">
-        <div class="secao-topo">
+        <div class="secao-topo revelar">
           <div>
             <span class="olho">Vizinhos em destaque</span>
             <h2>Empresas do complexo</h2>
@@ -175,14 +176,14 @@ function home(dados) {
 
     <section class="secao">
       <div class="container">
-        <div class="secao-topo">
+        <div class="secao-topo revelar">
           <div>
             <span class="olho">Sinergia entre condôminos</span>
             <h2>Vantagens de ser vizinho</h2>
           </div>
           <a class="btn btn-secundario btn-sm" href="${url(0, "vantagens/")}">Ver todas as vantagens</a>
         </div>
-        <div class="grade grade-2">
+        <div class="grade grade-2 revelar-fila">
           ${vantagens.map((e) => `<div class="vantagem">
             <h3><a href="${url(0, "empresas/" + e.slug + "/")}">${escapar(e.nome)}</a></h3>
             <span class="meta">${escapar(e.categoriaNome)} · Torre ${escapar(e.torre)} · Sala ${escapar(e.sala)}</span>
@@ -194,7 +195,7 @@ function home(dados) {
 
     <section class="secao secao-alt">
       <div class="container">
-        <div class="secao-cabecalho">
+        <div class="secao-cabecalho revelar">
           <span class="olho">O complexo</span>
           <h2>Duas torres, um endereço de negócios</h2>
           <p>Conectado ao Shopping Liberty Mall, o centro empresarial reúne escritórios, clínicas e prestadores de serviço em um mesmo endereço — com tudo o que o dia a dia corporativo precisa a poucos passos da sala.</p>
@@ -215,7 +216,7 @@ function home(dados) {
 
     <section class="secao">
       <div class="container">
-        <div class="chamada">
+        <div class="chamada revelar">
           <div>
             <h2>Sua empresa ainda não está no guia?</h2>
             <p>O cadastro é gratuito para condôminos e leva menos de cinco minutos. Quanto mais completo o guia, mais negócios circulam entre as duas torres.</p>
@@ -259,7 +260,7 @@ function diretorio(dados) {
 
   const conteudo = `    <section class="secao">
       <div class="container">
-        <div class="secao-cabecalho">
+        <div class="secao-cabecalho revelar">
           <span class="olho">Diretório</span>
           <h1>Empresas do complexo</h1>
           <p>Busque por nome, serviço ou profissional. Também dá para filtrar por torre e por área de atuação — o resultado muda enquanto você digita.</p>
@@ -436,7 +437,7 @@ function empresa(dados, item) {
       </div>
 
       ${relacionadas.length ? `<section class="secao">
-        <div class="secao-topo">
+        <div class="secao-topo revelar">
           <div>
             <span class="olho">Mesma área</span>
             <h2>Também em ${escapar(item.categoriaNome)}</h2>
@@ -478,12 +479,12 @@ function empresa(dados, item) {
 function listaCategorias(dados) {
   const conteudo = `    <section class="secao">
       <div class="container">
-        <div class="secao-cabecalho">
+        <div class="secao-cabecalho revelar">
           <span class="olho">Por área de atuação</span>
           <h1>Categorias</h1>
           <p>As ${dados.estatisticas.empresas} empresas do complexo, organizadas em ${dados.estatisticas.categorias} áreas de atuação.</p>
         </div>
-        <div class="grade grade-3">
+        <div class="grade grade-3 revelar-fila">
           ${dados.categorias.map((c) => `<a class="cartao-cat" href="${url(1, "categorias/" + c.slug + "/")}">
             <span class="icone" aria-hidden="true">${escapar(c.icone)}</span>
             <span>
@@ -516,7 +517,7 @@ function categoria(dados, cat) {
     </div>
     <section class="secao" style="padding-top:22px">
       <div class="container">
-        <div class="secao-cabecalho">
+        <div class="secao-cabecalho revelar">
           <span class="olho">${escapar(cat.icone)} Categoria</span>
           <h1>${escapar(cat.nome)}</h1>
           <p>${escapar(cat.descricao)} São ${cat.empresas.length} ${cat.empresas.length === 1 ? "empresa cadastrada" : "empresas cadastradas"} nas Torres A e B.</p>
@@ -541,7 +542,7 @@ function categoria(dados, cat) {
 function listaTorres(dados) {
   const conteudo = `    <section class="secao">
       <div class="container">
-        <div class="secao-cabecalho">
+        <div class="secao-cabecalho revelar">
           <span class="olho">Navegação por torre</span>
           <h1>Escolha a torre</h1>
           <p>Comece pela torre e desça até o tipo de serviço. É o caminho mais rápido para achar quem resolve o seu problema sem sair do prédio.</p>
@@ -599,7 +600,7 @@ function torre(dados, item) {
           </div>
         </div>
 
-        <div class="grade grade-3" style="margin-bottom:30px">
+        <div class="grade grade-3 revelar-fila" style="margin-bottom:30px">
           ${item.categorias.map((c) => `<a class="cartao-cat" href="${url(2, base + c.slug + "/")}">
             <span class="icone" aria-hidden="true">${escapar(c.icone)}</span>
             <span>
@@ -645,7 +646,7 @@ function torreCategoria(dados, item, cat) {
     </div>
     <section class="secao" style="padding-top:22px">
       <div class="container">
-        <div class="secao-cabecalho">
+        <div class="secao-cabecalho revelar">
           <span class="olho">${escapar(item.nome)} · ${escapar(cat.icone)} ${escapar(cat.nome)}</span>
           <h1>${escapar(cat.nome)} na ${escapar(item.nome)}</h1>
           <p>${escapar(cat.descricao)}</p>
@@ -682,7 +683,7 @@ function vantagens(dados) {
 
   const conteudo = `    <section class="secao">
       <div class="container">
-        <div class="secao-cabecalho">
+        <div class="secao-cabecalho revelar">
           <span class="olho">Sinergia entre condôminos</span>
           <h1>Vantagens de ser vizinho</h1>
           <p>Condições especiais que as empresas do complexo oferecem umas às outras. Ao procurar um vizinho, mencione que você é condômino do ${escapar(dados.centro.sigla)}.</p>
@@ -699,7 +700,7 @@ function vantagens(dados) {
           </div>
         </div>`).join("\n        ")}
 
-        <div class="chamada">
+        <div class="chamada revelar">
           <div>
             <h2>Quer oferecer uma vantagem?</h2>
             <p>Toda empresa cadastrada pode publicar uma condição especial para os vizinhos das duas torres. É a forma mais direta de girar negócios dentro do próprio complexo.</p>
@@ -724,7 +725,7 @@ function oCentro(dados) {
 
   const conteudo = `    <section class="secao">
       <div class="container">
-        <div class="secao-cabecalho">
+        <div class="secao-cabecalho revelar">
           <span class="olho">O complexo</span>
           <h1>${escapar(centro.nome)}</h1>
           <p>${escapar(centro.descricaoCurta)}</p>
@@ -732,7 +733,7 @@ function oCentro(dados) {
 
         ${figuraComplexo(centro.imagens && centro.imagens.fachada, 1, "figura figura-larga")}
 
-        <div class="grade grade-2" style="margin-bottom:34px">
+        <div class="grade grade-2 revelar-fila" style="margin-bottom:34px">
           ${torres.map((t) => `<div class="cartao cartao-torre">
             ${t.imagem ? `<img class="foto-torre" src="${url(1, t.imagem.src)}" alt="${escapar(t.imagem.alt)}" loading="lazy">` : ""}
             <h3>${escapar(t.nome)}</h3>
@@ -745,12 +746,12 @@ function oCentro(dados) {
         </div>
 
         ${centro.imagens && centro.imagens.galeria && centro.imagens.galeria.length ? `<h2>O complexo por dentro</h2>
-        <div class="grade grade-3" style="margin-bottom:34px">
+        <div class="grade grade-3 revelar-fila" style="margin-bottom:34px">
           ${centro.imagens.galeria.map((img) => figuraComplexo(img, 1)).join("\n          ")}
         </div>` : ""}
 
         <h2>Estrutura</h2>
-        <div class="grade grade-3" style="margin-bottom:34px">
+        <div class="grade grade-3 revelar-fila" style="margin-bottom:34px">
           ${centro.estrutura.map((item) => `<div class="cartao">
             <div class="item-estrutura">
               <span class="icone" aria-hidden="true">${escapar(item.icone)}</span>
@@ -819,7 +820,7 @@ function cadastro(dados) {
 
   const conteudo = `    <section class="secao">
       <div class="container">
-        <div class="secao-cabecalho">
+        <div class="secao-cabecalho revelar">
           <span class="olho">Gratuito para condôminos</span>
           <h1>Cadastre ou atualize sua empresa</h1>
           <p>Preencha os campos abaixo e o formulário abrirá um e-mail já preenchido para a administração do guia. Assim que os dados forem conferidos, sua empresa entra no diretório.</p>
@@ -946,7 +947,7 @@ function anuncie(dados) {
 
   const conteudo = `    <section class="secao">
       <div class="container">
-        <div class="secao-cabecalho">
+        <div class="secao-cabecalho revelar">
           <span class="olho">Mídia</span>
           <h1>Anuncie no guia do complexo</h1>
           <p>O guia é consultado por quem já está dentro do ${escapar(dados.centro.nome)}: condôminos procurando fornecedor, clientes localizando uma sala e visitantes decidindo onde almoçar. São ${dados.estatisticas.empresas} empresas cadastradas em ${dados.estatisticas.torres} torres.</p>

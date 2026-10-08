@@ -22,6 +22,7 @@
       <div class="acoes-topo">
         <span id="quem" class="etiqueta"></span>
         <a class="btn btn-secundario btn-sm" href="/" target="_blank" rel="noopener">Ver o site</a>
+        <button class="btn btn-secundario btn-sm" type="button" id="trocar-senha">Trocar senha</button>
         <button class="btn btn-secundario btn-sm" type="button" id="sair">Sair</button>
       </div>
     </div>
@@ -175,6 +176,45 @@
           <button class="btn" type="submit" id="salvar">Salvar</button>
           <button class="btn btn-secundario" type="button" id="cancelar">Cancelar</button>
           <span id="salvando" class="dica" hidden>Gravando e republicando o site...</span>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Troca da própria senha -->
+  <div class="modal" id="modal-senha" hidden>
+    <div class="modal-caixa modal-estreito" role="dialog" aria-modal="true" aria-labelledby="titulo-senha">
+      <div class="modal-topo">
+        <h2 id="titulo-senha">Trocar minha senha</h2>
+        <button class="btn btn-secundario btn-sm" type="button" id="fechar-senha">Fechar</button>
+      </div>
+
+      <form id="form-senha" novalidate>
+        <div class="campo">
+          <label for="senha-atual">Senha atual *</label>
+          <input id="senha-atual" type="password" required autocomplete="current-password">
+        </div>
+        <div class="campo" style="margin-top:14px">
+          <label for="senha-nova">Senha nova *</label>
+          <input id="senha-nova" type="password" required minlength="12" autocomplete="new-password">
+          <small class="dica">No mínimo 12 caracteres. Uma frase com quatro palavras funciona bem.</small>
+        </div>
+        <div class="campo" style="margin-top:14px">
+          <label for="senha-nova2">Repita a senha nova *</label>
+          <input id="senha-nova2" type="password" required autocomplete="new-password">
+        </div>
+
+        <label class="caixa" style="margin-top:14px">
+          <input type="checkbox" id="mostrar-senhas">
+          <span>Mostrar as senhas enquanto digito</span>
+        </label>
+
+        <div id="aviso-senha" class="aviso-erro" role="alert" hidden></div>
+        <div id="ok-senha" class="aviso-ok" role="status" hidden></div>
+
+        <div class="modal-rodape">
+          <button class="btn" type="submit" id="salvar-senha">Trocar senha</button>
+          <button class="btn btn-secundario" type="button" id="cancelar-senha">Cancelar</button>
         </div>
       </form>
     </div>

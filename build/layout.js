@@ -67,6 +67,11 @@ function cabecalho(dados, profundidade, atual, baseFixa) {
           <span>${escapar(dados.centro.tagline)}</span>
         </span>
       </a>
+      <button class="abre-busca" type="button" data-abre-busca>
+        <span aria-hidden="true">🔎</span>
+        <span class="abre-busca-rotulo">Buscar empresa</span>
+        <kbd>/</kbd>
+      </button>
       <button class="nav-toggle" type="button" aria-expanded="false" aria-controls="nav-principal">
         ☰ <span class="sr-only">Abrir menu</span>
       </button>
@@ -128,6 +133,34 @@ function rodape(dados, profundidade, baseFixa) {
 }
 
 /* Monta a página completa. */
+/* Camada da busca rápida. O índice não vai embutido: pesaria em cada uma
+   das dezenas de páginas e cresceria junto com o cadastro. Ele é um arquivo
+   só, buscado quando alguém abre a busca pela primeira vez e reaproveitado
+   do cache do navegador daí em diante. */
+function camadaDeBusca(dados, profundidade, baseFixa) {
+  return `
+  <div class="busca-rapida" id="busca-rapida" hidden
+       data-base="${url(profundidade, "", baseFixa)}"
+       data-indice="${url(profundidade, "assets/busca.json", baseFixa)}">
+    <div class="busca-caixa" role="dialog" aria-modal="true" aria-label="Buscar empresa">
+      <div class="busca-topo">
+        <span class="busca-lupa" aria-hidden="true">🔎</span>
+        <label class="sr-only" for="busca-rapida-campo">Buscar empresa, serviço, sala ou torre</label>
+        <input id="busca-rapida-campo" type="search" autocomplete="off" role="combobox"
+               aria-expanded="true" aria-controls="busca-rapida-lista"
+               placeholder="Busque por empresa, serviço, sala ou torre...">
+        <button class="btn btn-secundario btn-sm" type="button" id="busca-rapida-fechar">Fechar</button>
+      </div>
+      <ul class="busca-resultados" id="busca-rapida-lista" role="listbox"
+          aria-label="Resultados"></ul>
+      <div class="busca-rodape">
+        <span><kbd>↑</kbd> <kbd>↓</kbd> para navegar · <kbd>Enter</kbd> para abrir · <kbd>Esc</kbd> para fechar</span>
+        <span id="busca-rapida-contagem" aria-live="polite"></span>
+      </div>
+    </div>
+  </div>`;
+}
+
 function pagina(dados, opcoes) {
   const profundidade = opcoes.profundidade || 0;
   const baseFixa = opcoes.baseFixa;
@@ -152,6 +185,7 @@ function pagina(dados, opcoes) {
 <html lang="pt-BR">
 <head>
   <meta charset="utf-8">
+  <script>document.documentElement.classList.add("js");</script>
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>${escapar(tituloCompleto)}</title>
   <meta name="description" content="${escapar(opcoes.descricao || dados.centro.descricaoCurta)}">
@@ -161,6 +195,7 @@ ${canonical ? `  <link rel="canonical" href="${escapar(canonical)}">\n` : ""}  <
   <meta property="og:description" content="${escapar(opcoes.descricao || dados.centro.descricaoCurta)}">
   <meta property="og:locale" content="pt_BR">
 ${canonical ? `  <meta property="og:url" content="${escapar(canonical)}">\n` : ""}  <link rel="icon" href="${u("assets/img/favicon.svg")}" type="image/svg+xml">
+  <link rel="preload" href="${u("assets/fonts/inter-variable.woff2")}" as="font" type="font/woff2" crossorigin>
   <link rel="stylesheet" href="${u("assets/css/style.css")}">
 ${dadosEstruturados}</head>
 <body>
@@ -169,8 +204,10 @@ ${cabecalho(dados, profundidade, opcoes.atual, baseFixa)}
   <main id="conteudo">
 ${opcoes.conteudo}
   </main>
+${camadaDeBusca(dados, profundidade, baseFixa)}
 ${rodape(dados, profundidade, baseFixa)}
   <script src="${u("assets/js/app.js")}" defer></script>
+  <script src="${u("assets/js/busca-rapida.js")}" defer></script>
 ${scripts}
 </body>
 </html>

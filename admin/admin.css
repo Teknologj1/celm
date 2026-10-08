@@ -26,6 +26,18 @@
   color: var(--muted);
 }
 
+.aviso-ok {
+  margin: 16px 0 0;
+  padding: 11px 14px;
+  border-radius: var(--radius-sm);
+  background: color-mix(in srgb, #1d8a53 12%, var(--surface));
+  border: 1px solid color-mix(in srgb, #1d8a53 40%, transparent);
+  color: color-mix(in srgb, #1d8a53 80%, var(--ink));
+  font-size: .9rem;
+}
+
+.modal-estreito { max-width: 460px; }
+
 .aviso-erro {
   margin: 16px 0 0;
   padding: 11px 14px;

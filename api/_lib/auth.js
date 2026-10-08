@@ -15,6 +15,9 @@
 
 const crypto = require("crypto");
 
+const cofre = require("./cofre");
+const armazenamento = require("./armazenamento");
+
 const DURACAO_SESSAO_S = 8 * 60 * 60; /* 8 horas */
 const NOME_COOKIE = "celm_sessao";
 
@@ -73,9 +76,58 @@ function contas() {
   }
 }
 
-function acharConta(usuario) {
+function acharConta(usuario, lista) {
   const alvo = String(usuario || "").trim().toLowerCase();
-  return contas().find((c) => String(c.usuario || "").toLowerCase() === alvo) || null;
+  return (lista || contas()).find((c) => String(c.usuario || "").toLowerCase() === alvo) || null;
+}
+
+/* Lê as senhas trocadas pelo painel. Se o cofre não existe ainda, ou se o
+   SESSION_SECRET mudou e ele não abre mais, seguimos só com ADMIN_USERS —
+   o acesso nunca fica preso por causa disso. */
+async function lerCofre() {
+  try {
+    const { dados } = await armazenamento.lerJson(cofre.ARQUIVO);
+    return cofre.decifrar(dados);
+  } catch (falha) {
+    const inexistente = falha.status === 404 || falha.code === "ENOENT";
+    if (!inexistente) {
+      console.error("Cofre de senhas ilegível, usando apenas ADMIN_USERS:", falha.message);
+    }
+    return {};
+  }
+}
+
+/* Contas valendo de fato: as de ADMIN_USERS, com a senha substituída para
+   quem já trocou a sua. */
+async function contasEfetivas() {
+  const base = contas();
+  const trocadas = await lerCofre();
+
+  return base.map((conta) => {
+    const nova = trocadas[String(conta.usuario || "").toLowerCase()];
+    return nova ? Object.assign({}, conta, nova) : conta;
+  });
+}
+
+/* Guarda a senha nova de um usuário, preservando as dos demais. */
+async function guardarSenha(usuario, derivada, autor) {
+  const chave = String(usuario).toLowerCase();
+  const trocadas = await lerCofre();
+
+  trocadas[chave] = {
+    algoritmo: derivada.algoritmo,
+    iteracoes: derivada.iteracoes,
+    salt: derivada.salt,
+    hash: derivada.hash,
+    trocadaEm: new Date().toISOString()
+  };
+
+  await armazenamento.salvarJson(
+    cofre.ARQUIVO,
+    cofre.cifrar(trocadas),
+    `Troca de senha de ${chave} no painel`,
+    autor
+  );
 }
 
 function segredo() {
@@ -183,7 +235,7 @@ function limparFalhas(chave) {
 }
 
 module.exports = {
-  criarHash, senhaConfere, acharConta, contas,
+  criarHash, senhaConfere, acharConta, contas, contasEfetivas, guardarSenha,
   criarToken, sessaoDe, cookieDeSessao, cookieVazio,
   registrarFalha, bloqueado, limparFalhas,
   NOME_COOKIE, DURACAO_SESSAO_S

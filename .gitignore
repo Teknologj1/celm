@@ -21,3 +21,8 @@ dist/
 /o-centro/
 /cadastro/
 /anuncie/
+
+# Cofre de senhas criado em desenvolvimento. Em produção ele é gravado no
+# repositório pela própria API, e o conteúdo é cifrado.
+/data/contas.enc.json
+assets/busca.json

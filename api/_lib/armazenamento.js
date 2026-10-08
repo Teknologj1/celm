@@ -26,6 +26,13 @@ const local = {
     return { dados: JSON.parse(conteudo), sha: null };
   },
 
+  async salvarJson(arquivo, dados) {
+    const destino = path.join(RAIZ, arquivo);
+    fs.mkdirSync(path.dirname(destino), { recursive: true });
+    fs.writeFileSync(destino, JSON.stringify(dados, null, 2) + "\n", "utf8");
+    return { alterado: true };
+  },
+
   async alterarJson(arquivo, transformar) {
     const { dados } = await local.lerJson(arquivo);
     const novos = await transformar(dados);
@@ -42,6 +49,7 @@ function backend() {
 
 module.exports = {
   lerJson: (...args) => backend().lerJson(...args),
+  salvarJson: (...args) => backend().salvarJson(...args),
   alterarJson: (...args) => backend().alterarJson(...args),
   modoLocal
 };

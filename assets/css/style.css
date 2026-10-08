@@ -2,6 +2,16 @@
    Centro Empresarial Liberty Mall — folha de estilo principal
    ========================================================================== */
 
+/* Inter servida pelo próprio site: nada é pedido a terceiros e o texto não
+   pisca esperando uma fonte externa. */
+@font-face {
+  font-family: "Inter";
+  font-style: normal;
+  font-weight: 400 800;
+  font-display: swap;
+  src: url("../fonts/inter-variable.woff2") format("woff2");
+}
+
 :root {
   color-scheme: light dark;
 
@@ -19,12 +29,17 @@
   --ink-soft:     #4d6076;
   --muted:        #5d6f85;
   --border:       #e1e7ee;
-  --shadow:       0 1px 2px rgba(16, 32, 48, .06), 0 8px 24px rgba(16, 32, 48, .06);
-  --shadow-lg:    0 2px 4px rgba(16, 32, 48, .06), 0 18px 40px rgba(16, 32, 48, .12);
+  --shadow:       0 1px 2px rgba(16, 32, 48, .05), 0 10px 30px -12px rgba(16, 32, 48, .14);
+  --shadow-lg:    0 2px 6px rgba(16, 32, 48, .06), 0 24px 56px -16px rgba(16, 32, 48, .24);
+  --shadow-realce: 0 2px 8px rgba(15, 76, 117, .1), 0 28px 64px -20px rgba(15, 76, 117, .3);
 
   --btn-texto:    #ffffff;
 
-  --radius:       14px;
+  --curva:        cubic-bezier(.22, .68, .36, 1);
+  --rapido:       .18s var(--curva);
+  --medio:        .32s var(--curva);
+
+  --radius:       16px;
   --radius-sm:    9px;
   --container:    1180px;
 
@@ -48,8 +63,9 @@
     --ink-soft:    #b3c2d2;
     --muted:       #8b9cb0;
     --border:      #243243;
-    --shadow:      0 1px 2px rgba(0, 0, 0, .4), 0 8px 24px rgba(0, 0, 0, .3);
-    --shadow-lg:   0 2px 4px rgba(0, 0, 0, .4), 0 18px 40px rgba(0, 0, 0, .45);
+    --shadow:      0 1px 2px rgba(0, 0, 0, .4), 0 10px 30px -12px rgba(0, 0, 0, .5);
+    --shadow-lg:   0 2px 6px rgba(0, 0, 0, .45), 0 24px 56px -16px rgba(0, 0, 0, .6);
+    --shadow-realce: 0 2px 8px rgba(0, 0, 0, .4), 0 28px 64px -20px rgba(90, 169, 230, .28);
   }
 }
 
@@ -122,26 +138,27 @@ p  { margin: 0 0 1em; }
   border-bottom: 1px solid var(--border);
 }
 .topo .container {
-  display: flex; align-items: center; gap: 16px;
-  min-height: 68px;
+  display: flex; align-items: center; gap: 12px;
+  min-height: 72px;
 }
 
-.marca { display: flex; align-items: center; gap: 11px; min-width: 0; text-decoration: none; color: inherit; }
+.marca { display: flex; align-items: center; gap: 11px; flex: none; text-decoration: none; color: inherit; }
 .marca:hover { text-decoration: none; }
 .marca-sigla {
+  flex: none;
   display: grid; place-items: center;
-  width: 40px; height: 40px; border-radius: 10px;
+  width: 42px; height: 42px; border-radius: 11px;
   background: linear-gradient(145deg, var(--brand), var(--brand-dark));
-  color: #fff; font-weight: 800; font-size: .82rem; letter-spacing: .04em;
+  color: #fff; font-weight: 800; font-size: .78rem; letter-spacing: .02em;
 }
 .marca-texto { display: flex; flex-direction: column; line-height: 1.15; min-width: 0; }
-.marca-texto b {
-  font-size: .96rem; letter-spacing: -.01em;
-  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+.marca-texto b { font-size: .95rem; letter-spacing: -.015em; white-space: nowrap; }
+.marca-texto span { font-size: .72rem; color: var(--muted); white-space: nowrap; }
+@media (max-width: 1300px) and (min-width: 1101px) {
+  .marca-texto span { display: none; }
 }
-.marca-texto span { font-size: .72rem; color: var(--muted); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 
-.nav { margin-left: auto; display: flex; align-items: center; gap: 4px; }
+.nav { display: flex; align-items: center; gap: 2px; }
 .nav a {
   padding: 8px 10px; border-radius: 8px; white-space: nowrap;
   color: var(--ink-soft); font-size: .92rem; font-weight: 500;
@@ -157,7 +174,12 @@ p  { margin: 0 0 1em; }
   border-radius: 9px; padding: 9px 12px; font-size: 1rem; cursor: pointer;
 }
 
-@media (max-width: 1160px) {
+@media (max-width: 1100px) {
+  /* No celular a marca cede espaço e corta com reticências, em vez de
+     empurrar o cabeçalho para fora da tela. */
+  .marca { flex: 0 1 auto; min-width: 0; }
+  .marca-texto b, .marca-texto span { overflow: hidden; text-overflow: ellipsis; }
+
   .nav-toggle { display: block; }
   .nav {
     display: none; position: absolute; left: 0; right: 0; top: 100%;
@@ -193,15 +215,25 @@ p  { margin: 0 0 1em; }
     radial-gradient(1100px 420px at 78% -12%, color-mix(in srgb, var(--accent) 24%, transparent), transparent 62%),
     linear-gradient(160deg, var(--brand-dark), var(--brand));
   color: #f2f7fb;
-  padding: clamp(46px, 4vw + 30px, 84px) 0 clamp(52px, 4vw + 34px, 92px);
+  padding: clamp(54px, 5vw + 34px, 104px) 0 clamp(56px, 4vw + 38px, 100px);
 }
 .hero::after {
   content: ""; position: absolute; inset: auto 0 -1px 0; height: 120px;
   background: linear-gradient(to bottom, transparent, var(--bg));
   opacity: .28; pointer-events: none;
 }
-.hero h1 { color: #fff; max-width: 17ch; }
-.hero p.lead { font-size: clamp(1rem, .95rem + .3vw, 1.18rem); color: #d7e6f2; max-width: 62ch; }
+.hero h1 {
+  color: #fff;
+  max-width: 22ch;
+  font-size: clamp(2.1rem, 1.2rem + 3.4vw, 3.6rem);
+  letter-spacing: -.03em;
+  line-height: 1.08;
+  text-wrap: balance;
+}
+.hero p.lead {
+  font-size: clamp(1.02rem, .95rem + .4vw, 1.22rem);
+  color: #d7e6f2; max-width: 56ch; margin-top: 18px;
+}
 .hero-etiqueta {
   display: inline-flex; align-items: center; gap: 8px;
   background: rgba(255, 255, 255, .13); border: 1px solid rgba(255, 255, 255, .22);
@@ -209,12 +241,15 @@ p  { margin: 0 0 1em; }
   font-size: .8rem; font-weight: 600; letter-spacing: .02em; margin-bottom: 18px;
 }
 
-.busca-hero { display: flex; gap: 10px; margin-top: 26px; max-width: 620px; flex-wrap: wrap; }
+.busca-hero { display: flex; gap: 10px; margin-top: 30px; max-width: 680px; flex-wrap: wrap; }
 .busca-hero input {
-  flex: 1 1 260px; min-width: 0;
-  padding: 14px 16px; border-radius: 11px; border: 1px solid transparent;
-  font-size: 1rem; font-family: inherit; background: #fff; color: #14202e;
+  flex: 1 1 280px; min-width: 0;
+  padding: 16px 18px; border-radius: 13px; border: 1px solid transparent;
+  font-size: 1.02rem; font-family: inherit; background: #fff; color: #14202e;
+  box-shadow: 0 10px 30px -14px rgba(0, 0, 0, .5);
+  transition: box-shadow var(--medio), transform var(--medio);
 }
+.busca-hero input:focus { box-shadow: 0 14px 36px -14px rgba(0, 0, 0, .6); }
 .busca-hero input::placeholder { color: #8394a6; }
 .busca-hero .btn { padding-inline: 22px; }
 
@@ -250,9 +285,16 @@ p  { margin: 0 0 1em; }
 }
 .numero {
   background: rgba(255, 255, 255, .1); border: 1px solid rgba(255, 255, 255, .18);
-  border-radius: var(--radius); padding: 16px 18px;
+  border-radius: var(--radius); padding: 18px 20px;
+  backdrop-filter: blur(6px);
+  transition: background var(--medio), transform var(--medio);
 }
-.numero b { display: block; font-size: 1.85rem; color: #fff; line-height: 1.1; }
+.numero:hover { background: rgba(255, 255, 255, .16); transform: translateY(-2px); }
+.numero b {
+  display: block; font-size: clamp(1.8rem, 1.4rem + 1vw, 2.3rem);
+  color: #fff; line-height: 1.05; letter-spacing: -.02em;
+  font-variant-numeric: tabular-nums;
+}
 .numero span { font-size: .84rem; color: #c9dcea; }
 
 /* ---------- Grades -------------------------------------------------------- */
@@ -267,10 +309,25 @@ p  { margin: 0 0 1em; }
   border-radius: var(--radius); padding: 20px;
   box-shadow: var(--shadow);
   display: flex; flex-direction: column; gap: 10px;
-  transition: transform .14s ease, box-shadow .14s ease, border-color .14s ease;
+  position: relative;
+  transition: transform var(--medio), box-shadow var(--medio), border-color var(--medio);
 }
 a.cartao:hover, .cartao:hover { text-decoration: none; }
-a.cartao:hover { transform: translateY(-2px); box-shadow: var(--shadow-lg); border-color: color-mix(in srgb, var(--brand) 40%, var(--border)); }
+a.cartao:hover {
+  transform: translateY(-4px);
+  box-shadow: var(--shadow-realce);
+  border-color: color-mix(in srgb, var(--brand) 45%, var(--border));
+}
+a.cartao:active { transform: translateY(-1px); }
+a.cartao::after {
+  content: "";
+  position: absolute; inset: 0;
+  border-radius: inherit;
+  box-shadow: inset 0 0 0 1px transparent;
+  transition: box-shadow var(--rapido);
+  pointer-events: none;
+}
+a.cartao:hover::after { box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--brand) 22%, transparent); }
 
 .cartao-topo { display: flex; align-items: flex-start; justify-content: space-between; gap: 10px; }
 .cartao h3 { margin: 0; font-size: 1.06rem; color: var(--ink); }
@@ -292,9 +349,17 @@ a.cartao:hover { transform: translateY(-2px); box-shadow: var(--shadow-lg); bord
   display: flex; gap: 14px; align-items: flex-start;
   background: var(--surface); border: 1px solid var(--border);
   border-radius: var(--radius); padding: 18px; box-shadow: var(--shadow);
-  color: inherit; transition: transform .14s ease, box-shadow .14s ease;
+  color: inherit;
+  transition: transform var(--medio), box-shadow var(--medio), border-color var(--medio);
 }
-.cartao-cat:hover { transform: translateY(-2px); box-shadow: var(--shadow-lg); text-decoration: none; }
+.cartao-cat:hover {
+  transform: translateY(-3px);
+  box-shadow: var(--shadow-realce);
+  border-color: color-mix(in srgb, var(--brand) 40%, var(--border));
+  text-decoration: none;
+}
+.cartao-cat .icone { transition: transform var(--medio); }
+.cartao-cat:hover .icone { transform: scale(1.14) rotate(-4deg); }
 .cartao-cat .icone { font-size: 1.6rem; line-height: 1; }
 .cartao-cat b { display: block; font-size: 1rem; color: var(--ink); }
 .cartao-cat small { color: var(--muted); font-size: .84rem; }
@@ -534,6 +599,161 @@ a.chip:hover { text-decoration: none; }
 @media (max-width: 620px) {
   .anuncio-conteudo { flex-direction: column; align-items: flex-start; }
   .anuncio-conteudo img { width: 100%; height: 140px; }
+}
+
+/* ---------- Movimento ----------------------------------------------------
+   Tudo aqui é desligado por completo quando o sistema pede menos animação:
+   enjoo e desconforto vestibular são reais, e o site precisa funcionar
+   exatamente igual sem nenhum movimento. */
+
+.js .revelar {
+  opacity: 0;
+  transform: translateY(18px);
+}
+.js .revelar.visivel {
+  opacity: 1;
+  transform: none;
+  transition: opacity .55s var(--curva), transform .55s var(--curva);
+}
+/* Cada filho entra um pouco depois do anterior, dando ritmo à lista. */
+.js .revelar-fila > * {
+  opacity: 0;
+  transform: translateY(16px);
+}
+.js .revelar-fila.visivel > * {
+  opacity: 1;
+  transform: none;
+  transition: opacity .5s var(--curva), transform .5s var(--curva);
+}
+.js .revelar-fila.visivel > *:nth-child(1)  { transition-delay: .00s; }
+.js .revelar-fila.visivel > *:nth-child(2)  { transition-delay: .05s; }
+.js .revelar-fila.visivel > *:nth-child(3)  { transition-delay: .10s; }
+.js .revelar-fila.visivel > *:nth-child(4)  { transition-delay: .15s; }
+.js .revelar-fila.visivel > *:nth-child(5)  { transition-delay: .20s; }
+.js .revelar-fila.visivel > *:nth-child(6)  { transition-delay: .25s; }
+.js .revelar-fila.visivel > *:nth-child(n+7) { transition-delay: .3s; }
+
+/* Brilho que atravessa o topo devagar, dando vida ao cabeçalho sem distrair. */
+.hero-brilho {
+  position: absolute;
+  inset: -30% -10% auto;
+  height: 150%;
+  background: radial-gradient(closest-side,
+    color-mix(in srgb, var(--accent) 34%, transparent), transparent);
+  opacity: .5;
+  pointer-events: none;
+  animation: derivar 26s ease-in-out infinite alternate;
+}
+@keyframes derivar {
+  from { transform: translate3d(-6%, -4%, 0) scale(1); }
+  to   { transform: translate3d(10%, 6%, 0) scale(1.18); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .js .revelar,
+  .js .revelar-fila > * { opacity: 1; transform: none; transition: none; }
+  .hero-brilho { animation: none; }
+  html { scroll-behavior: auto; }
+  *, *::before, *::after {
+    animation-duration: .001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: .001ms !important;
+  }
+}
+
+/* ---------- Busca rápida (de qualquer página) ---------------------------- */
+.abre-busca {
+  margin-left: auto;
+  flex: none; white-space: nowrap;
+  display: inline-flex; align-items: center; gap: 8px;
+  padding: 8px 12px 8px 11px; border-radius: 10px;
+  border: 1px solid var(--border); background: var(--surface-alt);
+  color: var(--muted); font-size: .88rem; font-family: inherit;
+  cursor: pointer; transition: border-color var(--rapido), color var(--rapido), background var(--rapido);
+}
+.abre-busca:hover { border-color: color-mix(in srgb, var(--brand) 45%, var(--border)); color: var(--ink); }
+.abre-busca kbd {
+  font-family: inherit; font-size: .72rem; padding: 2px 6px;
+  border-radius: 5px; border: 1px solid var(--border);
+  background: var(--surface); color: var(--muted);
+}
+/* O cabeçalho tem muita coisa disputando espaço: o rótulo e a tecla de
+   atalho só aparecem quando sobra largura de verdade. */
+@media (max-width: 1540px) {
+  .abre-busca kbd { display: none; }
+}
+@media (max-width: 1420px) {
+  .abre-busca-rotulo { display: none; }
+  .abre-busca { padding: 9px 11px; }
+}
+
+.sem-rolagem { overflow: hidden; }
+
+.busca-rapida {
+  position: fixed; inset: 0; z-index: 90;
+  background: color-mix(in srgb, #08121c 62%, transparent);
+  backdrop-filter: blur(4px);
+  display: grid; place-items: start center;
+  padding: clamp(16px, 8vh, 110px) 16px 24px;
+  animation: surgir .18s var(--curva);
+}
+@keyframes surgir { from { opacity: 0; } to { opacity: 1; } }
+
+.busca-caixa {
+  width: 100%; max-width: 620px;
+  background: var(--surface); border: 1px solid var(--border);
+  border-radius: 18px; box-shadow: var(--shadow-lg);
+  overflow: hidden;
+  animation: subir .22s var(--curva);
+}
+@keyframes subir {
+  from { opacity: 0; transform: translateY(-10px) scale(.985); }
+  to   { opacity: 1; transform: none; }
+}
+
+.busca-topo {
+  display: flex; align-items: center; gap: 12px;
+  padding: 16px 18px; border-bottom: 1px solid var(--border);
+}
+.busca-topo input {
+  flex: 1; min-width: 0; border: 0; background: transparent;
+  font-size: 1.05rem; font-family: inherit; color: var(--ink); padding: 4px 0;
+}
+.busca-topo input:focus { outline: none; }
+.busca-topo input::placeholder { color: var(--muted); }
+.busca-lupa { font-size: 1.1rem; color: var(--muted); }
+
+.busca-resultados { list-style: none; margin: 0; padding: 6px; max-height: 52vh; overflow-y: auto; }
+.busca-resultados li + li { margin-top: 2px; }
+.busca-resultados a {
+  display: flex; align-items: center; gap: 12px;
+  padding: 11px 13px; border-radius: 11px; color: var(--ink); text-decoration: none;
+}
+.busca-resultados a:hover, .busca-resultados a.ativo { background: var(--brand-soft); }
+.busca-resultados a.ativo { box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--brand) 30%, transparent); }
+.busca-icone {
+  width: 36px; height: 36px; flex: none; display: grid; place-items: center;
+  background: var(--surface-alt); border-radius: 10px; font-size: 1.05rem;
+}
+.busca-texto { display: flex; flex-direction: column; min-width: 0; }
+.busca-texto strong { font-size: .97rem; font-weight: 600; }
+.busca-texto small { color: var(--muted); font-size: .83rem; }
+
+.busca-dica, .busca-vazia { padding: 22px 16px; color: var(--muted); font-size: .92rem; text-align: center; }
+
+.busca-rodape {
+  display: flex; align-items: center; justify-content: space-between; gap: 12px;
+  padding: 10px 18px; border-top: 1px solid var(--border);
+  background: var(--surface-alt); color: var(--muted); font-size: .8rem;
+}
+.busca-rodape kbd {
+  font-family: inherit; padding: 2px 6px; border-radius: 5px;
+  border: 1px solid var(--border); background: var(--surface);
+}
+
+/* Cabeçalho ganha presença assim que a página sai do topo. */
+.topo.rolado {
+  box-shadow: 0 1px 0 var(--border), 0 10px 30px -18px rgba(16, 32, 48, .4);
 }
 
 /* ---------- Utilitários --------------------------------------------------- */

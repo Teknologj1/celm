@@ -34,7 +34,15 @@ module.exports = async function (req, res) {
           "defina ADMIN_USERS nas variáveis de ambiente.");
       }
 
-      const conta = auth.acharConta(usuario);
+      let lista;
+      try {
+        lista = await auth.contasEfetivas();
+      } catch (falha) {
+        console.error("Falha ao carregar as contas:", falha.message);
+        return erro(res, 500, "Não foi possível verificar as credenciais agora.");
+      }
+
+      const conta = auth.acharConta(usuario, lista);
 
       /* A mesma mensagem para usuário inexistente e senha errada: não
          entregamos a quem tenta adivinhar qual dos dois estava certo. */

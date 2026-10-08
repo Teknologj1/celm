@@ -83,6 +83,18 @@ async function gravarJson(arquivo, dados, sha, mensagem, autor) {
   });
 }
 
+/* Grava o arquivo inteiro, criando-o se ainda não existir. */
+async function salvarJson(arquivo, dados, mensagem, autor) {
+  let sha;
+  try {
+    sha = (await lerJson(arquivo)).sha;
+  } catch (falha) {
+    if (falha.status !== 404) throw falha;
+    sha = undefined; /* arquivo novo */
+  }
+  return gravarJson(arquivo, dados, sha, mensagem, autor);
+}
+
 /* Lê, aplica a alteração e grava. Se outra edição entrou no meio, o GitHub
    recusa por conflito de sha e a operação é refeita sobre o estado novo. */
 async function alterarJson(arquivo, transformar, mensagem, autor, tentativas = 3) {
@@ -102,4 +114,4 @@ async function alterarJson(arquivo, transformar, mensagem, autor, tentativas = 3
   throw new Error("Não foi possível gravar: o arquivo mudou durante a edição.");
 }
 
-module.exports = { lerJson, gravarJson, alterarJson, configuracao };
+module.exports = { lerJson, gravarJson, salvarJson, alterarJson, configuracao };

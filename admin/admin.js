@@ -233,7 +233,9 @@
     if (evento.target === modal) fecharModal();
   });
   document.addEventListener("keydown", function (evento) {
-    if (evento.key === "Escape" && !modal.hidden) fecharModal();
+    if (evento.key !== "Escape") return;
+    if (!modal.hidden) fecharModal();
+    if (modalSenha && !modalSenha.hidden) fecharSenha();
   });
 
   [busca, filtroTorre, filtroCategoria].forEach(function (controle) {
@@ -287,6 +289,79 @@
         botao.disabled = false;
         salvando.hidden = true;
       });
+  });
+
+  /* ---------------- troca da própria senha ---------------- */
+  var modalSenha = document.getElementById("modal-senha");
+  var formSenha = document.getElementById("form-senha");
+  var avisoSenha = document.getElementById("aviso-senha");
+  var okSenha = document.getElementById("ok-senha");
+
+  function fecharSenha() {
+    modalSenha.hidden = true;
+    formSenha.reset();
+    avisoSenha.hidden = true;
+    okSenha.hidden = true;
+    ["senha-atual", "senha-nova", "senha-nova2"].forEach(function (id) {
+      document.getElementById(id).type = "password";
+    });
+  }
+
+  document.getElementById("trocar-senha").addEventListener("click", function () {
+    avisoSenha.hidden = true;
+    okSenha.hidden = true;
+    modalSenha.hidden = false;
+    document.getElementById("senha-atual").focus();
+  });
+
+  document.getElementById("fechar-senha").addEventListener("click", fecharSenha);
+  document.getElementById("cancelar-senha").addEventListener("click", fecharSenha);
+  modalSenha.addEventListener("click", function (evento) {
+    if (evento.target === modalSenha) fecharSenha();
+  });
+
+  document.getElementById("mostrar-senhas").addEventListener("change", function (evento) {
+    var tipo = evento.target.checked ? "text" : "password";
+    ["senha-atual", "senha-nova", "senha-nova2"].forEach(function (id) {
+      document.getElementById(id).type = tipo;
+    });
+  });
+
+  formSenha.addEventListener("submit", function (evento) {
+    evento.preventDefault();
+    if (!formSenha.reportValidity()) return;
+
+    avisoSenha.hidden = true;
+    okSenha.hidden = true;
+
+    var atual = document.getElementById("senha-atual").value;
+    var nova = document.getElementById("senha-nova").value;
+    var repetida = document.getElementById("senha-nova2").value;
+
+    if (nova !== repetida) {
+      avisoSenha.textContent = "As senhas novas não conferem.";
+      avisoSenha.hidden = false;
+      return;
+    }
+
+    var botao = document.getElementById("salvar-senha");
+    botao.disabled = true;
+    botao.textContent = "Trocando...";
+
+    api("senha", {
+      method: "POST",
+      body: JSON.stringify({ senhaAtual: atual, senhaNova: nova })
+    }).then(function (resposta) {
+      formSenha.reset();
+      okSenha.textContent = "Senha trocada. " + (resposta.aviso || "");
+      okSenha.hidden = false;
+    }).catch(function (falha) {
+      avisoSenha.textContent = falha.message;
+      avisoSenha.hidden = false;
+    }).then(function () {
+      botao.disabled = false;
+      botao.textContent = "Trocar senha";
+    });
   });
 
   document.getElementById("sair").addEventListener("click", function () {

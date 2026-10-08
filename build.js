@@ -150,6 +150,19 @@ function construir() {
     );
   }
 
+  /* Índice da busca rápida: um arquivo só, em vez de uma cópia por página. */
+  escrever("assets/busca.json", JSON.stringify(dados.empresas.map((e) => ({
+    slug: e.slug,
+    nome: e.nome,
+    categoriaNome: e.categoriaNome,
+    categoriaIcone: e.categoriaIcone,
+    sinonimos: e.categoriaSinonimos || [],
+    tags: e.tags,
+    torre: e.torre,
+    sala: e.sala,
+    responsavel: e.responsavel || ""
+  }))));
+
   /* Evita que o GitHub Pages processe o site com Jekyll. */
   escrever(".nojekyll", "");
 
