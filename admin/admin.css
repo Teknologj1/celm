@@ -7,7 +7,7 @@
   padding: 20px;
   background:
     radial-gradient(900px 400px at 70% -10%, color-mix(in srgb, var(--accent) 18%, transparent), transparent 60%),
-    linear-gradient(160deg, var(--brand-dark), var(--brand));
+    linear-gradient(160deg, var(--imersivo-1), var(--imersivo-3));
 }
 
 .cartao-login {

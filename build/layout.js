@@ -189,13 +189,14 @@ function pagina(dados, opcoes) {
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>${escapar(tituloCompleto)}</title>
   <meta name="description" content="${escapar(opcoes.descricao || dados.centro.descricaoCurta)}">
-  <meta name="theme-color" content="#0f4c75">
+  <meta name="theme-color" content="#081b26">
 ${canonical ? `  <link rel="canonical" href="${escapar(canonical)}">\n` : ""}  <meta property="og:type" content="website">
   <meta property="og:title" content="${escapar(tituloCompleto)}">
   <meta property="og:description" content="${escapar(opcoes.descricao || dados.centro.descricaoCurta)}">
   <meta property="og:locale" content="pt_BR">
 ${canonical ? `  <meta property="og:url" content="${escapar(canonical)}">\n` : ""}  <link rel="icon" href="${u("assets/img/favicon.svg")}" type="image/svg+xml">
   <link rel="preload" href="${u("assets/fonts/inter-variable.woff2")}" as="font" type="font/woff2" crossorigin>
+  <link rel="preload" href="${u("assets/fonts/instrument-serif.woff2")}" as="font" type="font/woff2" crossorigin>
   <link rel="stylesheet" href="${u("assets/css/style.css")}">
 ${dadosEstruturados}</head>
 <body>

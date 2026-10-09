@@ -108,7 +108,7 @@ function home(dados) {
       ${centro.imagens && centro.imagens.fachada ? `<img class="hero-foto" src="${url(0, centro.imagens.fachada.src)}" alt="${escapar(centro.imagens.fachada.alt)}" fetchpriority="high">` : ""}
       <div class="container">
         <span class="hero-etiqueta">🏙️ Torres A e B · ${escapar(centro.endereco.bairro)}, ${escapar(centro.endereco.cidade)}</span>
-        <h1>Quem é quem no ${escapar(centro.nome)}</h1>
+        <h1>Todo o complexo,<br><em>em um só lugar</em></h1>
         <p class="lead">${escapar(centro.descricaoCurta)}</p>
 
         <form class="busca-hero" role="search" data-busca-redireciona="${url(0, "empresas/")}">
@@ -143,19 +143,21 @@ function home(dados) {
           </div>
           <a class="btn btn-secundario btn-sm" href="${url(0, "categorias/")}">Ver todas as categorias</a>
         </div>
-        <div class="grade grade-4 revelar-fila">
-          ${categorias.slice().sort((a, b) => b.empresas.length - a.empresas.length || a.nome.localeCompare(b.nome, "pt-BR")).slice(0, 8).map((c) => `<a class="cartao-cat" href="${url(0, "categorias/" + c.slug + "/")}">
-            <span class="icone" aria-hidden="true">${escapar(c.icone)}</span>
-            <span>
-              <b>${escapar(c.nome)}</b>
-              <small>${c.empresas.length} ${c.empresas.length === 1 ? "empresa" : "empresas"}</small>
-            </span>
-          </a>`).join("\n          ")}
+        <div class="vitrine-aba revelar">
+          <div class="vitrine">
+            ${categorias.slice().sort((a, b) => b.empresas.length - a.empresas.length || a.nome.localeCompare(b.nome, "pt-BR")).map((c) => `<a class="cartao-cat" href="${url(0, "categorias/" + c.slug + "/")}">
+              <span class="icone" aria-hidden="true">${escapar(c.icone)}</span>
+              <span>
+                <b>${escapar(c.nome)}</b>
+                <small>${c.empresas.length} ${c.empresas.length === 1 ? "empresa" : "empresas"}</small>
+              </span>
+            </a>`).join("\n            ")}
+          </div>
         </div>
       </div>
     </section>
 
-    <section class="secao">
+    <section class="secao" style="padding-top:0">
       <div class="container">
         ${anuncio(dados, "home", 0, "anuncio-faixa")}
       </div>
