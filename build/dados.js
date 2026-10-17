@@ -162,6 +162,7 @@ function carregar() {
       categorias: categoriasComContagem.length,
       torres: torres.length,
       vantagens: vantagens.length,
+      andares: new Set(empresas.map((e) => e.andar).filter(Boolean)).size,
       comImagem: empresas.filter((e) => e.temImagem).length
     }
   };

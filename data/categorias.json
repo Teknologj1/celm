@@ -1,239 +1,38 @@
 [
-  {
-    "slug": "advocacia",
-    "nome": "Advocacia e Jurídico",
-    "icone": "⚖️",
-    "descricao": "Escritórios de advocacia, consultoria jurídica e serviços cartoriais.",
-    "sinonimos": [
-      "advogado",
-      "advogada",
-      "jurídico",
-      "juridico",
-      "processo",
-      "justiça",
-      "escritório de advocacia"
-    ]
-  },
-  {
-    "slug": "contabilidade",
-    "nome": "Contabilidade e Fiscal",
-    "icone": "📊",
-    "descricao": "Escritórios contábeis, abertura de empresas, folha e planejamento tributário.",
-    "sinonimos": [
-      "contador",
-      "contadora",
-      "contábil",
-      "imposto",
-      "mei",
-      "simples nacional",
-      "abrir empresa",
-      "declaração"
-    ]
-  },
-  {
-    "slug": "saude",
-    "nome": "Saúde",
-    "icone": "🩺",
-    "descricao": "Clínicas médicas, exames, nutrição e fisioterapia.",
-    "sinonimos": [
-      "médico",
-      "medica",
-      "doutor",
-      "consulta",
-      "clínica",
-      "exame",
-      "nutricionista",
-      "fisioterapeuta"
-    ]
-  },
-  {
-    "slug": "odontologia",
-    "nome": "Odontologia",
-    "icone": "🦷",
-    "descricao": "Consultórios e clínicas odontológicas.",
-    "sinonimos": [
-      "dentista",
-      "dente",
-      "aparelho",
-      "implante",
-      "odonto"
-    ]
-  },
-  {
-    "slug": "psicologia",
-    "nome": "Psicologia e Terapias",
-    "icone": "🧠",
-    "descricao": "Psicologia, psicanálise, terapias integrativas e saúde mental corporativa.",
-    "sinonimos": [
-      "psicólogo",
-      "psicologa",
-      "terapia",
-      "terapeuta",
-      "saúde mental",
-      "ansiedade"
-    ]
-  },
-  {
-    "slug": "engenharia",
-    "nome": "Engenharia e Arquitetura",
-    "icone": "📐",
-    "descricao": "Projetos, obras, laudos técnicos e arquitetura corporativa.",
-    "sinonimos": [
-      "engenheiro",
-      "arquiteto",
-      "arquiteta",
-      "obra",
-      "reforma",
-      "projeto",
-      "laudo"
-    ]
-  },
-  {
-    "slug": "tecnologia",
-    "nome": "Tecnologia e TI",
-    "icone": "💻",
-    "descricao": "Desenvolvimento de software, suporte, redes e segurança da informação.",
-    "sinonimos": [
-      "informática",
-      "computador",
-      "sistema",
-      "site",
-      "aplicativo",
-      "programador",
-      "ti",
-      "suporte"
-    ]
-  },
-  {
-    "slug": "marketing",
-    "nome": "Marketing e Comunicação",
-    "icone": "📣",
-    "descricao": "Agências, design, audiovisual, assessoria de imprensa e mídias sociais.",
-    "sinonimos": [
-      "publicidade",
-      "propaganda",
-      "agência",
-      "social media",
-      "designer",
-      "fotógrafo",
-      "vídeo"
-    ]
-  },
-  {
-    "slug": "consultoria",
-    "nome": "Consultoria e Gestão",
-    "icone": "📈",
-    "descricao": "Consultorias empresariais, licitações, compliance e gestão de projetos.",
-    "sinonimos": [
-      "consultor",
-      "assessoria",
-      "gestão",
-      "licitação",
-      "estratégia"
-    ]
-  },
-  {
-    "slug": "rh",
-    "nome": "Recursos Humanos",
-    "icone": "👥",
-    "descricao": "Recrutamento, seleção, treinamento e terceirização de mão de obra.",
-    "sinonimos": [
-      "recursos humanos",
-      "recrutador",
-      "vaga",
-      "emprego",
-      "currículo",
-      "treinamento"
-    ]
-  },
-  {
-    "slug": "financeiro",
-    "nome": "Finanças e Seguros",
-    "icone": "💼",
-    "descricao": "Corretoras, consultoria financeira, investimentos e seguros.",
-    "sinonimos": [
-      "corretor",
-      "seguro",
-      "investimento",
-      "banco",
-      "finanças",
-      "plano de saúde",
-      "previdência"
-    ]
-  },
-  {
-    "slug": "imobiliario",
-    "nome": "Imobiliário",
-    "icone": "🏢",
-    "descricao": "Imobiliárias, administração de imóveis e avaliação patrimonial.",
-    "sinonimos": [
-      "imobiliária",
-      "corretor de imóveis",
-      "aluguel",
-      "locação",
-      "sala comercial",
-      "imóvel"
-    ]
-  },
-  {
-    "slug": "educacao",
-    "nome": "Educação e Idiomas",
-    "icone": "🎓",
-    "descricao": "Cursos, preparatórios, idiomas e treinamentos corporativos.",
-    "sinonimos": [
-      "curso",
-      "escola",
-      "professor",
-      "aula",
-      "inglês",
-      "faculdade",
-      "pós",
-      "concurso"
-    ]
-  },
-  {
-    "slug": "estetica",
-    "nome": "Estética e Bem-estar",
-    "icone": "✨",
-    "descricao": "Estética, barbearia, massoterapia e cuidados pessoais.",
-    "sinonimos": [
-      "salão",
-      "beleza",
-      "massagem",
-      "barbeiro",
-      "cabelo",
-      "estética",
-      "spa"
-    ]
-  },
-  {
-    "slug": "servicos",
-    "nome": "Serviços e Conveniência",
-    "icone": "🛎️",
-    "descricao": "Gráficas, despachantes, logística, coworking e apoio ao escritório.",
-    "sinonimos": [
-      "gráfica",
-      "impressão",
-      "xerox",
-      "despachante",
-      "coworking",
-      "cartório",
-      "documento"
-    ]
-  },
-  {
-    "slug": "alimentacao",
-    "nome": "Alimentação e Café",
-    "icone": "☕",
-    "descricao": "Cafés, bistrôs e serviços de alimentação dentro do complexo.",
-    "sinonimos": [
-      "restaurante",
-      "lanche",
-      "café",
-      "almoço",
-      "comida",
-      "cafeteria",
-      "marmita"
-    ]
-  }
+  { "slug": "odontologia", "nome": "Odontologia", "icone": "🦷",
+    "descricao": "Clínicas e consultórios odontológicos: ortodontia, implantes, endodontia, periodontia e estética dental.",
+    "sinonimos": ["dentista", "dente", "aparelho", "implante", "canal", "clareamento", "prótese", "ortodontia", "odontopediatria", "periodontia", "endodontia", "lentes"] },
+  { "slug": "psicologia", "nome": "Psicologia e Saúde Mental", "icone": "🧠",
+    "descricao": "Psicologia clínica, psicanálise, psicoterapia, avaliação neuropsicológica e terapias.",
+    "sinonimos": ["psicólogo", "psicologa", "terapia", "terapeuta", "ansiedade", "análise", "psicanalista", "neuropsicologia", "casal", "infantil"] },
+  { "slug": "medicina", "nome": "Medicina e Especialidades", "icone": "🩺",
+    "descricao": "Consultórios médicos: psiquiatria, dermatologia, ginecologia, pediatria, endocrinologia e mais.",
+    "sinonimos": ["médico", "medica", "doutor", "consulta", "psiquiatra", "dermatologista", "ginecologista", "pediatra", "endocrinologista", "clínica", "exame", "acupuntura"] },
+  { "slug": "estetica", "nome": "Estética e Bem-estar", "icone": "✨",
+    "descricao": "Estética facial e corporal, spa, longevidade, barbearia e cuidados pessoais.",
+    "sinonimos": ["estética", "beleza", "spa", "salão", "barbearia", "cabelo", "tatuagem", "harmonização", "bem-estar"] },
+  { "slug": "nutricao", "nome": "Nutrição", "icone": "🥗",
+    "descricao": "Nutrição clínica, esportiva e de precisão.",
+    "sinonimos": ["nutricionista", "nutrição", "emagrecimento", "dieta", "alimentar"] },
+  { "slug": "terapias", "nome": "Fisioterapia e Terapias", "icone": "💆",
+    "descricao": "Fisioterapia, fonoaudiologia e massoterapia.",
+    "sinonimos": ["fisioterapeuta", "fisioterapia", "fonoaudióloga", "fono", "massagem", "massoterapia", "pilates", "rpg"] },
+  { "slug": "advocacia", "nome": "Advocacia e Jurídico", "icone": "⚖️",
+    "descricao": "Escritórios de advocacia e consultoria jurídica.",
+    "sinonimos": ["advogado", "advogada", "jurídico", "processo", "justiça", "trabalhista", "previdenciário", "tributário", "criminal", "cível"] },
+  { "slug": "financas", "nome": "Finanças, Contabilidade e Seguros", "icone": "💼",
+    "descricao": "Contabilidade, corretoras de seguros e planos de saúde, consultoria financeira.",
+    "sinonimos": ["contador", "contabilidade", "imposto", "seguro", "corretor", "plano de saúde", "financeiro", "investimento"] },
+  { "slug": "consultoria", "nome": "Consultoria e Gestão", "icone": "📈",
+    "descricao": "Consultoria empresarial, assessoria condominial, gestão e administração.",
+    "sinonimos": ["consultor", "assessoria", "gestão", "administração", "condomínio", "eventos", "estratégia"] },
+  { "slug": "engenharia", "nome": "Engenharia e Arquitetura", "icone": "📐",
+    "descricao": "Arquitetura, design de interiores, engenharia, projetos e meio ambiente.",
+    "sinonimos": ["arquiteto", "engenheiro", "obra", "reforma", "projeto", "interiores", "ambiental", "construção"] },
+  { "slug": "servicos", "nome": "Serviços e Conveniência", "icone": "🛎️",
+    "descricao": "Gráfica, produtos naturais, salas por período e demais serviços de apoio.",
+    "sinonimos": ["gráfica", "impressão", "produtos naturais", "sala", "aluguel", "associação", "energia", "viagens"] },
+  { "slug": "educacao", "nome": "Educação e Ensino", "icone": "🎓",
+    "descricao": "Instituições de ensino, cursos e apoio educacional.",
+    "sinonimos": ["curso", "escola", "professor", "aula", "ensino", "educação", "capacitação"] }
 ]

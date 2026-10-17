@@ -61,11 +61,8 @@ function cabecalho(dados, profundidade, atual, baseFixa) {
   <header class="topo">
     <div class="container">
       <a class="marca" href="${u("")}">
-        <span class="marca-sigla" aria-hidden="true">${escapar(dados.centro.sigla)}</span>
-        <span class="marca-texto">
-          <b>${escapar(dados.centro.nome)}</b>
-          <span>${escapar(dados.centro.tagline)}</span>
-        </span>
+        <span class="marca-logo"></span>
+        <span class="sr-only">${escapar(dados.centro.nome)}</span>
       </a>
       <button class="abre-busca" type="button" data-abre-busca>
         <span aria-hidden="true">🔎</span>
@@ -98,8 +95,8 @@ function rodape(dados, profundidade, baseFixa) {
     <div class="container">
       <div class="rodape-grade">
         <div>
-          <h4>${escapar(dados.centro.sigla)}</h4>
-          <p style="color: var(--ink-soft); margin: 0 0 12px;">${escapar(dados.centro.descricaoCurta)}</p>
+          <span class="marca-logo marca-logo-rodape"></span>
+          <p style="color: var(--ink-soft); margin: 16px 0 12px;">${escapar(dados.centro.descricaoCurta)}</p>
           <a class="btn btn-sm btn-secundario" href="${u("cadastro/")}">Cadastrar ou atualizar empresa</a>
         </div>
         <div>

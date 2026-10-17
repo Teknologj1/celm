@@ -1,11 +1,11 @@
 {
   "nome": "Centro Empresarial Liberty Mall",
   "sigla": "CELM",
-  "tagline": "O guia de empresas das Torres A e B",
-  "descricaoCurta": "Diretório oficial dos condôminos do Centro Empresarial Liberty Mall: encontre escritórios, clínicas e serviços por torre, andar e categoria — e descubra o que o vizinho de andar pode fazer por você.",
-  "demoMode": true,
+  "tagline": "Guia de empresas das Torres A e B",
+  "descricaoCurta": "Guia das empresas do Centro Empresarial Liberty Mall: encontre consultórios, escritórios e serviços por torre, andar e categoria — e descubra o que o vizinho de andar pode fazer por você.",
+  "demoMode": false,
   "siteUrl": "https://clmall.vercel.app",
-  "atualizadoEm": "2026-09-15",
+  "atualizadoEm": "2026-10-17",
   "endereco": {
     "logradouro": "SCN Quadra 5, Bloco A",
     "complemento": "Torres A e B — Centro Empresarial Liberty Mall",
@@ -25,7 +25,7 @@
       "id": "A",
       "nome": "Torre A",
       "descricao": "Torre com acesso direto pelo hall principal, integrada ao Shopping Liberty Mall pelo piso térreo.",
-      "andares": "2º ao 14º andar",
+      "andares": "1º ao 13º andar",
       "imagem": {
         "src": "assets/img/complexo/torre-a.svg",
         "alt": "Torre A do Centro Empresarial Liberty Mall"
@@ -35,7 +35,7 @@
       "id": "B",
       "nome": "Torre B",
       "descricao": "Torre voltada para o estacionamento coberto, com acesso independente e ligação interna ao shopping.",
-      "andares": "2º ao 14º andar",
+      "andares": "1º ao 13º andar",
       "imagem": {
         "src": "assets/img/complexo/torre-b.svg",
         "alt": "Torre B do Centro Empresarial Liberty Mall"

@@ -26,20 +26,24 @@
 :root {
   color-scheme: light dark;
 
-  --brand:        #0e4766;
-  --brand-dark:   #081b26;
-  --brand-soft:   #e9f0f4;
-  --accent:       #a8803c;
-  --accent-texto: #7d5c23;
-  --accent-soft:  #f6efe2;
+  /* Cores do manual de marca do Liberty Mall: #142741, #c4a36f, #f2f2f2.
+     O dourado oficial rende 6,3:1 sobre o marinho, mas só 2,1:1 sobre fundo
+     claro — por isso existe o --accent-texto, a mesma cor escurecida para
+     quando ela precisa ser lida como texto. */
+  --brand:        #142741;
+  --brand-dark:   #0c1828;
+  --brand-soft:   #e7ebf1;
+  --accent:       #c4a36f;
+  --accent-texto: #85682c;
+  --accent-soft:  #f4eee2;
 
-  --bg:           #faf8f5;
+  --bg:           #f2f2f2;
   --surface:      #ffffff;
-  --surface-alt:  #f5f2ed;
-  --ink:          #16191c;
-  --ink-soft:     #4a5257;
-  --muted:        #5f676c;
-  --border:       #e6e1d9;
+  --surface-alt:  #e9eaed;
+  --ink:          #142741;
+  --ink-soft:     #45505f;
+  --muted:        #5c6676;
+  --border:       #dcdee4;
   --shadow:       0 1px 2px rgba(16, 32, 48, .05), 0 10px 30px -12px rgba(16, 32, 48, .14);
   --shadow-lg:    0 2px 6px rgba(16, 32, 48, .06), 0 24px 56px -16px rgba(16, 32, 48, .24);
   --shadow-realce: 0 2px 8px rgba(15, 76, 117, .1), 0 28px 64px -20px rgba(15, 76, 117, .3);
@@ -50,9 +54,9 @@
      sempre com texto claro por cima. Não podem usar as cores de marca:
      no tema escuro elas invertem para servir de texto e o fundo clarearia,
      deixando o texto branco ilegível. */
-  --imersivo-1:   #050f16;
-  --imersivo-2:   #0a2b3d;
-  --imersivo-3:   #0c3449;
+  --imersivo-1:   #0a1526;
+  --imersivo-2:   #142741;
+  --imersivo-3:   #1d3758;
 
   --curva:        cubic-bezier(.22, .68, .36, 1);
   --rapido:       .18s var(--curva);
@@ -87,9 +91,9 @@
     --shadow-lg:   0 2px 6px rgba(0, 0, 0, .45), 0 24px 56px -16px rgba(0, 0, 0, .6);
     --shadow-realce: 0 2px 8px rgba(0, 0, 0, .4), 0 28px 64px -20px rgba(90, 169, 230, .28);
 
-    --imersivo-1:  #04090d;
-    --imersivo-2:  #0a1f2b;
-    --imersivo-3:  #0b2a39;
+    --imersivo-1:  #070e1a;
+    --imersivo-2:  #0f1e33;
+    --imersivo-3:  #172c48;
   }
 }
 
@@ -178,19 +182,24 @@ p  { margin: 0 0 1em; }
 
 .marca { display: flex; align-items: center; gap: 11px; flex: none; text-decoration: none; color: inherit; }
 .marca:hover { text-decoration: none; }
-.marca-sigla {
-  flex: none;
-  display: grid; place-items: center;
-  width: 42px; height: 42px; border-radius: 11px;
-  background: linear-gradient(145deg, var(--imersivo-3), var(--imersivo-1));
-  color: #fff; font-weight: 800; font-size: .78rem; letter-spacing: .02em;
+/* O logotipo entra como máscara, não como imagem: assim herda a cor do
+   texto e acerta sozinho no tema claro e no escuro, com um arquivo só. */
+.marca-logo {
+  display: block;
+  width: 168px; height: 40px;
+  background-color: currentColor;
+  /* O caminho fica aqui, e não numa variável vinda do HTML: url() dentro de
+     CSS resolve a partir da folha de estilo, então o endereço relativo vale
+     em qualquer página e em qualquer subdiretório de publicação. */
+  -webkit-mask: url("../img/marca/logo-horizontal.svg") left center / contain no-repeat;
+  mask: url("../img/marca/logo-horizontal.svg") left center / contain no-repeat;
+  color: var(--brand);
 }
-.marca-texto { display: flex; flex-direction: column; line-height: 1.15; min-width: 0; }
-.marca-texto b { font-size: .95rem; letter-spacing: -.015em; white-space: nowrap; }
-.marca-texto span { font-size: .72rem; color: var(--muted); white-space: nowrap; }
-@media (max-width: 1300px) and (min-width: 1101px) {
-  .marca-texto span { display: none; }
-}
+.marca:hover .marca-logo { color: var(--accent-texto); }
+.marca-logo-rodape { width: 184px; height: 44px; }
+
+@media (max-width: 520px) { .marca-logo { width: 136px; height: 33px; } }
+
 
 .nav { display: flex; align-items: center; gap: 2px; }
 .nav a {
@@ -209,10 +218,7 @@ p  { margin: 0 0 1em; }
 }
 
 @media (max-width: 1100px) {
-  /* No celular a marca cede espaço e corta com reticências, em vez de
-     empurrar o cabeçalho para fora da tela. */
   .marca { flex: 0 1 auto; min-width: 0; }
-  .marca-texto b, .marca-texto span { overflow: hidden; text-overflow: ellipsis; }
 
   .nav-toggle { display: block; }
   .nav {

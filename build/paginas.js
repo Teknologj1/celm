@@ -129,7 +129,9 @@ function home(dados) {
           <div class="numero"><b data-contar="${estatisticas.empresas}">0</b><span>empresas cadastradas</span></div>
           <div class="numero"><b data-contar="${estatisticas.categorias}">0</b><span>áreas de atuação</span></div>
           <div class="numero"><b data-contar="${estatisticas.torres}">0</b><span>torres empresariais</span></div>
-          <div class="numero"><b data-contar="${estatisticas.vantagens}">0</b><span>vantagens entre vizinhos</span></div>
+          ${estatisticas.vantagens
+            ? `<div class="numero"><b data-contar="${estatisticas.vantagens}">0</b><span>vantagens entre vizinhos</span></div>`
+            : `<div class="numero"><b data-contar="${estatisticas.andares}">0</b><span>andares ocupados</span></div>`}
         </div>
       </div>
     </section>
@@ -176,7 +178,7 @@ function home(dados) {
       </div>
     </section>
 
-    <section class="secao">
+    ${!vantagens.length ? "" : `<section class="secao">
       <div class="container">
         <div class="secao-topo revelar">
           <div>
@@ -193,7 +195,7 @@ function home(dados) {
           </div>`).join("\n          ")}
         </div>
       </div>
-    </section>
+    </section>`}
 
     <section class="secao secao-alt">
       <div class="container">
@@ -691,7 +693,14 @@ function vantagens(dados) {
           <p>Condições especiais que as empresas do complexo oferecem umas às outras. Ao procurar um vizinho, mencione que você é condômino do ${escapar(dados.centro.sigla)}.</p>
         </div>
 
-        ${porTorre.map((grupo) => `<div style="margin-bottom:34px">
+        ${!dados.vantagens.length ? `<div class="vazio" style="margin-bottom:34px">
+          <b>Ainda não há vantagens publicadas</b>
+          <p>Toda empresa do complexo pode oferecer uma condição especial aos vizinhos —
+          um desconto, uma avaliação sem custo, um atendimento prioritário. Quem publica
+          aparece aqui e na ficha da própria empresa.</p>
+        </div>` : ""}
+
+        ${porTorre.filter((g) => g.itens.length).map((grupo) => `<div style="margin-bottom:34px">
           <h2>${escapar(grupo.torre.nome)} <small style="color:var(--muted);font-weight:500;font-size:.9rem">· ${grupo.itens.length} ${grupo.itens.length === 1 ? "oferta" : "ofertas"}</small></h2>
           <div class="grade grade-2">
             ${grupo.itens.map((e) => `<div class="vantagem">
