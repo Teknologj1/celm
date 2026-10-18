@@ -23,6 +23,22 @@ const TIPOS = {
     assinatura: (b) => b.length > 4 && b.toString("latin1", 0, 5) === "%PDF-",
     rotulo: "boletim"
   },
+  empresa: {
+    pasta: "assets/img/empresas",
+    extensoes: {
+      png: "image/png",
+      jpg: "image/jpeg",
+      jpeg: "image/jpeg",
+      webp: "image/webp",
+      svg: "image/svg+xml"
+    },
+    assinatura: () => true,
+    rotulo: "logotipo",
+    /* O logotipo tem nome próprio: a empresa troca de arte, não acumula
+       uma por data. */
+    semData: true
+  },
+
   anuncio: {
     pasta: "assets/img/anuncios",
     extensoes: {
@@ -108,7 +124,9 @@ module.exports = async function (req, res) {
       /* O prefixo de data evita que uma edição nova sobrescreva a anterior
          e mantém a pasta em ordem cronológica. */
       const hoje = new Date().toISOString().slice(0, 10);
-      const caminho = `${tipo.pasta}/${hoje}-${nome}`;
+      const caminho = tipo.semData
+        ? `${tipo.pasta}/${nome}`
+        : `${tipo.pasta}/${hoje}-${nome}`;
 
       try {
         await gh.salvarArquivo(

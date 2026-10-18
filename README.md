@@ -159,7 +159,7 @@ Acrescente um objeto ao vetor em `data/empresas.json`:
 | `whatsapp` | não | só dígitos, com código do país: `5561900001208` |
 | `beneficio` | não | preenchido, a empresa aparece na página **Vantagens** |
 | `destaque` | não | `true` coloca a empresa na vitrine da página inicial |
-| `logo` | não | caminho do logotipo; **com logo, a empresa sobe na lista geral** |
+| `logo` | não | caminho do logotipo, enviado pelo painel; **com logo, a empresa sobe na lista geral** |
 | `demo` | não | `true` exibe a etiqueta de dado fictício |
 
 Depois, rode `npm run build` e faça commit das alterações (incluindo o HTML
@@ -200,6 +200,8 @@ imagem que não seja predominantemente clara no lado esquerdo.
 
 Ficam em `assets/img/empresas/` e são apontados pelo campo `logo`. O formato
 quadrado (400×400, PNG ou SVG) é o que melhor se encaixa no cartão e na ficha.
+No painel, o arquivo é escolhido dentro da própria ficha da empresa: enviar
+pelo GitHub e depois digitar o caminho não é mais necessário.
 
 Empresa sem `logo` não fica sem nada: o site desenha um monograma com as
 iniciais dela. Mas **só quem envia imagem aparece primeiro na lista geral** —
@@ -240,7 +242,8 @@ enviar resolve e ainda deixa a leitura mais rápida para quem está no 4G.
 
 ### Envio de arquivos
 
-`api/arquivos.js` atende tanto o boletim quanto a peça dos anúncios. O arquivo
+`api/arquivos.js` atende o boletim, a peça dos anúncios e o logotipo das
+empresas — nos três casos basta escolher o arquivo na própria tela. O arquivo
 viaja em base64 dentro do JSON — dispensa `multipart` na função serverless — e
 é gravado no repositório como qualquer outra alteração do painel, virando um
 commit. O nome é normalizado (sem acento, sem espaço, sem caminho) e recebe a
@@ -550,9 +553,6 @@ mudança de arquitetura:
 - **Categorias e dados do complexo** pelo painel: cada um é outro arquivo em
   `data/`, e `api/_lib/armazenamento.js` já sabe gravar qualquer um deles — é
   o mesmo caminho que os anúncios e o boletim já seguem.
-- **Envio de logotipo pelo navegador**: `api/arquivos.js` já faz isso para a
-  peça do anúncio e para o PDF do boletim; falta ligar o mesmo controle à
-  ficha da empresa, que ainda recebe o caminho digitado.
 - **Cadastro pelo próprio condômino**, com a solicitação entrando numa fila que
   a administração aprova antes de publicar.
 - **Banco de dados**, se o volume crescer: trocar o backend em

@@ -294,10 +294,10 @@
                       placeholder="Aparece na página de Vantagens."></textarea>
           </div>
           <div class="campo campo-largo">
-            <label for="logo">Caminho do logotipo</label>
-            <input id="logo" name="logo" type="text" maxlength="300"
-                   placeholder="assets/img/empresas/nome-da-empresa.svg">
-            <small class="dica">Com logotipo, a empresa aparece antes na lista geral.</small>
+            <label for="arte-logo">Logotipo</label>
+            <input id="arte-logo" type="file" accept="image/png,image/jpeg,image/webp,image/svg+xml">
+            <input type="hidden" id="logo" name="logo">
+            <small class="dica" id="arte-logo-estado">Quadrado, 400×400. Com logotipo, a empresa aparece antes na lista geral.</small>
           </div>
 
           <div class="campo campo-largo caixas">

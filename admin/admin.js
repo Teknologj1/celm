@@ -171,6 +171,11 @@
       document.getElementById("demo").checked = empresa.demo === true;
     }
 
+    document.getElementById("arte-logo-estado").textContent =
+      empresa && empresa.logo
+        ? "Logotipo já enviado. Escolha outro arquivo só para substituir."
+        : "Quadrado, 400×400. Com logotipo, a empresa aparece antes na lista geral.";
+
     modal.hidden = false;
     document.getElementById("nome").focus();
   }
@@ -380,6 +385,7 @@
     });
   }
 
+  ligarEnvio("arte-logo", "logo", "arte-logo-estado", "empresa", "salvar");
   ligarEnvio("b-pdf", "b-arquivo", "b-pdf-estado", "boletim", "salvar-boletim");
   ligarEnvio("a-arte", "a-imagem", "a-arte-estado", "anuncio", "salvar-anuncio");
 
