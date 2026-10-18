@@ -135,7 +135,8 @@ function carregar() {
   if (process.env.SITE_URL) centro.siteUrl = process.env.SITE_URL.replace(/\/$/, "");
   const categorias = lerJson("categorias.json");
   const brutas = lerJson("empresas.json");
-  const anuncios = lerJson("anuncios.json");
+  const anuncios = lerJson("anuncios.json", []);
+  const espacos = lerJson("espacos.json");
   const boletins = lerJson("boletins.json", [])
     .filter((b) => b && b.titulo && b.arquivo)
     .sort((a, b) => String(b.data).localeCompare(String(a.data)));
@@ -197,9 +198,17 @@ function carregar() {
     .filter((e) => e.beneficio)
     .sort((a, b) => a.nome.localeCompare(b.nome, "pt-BR"));
 
-  const anunciosPorEspaco = anuncios.reduce((mapa, anuncio) => {
-    if (!mapa[anuncio.espaco]) mapa[anuncio.espaco] = [];
-    mapa[anuncio.espaco].push(anuncio);
+  /* Cada espaço recebe as campanhas que estão no ar hoje, na ordem em que
+     foram cadastradas e até o limite dele — o rodízio em tela gira sobre
+     essa lista. O limite vive no espaço, não na campanha: é característica
+     do lugar (quanto de rodízio ainda dá para ler), não do anunciante. */
+  const hoje = new Date().toISOString().slice(0, 10);
+  const noAr = (a) => a.ativo && (!a.inicio || a.inicio <= hoje) && (!a.fim || a.fim >= hoje);
+
+  const anunciosPorEspaco = espacos.reduce((mapa, espaco) => {
+    mapa[espaco.id] = anuncios
+      .filter((a) => a.espaco === espaco.id && noAr(a))
+      .slice(0, espaco.limite);
     return mapa;
   }, {});
 
@@ -210,6 +219,7 @@ function carregar() {
     /* lista geral: prioriza quem enviou imagem */
     vitrine: empresas.slice().sort(porVitrine),
     anuncios: anunciosPorEspaco,
+    espacos,
     boletins,
     categorias: categoriasComContagem,
     vantagens,
@@ -242,6 +252,7 @@ function paraBusca(empresas) {
     sala: e.sala,
     responsavel: e.responsavel || "",
     logo: e.logo,
+    capa: e.capa,
     iniciais: e.iniciais,
     temImagem: e.temImagem,
     demo: e.demo

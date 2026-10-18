@@ -19,43 +19,69 @@ function marcaEmpresa(empresa, profundidade, tamanho) {
 /* Um anúncio só vai ao ar se estiver marcado como ativo e dentro do período
    contratado — assim a campanha sai sozinha no fim da veiculação, sem
    depender de alguém lembrar de desligá-la. */
-function noPeriodo(a) {
-  const hoje = new Date().toISOString().slice(0, 10);
-  if (a.inicio && hoje < a.inicio) return false;
-  if (a.fim && hoje > a.fim) return false;
-  return true;
-}
-
-function anuncio(dados, espaco, profundidade, extra) {
-  const publicidade = dados.centro.publicidade || {};
-  const ativo = (dados.anuncios[espaco] || []).find((a) => a.ativo && noPeriodo(a));
-
-  if (ativo) {
-    const interno = `
-      ${ativo.imagem ? `<img src="${url(profundidade, ativo.imagem)}" alt="${escapar(ativo.titulo || ativo.anunciante)}" loading="lazy">` : ""}
+/* O período já é filtrado em build/dados.js; aqui só se monta a vitrine. */
+function pecaDeAnuncio(a, profundidade) {
+  const interno = `
+      ${a.imagem ? `<img src="${url(profundidade, a.imagem)}" alt="${escapar(a.titulo || a.anunciante)}" loading="lazy">` : ""}
       <div>
-        <b>${escapar(ativo.titulo)}</b>
-        ${ativo.texto ? `<p>${escapar(ativo.texto)}</p>` : ""}
-        ${ativo.anunciante ? `<small>${escapar(ativo.anunciante)}</small>` : ""}
+        <b>${escapar(a.titulo)}</b>
+        ${a.texto ? `<p>${escapar(a.texto)}</p>` : ""}
+        ${a.anunciante ? `<small>${escapar(a.anunciante)}</small>` : ""}
       </div>`;
 
-    return `<aside class="anuncio ${extra || ""}" aria-label="Publicidade">
+  return a.link
+    ? `<a class="anuncio-conteudo" href="${escapar(a.link)}" rel="noopener sponsored" target="_blank">${interno}</a>`
+    : `<div class="anuncio-conteudo">${interno}</div>`;
+}
+
+/* Um espaço pode ter várias campanhas em cartaz; elas se revezam no mesmo
+ * lugar, por tempo. Todas vão no HTML — o rodízio só troca qual está
+ * visível —, de modo que sem JavaScript a primeira continua aparecendo e
+ * nenhum anunciante fica fora do ar por causa de um script que não rodou. */
+function anuncio(dados, espaco, profundidade, extra) {
+  const publicidade = dados.centro.publicidade || {};
+  const definicao = (dados.espacos || []).find((e) => e.id === espaco) || {};
+  const campanhas = dados.anuncios[espaco] || [];
+
+  if (campanhas.length) {
+    const slides = campanhas.map((a, i) => `
+        <div class="anuncio-slide${i === 0 ? " ativo" : ""}" data-slide="${i}"${i ? ' aria-hidden="true"' : ""}>
+          ${pecaDeAnuncio(a, profundidade)}
+        </div>`).join("");
+
+    /* Marcadores só com mais de uma campanha — e só enquanto couberem na
+       tela. Num espaço de quinze, quinze bolinhas viram uma régua ilegível
+       e estouram a largura do celular; ali vale mais um contador. */
+    let marcadores = "";
+    if (campanhas.length > 1 && campanhas.length <= 8) {
+      marcadores = `<div class="anuncio-marcadores" role="tablist" aria-label="Campanhas deste espaço">
+          ${campanhas.map((a, i) => `<button type="button" role="tab" data-ir="${i}"
+             aria-selected="${i === 0 ? "true" : "false"}"
+             aria-label="Anúncio ${i + 1} de ${campanhas.length}${a.anunciante ? ": " + escapar(a.anunciante) : ""}"></button>`).join("\n          ")}
+        </div>`;
+    } else if (campanhas.length > 8) {
+      marcadores = `<p class="anuncio-contador" aria-live="off">
+          <span data-contador-atual>1</span> de ${campanhas.length}
+        </p>`;
+    }
+
+    return `<aside class="anuncio ${extra || ""}" aria-label="Publicidade"${campanhas.length > 1
+        ? ` data-rodizio data-intervalo="${Number(definicao.intervalo) || 8}"` : ""}>
         <span class="anuncio-rotulo">Publicidade</span>
-        ${ativo.link
-          ? `<a class="anuncio-conteudo" href="${escapar(ativo.link)}" rel="noopener sponsored" target="_blank">${interno}</a>`
-          : `<div class="anuncio-conteudo">${interno}</div>`}
+        <div class="anuncio-palco">${slides}
+        </div>
+        ${marcadores}
       </aside>`;
   }
 
   if (!publicidade.mostrarEspacosVazios) return "";
 
-  const modelo = (dados.anuncios[espaco] || [])[0] || {};
   return `<aside class="anuncio anuncio-vazio ${extra || ""}" aria-label="Espaço publicitário disponível">
         <span class="anuncio-rotulo">Espaço publicitário</span>
         <div class="anuncio-conteudo">
           <div>
             <b>Anuncie para quem trabalha aqui</b>
-            <p>${escapar(modelo.formato || "Espaço disponível nesta página")}.</p>
+            <p>${escapar(definicao.formato || "Espaço disponível nesta página")}.</p>
             <a href="${url(profundidade, "anuncie/")}">Ver formatos e condições →</a>
           </div>
         </div>
@@ -76,14 +102,23 @@ function cartaoEmpresa(empresa, profundidade) {
     .map((tag) => `<span class="etiqueta">${escapar(tag)}</span>`)
     .join("");
 
+  /* A capa fica atrás da categoria, do nome e do logotipo. Quando existe,
+     o cabeçalho ganha um véu escuro para o texto continuar legível sobre
+     qualquer foto. */
+  const capa = empresa.capa
+    ? ` cartao-cabeca-capa" style="background-image:url('${escapar(u(empresa.capa))}')"`
+    : '"';
+
   return `<a class="cartao${empresa.temImagem ? " cartao-com-imagem" : ""}" data-area="${escapar(empresa.categoria)}" href="${u("empresas/" + empresa.slug + "/")}">
-          <div class="cartao-topo">
-            <span class="cartao-categoria">${escapar(empresa.categoriaIcone)} ${escapar(empresa.categoriaNome)}</span>
-            ${empresa.demo ? '<span class="etiqueta etiqueta-demo">demo</span>' : ""}
-          </div>
-          <div class="cartao-identidade">
-            ${marcaEmpresa(empresa, profundidade)}
-            <h3>${escapar(empresa.nome)}</h3>
+          <div class="cartao-cabeca${capa}>
+            <div class="cartao-topo">
+              <span class="cartao-categoria">${escapar(empresa.categoriaIcone)} ${escapar(empresa.categoriaNome)}</span>
+              ${empresa.demo ? '<span class="etiqueta etiqueta-demo">demo</span>' : ""}
+            </div>
+            <div class="cartao-identidade">
+              ${marcaEmpresa(empresa, profundidade)}
+              <h3>${escapar(empresa.nome)}</h3>
+            </div>
           </div>
           <p>${escapar(empresa.descricao)}</p>
           ${tags ? `<div class="tags">${tags}</div>` : ""}
@@ -1022,15 +1057,25 @@ function anuncie(dados) {
   const moeda = (v) => "R$ " + Number(v).toLocaleString("pt-BR");
   const comDesconto = (v) => Math.round(v * (1 - desconto / 100));
 
-  const espacos = Object.keys(dados.anuncios)
-    .map((espaco) => (dados.anuncios[espaco] || [])[0])
-    .filter((a) => a && a.tabela)
+  const espacos = (dados.espacos || [])
+    .filter((e) => e.tabela)
+    .slice()
     .sort((a, b) => b.tabela.mensal - a.tabela.mensal);
 
-  const ocupado = (a) => (dados.anuncios[a.espaco] || []).some((x) => x.ativo);
+  /* Um espaço com rodízio não está "ocupado": ainda cabe anunciante até o
+     limite dele. É isso que o anunciante precisa saber para decidir. */
+  const emCartaz = (e) => (dados.anuncios[e.id] || []).length;
+  const vagas = (e) => Math.max(0, (Number(e.limite) || 1) - emCartaz(e));
+  const situacao = (e) => {
+    const livres = vagas(e);
+    if (!livres) return { rotulo: "lotado", classe: "" };
+    if (!emCartaz(e)) return { rotulo: "disponível", classe: "etiqueta-destaque" };
+    return { rotulo: livres === 1 ? "1 vaga" : livres + " vagas", classe: "etiqueta-destaque" };
+  };
 
   const linhas = espacos.map((a) => {
     const t = a.tabela;
+    const s = situacao(a);
     return `<tr>
             <td>
               <strong>${escapar(t.nome)}</strong>
@@ -1040,22 +1085,26 @@ function anuncie(dados) {
             <td class="valor">${moeda(t.mensal)}<span class="tabela-sub">por mês</span></td>
             <td class="valor">${moeda(t.trimestral)}<span class="tabela-sub">3 meses</span></td>
             <td class="valor">${moeda(t.semestral)}<span class="tabela-sub">6 meses</span></td>
-            <td><span class="etiqueta ${ocupado(a) ? "" : "etiqueta-destaque"}">${ocupado(a) ? "ocupado" : "disponível"}</span></td>
+            <td><span class="etiqueta ${s.classe}">${escapar(s.rotulo)}</span></td>
           </tr>`;
   }).join("\n          ");
 
-  const cartoes = espacos.map((a) => `<div class="cartao">
+  const cartoes = espacos.map((a) => {
+    const s = situacao(a);
+    return `<div class="cartao">
             <div class="cartao-topo">
               <span class="cartao-categoria">📐 ${escapar(a.tabela.medida)}</span>
-              <span class="etiqueta ${ocupado(a) ? "" : "etiqueta-destaque"}">${ocupado(a) ? "ocupado" : "disponível"}</span>
+              <span class="etiqueta ${s.classe}">${escapar(s.rotulo)}</span>
             </div>
             <h3>${escapar(a.tabela.nome)}</h3>
             <p>${escapar(a.tabela.argumento)}</p>
+            <p class="dica-rodizio">Até ${a.limite} ${a.limite === 1 ? "campanha" : "campanhas"} em rodízio, trocando a cada ${a.intervalo} segundos.</p>
             <div class="cartao-rodape">
               <span class="etiqueta etiqueta-torre">${moeda(a.tabela.mensal)}/mês</span>
               <span>${moeda(comDesconto(a.tabela.mensal))} para condômino</span>
             </div>
-          </div>`).join("\n          ");
+          </div>`;
+  }).join("\n          ");
 
   const conteudo = `    <section class="secao">
       <div class="container">

@@ -166,11 +166,16 @@
     return (
       '<a class="cartao' + (empresa.temImagem ? " cartao-com-imagem" : "") +
         '" data-area="' + escapar(empresa.categoria) + '" href="' + baseUrl + "empresas/" + escapar(empresa.slug) + '/">' +
-        '<div class="cartao-topo">' +
-          '<span class="cartao-categoria">' + escapar(empresa.categoriaIcone) + " " + escapar(empresa.categoriaNome) + "</span>" +
-          (empresa.demo ? '<span class="etiqueta etiqueta-demo">demo</span>' : "") +
+        '<div class="cartao-cabeca' +
+          (empresa.capa
+            ? ' cartao-cabeca-capa" style="background-image:url(\'' + escapar(baseUrl + empresa.capa) + '\')"'
+            : '"') + '>' +
+          '<div class="cartao-topo">' +
+            '<span class="cartao-categoria">' + escapar(empresa.categoriaIcone) + " " + escapar(empresa.categoriaNome) + "</span>" +
+            (empresa.demo ? '<span class="etiqueta etiqueta-demo">demo</span>' : "") +
+          "</div>" +
+          '<div class="cartao-identidade">' + marca(empresa) + "<h3>" + escapar(empresa.nome) + "</h3></div>" +
         "</div>" +
-        '<div class="cartao-identidade">' + marca(empresa) + "<h3>" + escapar(empresa.nome) + "</h3></div>" +
         "<p>" + escapar(empresa.descricao) + "</p>" +
         (tags ? '<div class="tags">' + tags + "</div>" : "") +
         '<div class="cartao-rodape">' +

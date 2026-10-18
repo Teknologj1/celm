@@ -84,7 +84,8 @@ data/            ← a fonte da verdade (conteúdo do guia)
   centro.json      dados do complexo: endereço, torres, estrutura, imagens, contato
   categorias.json  áreas de atuação e sinônimos usados na busca
   empresas.json    as empresas do guia
-  anuncios.json    os espaços publicitários e as campanhas em cartaz
+  espacos.json     os quatro espaços publicitários: formato, limite e preço
+  anuncios.json    as campanhas em cartaz, cada uma num espaço
   boletins.json    as edições do boletim informativo
 build.js         ← gerador: lê data/ e escreve as páginas
 build/
@@ -146,6 +147,7 @@ Acrescente um objeto ao vetor em `data/empresas.json`:
   "horario": "Seg a sex, 9h às 18h",
   "responsavel": "Nome do responsável",
   "logo": "assets/img/empresas/aurora-advocacia.svg",
+  "capa": "assets/img/empresas/aurora-advocacia-capa.jpg",
   "beneficio": "Condição especial oferecida aos condôminos.",
   "destaque": false,
   "demo": false
@@ -160,6 +162,8 @@ Acrescente um objeto ao vetor em `data/empresas.json`:
 | `beneficio` | não | preenchido, a empresa aparece na página **Vantagens** |
 | `destaque` | não | `true` coloca a empresa na vitrine da página inicial |
 | `logo` | não | caminho do logotipo, enviado pelo painel; **com logo, a empresa sobe na lista geral** |
+| `capa` | não | imagem deitada que entra como fundo do cabeçalho do cartão |
+| `descricao` | sim | até 220 caracteres: o cartão mostra três linhas |
 | `demo` | não | `true` exibe a etiqueta de dado fictício |
 
 Depois, rode `npm run build` e faça commit das alterações (incluindo o HTML
@@ -202,6 +206,16 @@ Ficam em `assets/img/empresas/` e são apontados pelo campo `logo`. O formato
 quadrado (400×400, PNG ou SVG) é o que melhor se encaixa no cartão e na ficha.
 No painel, o arquivo é escolhido dentro da própria ficha da empresa: enviar
 pelo GitHub e depois digitar o caminho não é mais necessário.
+
+Além do logotipo, cada empresa pode ter uma **capa**: uma imagem deitada
+(800×450) que entra como fundo do cabeçalho do cartão, atrás da categoria, do
+nome e do próprio logotipo. Um véu escuro é aplicado por cima para que o texto
+continue legível sobre qualquer foto, clara ou escura.
+
+A descrição é limitada a **220 caracteres** e o cartão mostra três linhas. Não
+é capricho tipográfico: sem limite, uma empresa com três parágrafos estica a
+fileira inteira da grade e as outras ficam com um vão branco embaixo. O
+formulário do painel mostra o contador enquanto se escreve.
 
 Empresa sem `logo` não fica sem nada: o site desenha um monograma com as
 iniciais dela. Mas **só quem envia imagem aparece primeiro na lista geral** —
@@ -251,51 +265,83 @@ data como prefixo, de modo que uma edição nova nunca sobrescreve a anterior.
 
 ## Espaços publicitários
 
-São quatro, definidos em `data/anuncios.json`:
+São quatro lugares fixos no site. Cada um comporta **várias campanhas em
+rodízio**: elas ocupam o mesmo espaço e se revezam por tempo.
 
-| `espaco` | Onde aparece |
-| --- | --- |
-| `home` | Faixa na página inicial, abaixo das categorias |
-| `diretorio` | Ao final da lista de resultados do diretório |
-| `empresa` | Bloco na lateral de cada ficha de empresa |
-| `torre` | Faixa ao final das páginas de torre e de categoria |
+| `espaco` | Onde aparece | Campanhas | Troca |
+| --- | --- | --- | --- |
+| `home` | Faixa na página inicial, abaixo das categorias | até 5 | 8 s |
+| `diretorio` | Ao final da lista de resultados do diretório | até 10 | 9 s |
+| `empresa` | Bloco na lateral de cada ficha de empresa | até 10 | 10 s |
+| `torre` | Faixa ao final das páginas de torre e de categoria | até 15 | 10 s |
+
+Essa separação é o que mantém a manutenção simples:
+
+- **`data/espacos.json`** descreve os lugares — nome, formato, limite,
+  intervalo do rodízio e tabela de preços. É estrutura do site e **não muda
+  pelo painel**: mudar o limite de um espaço, ou o tempo de troca, é editar um
+  número aqui.
+- **`data/anuncios.json`** é a lista de campanhas, cada uma apontando para um
+  `espaco`. É o que o painel grava.
+
+### Como o rodízio funciona
+
+Todas as campanhas do espaço vão no HTML; o script apenas escolhe qual está
+visível. Três decisões que não são óbvias e que estão no código:
+
+1. **O início é sorteado a cada visita.** Se todos começassem pela primeira,
+   quem fosse cadastrado primeiro levaria quase toda a audiência — a maioria
+   das visitas dura menos que um ciclo completo. Sorteando, as campanhas do
+   mesmo espaço se aproximam da mesma exposição.
+2. **O relógio para quando o espaço não está na tela** e quando a aba está em
+   segundo plano. Girar campanha que ninguém vê gasta exibição e, no celular,
+   bateria.
+3. **Passar o mouse ou focar com o teclado congela a troca.** Trocar o anúncio
+   debaixo do cursor é o jeito mais certo de o clique cair no anunciante
+   errado.
+
+Com até 8 campanhas o espaço mostra marcadores clicáveis; acima disso, um
+contador (`3 de 12`) — quinze bolinhas viram uma régua ilegível e estouram a
+largura do celular. Sem JavaScript, a primeira campanha continua aparecendo:
+ninguém fica fora do ar por causa de um script que não rodou.
 
 ### Colocar uma campanha no ar pelo painel
 
-É o caminho normal, e não exige mexer em arquivo: entre em `/admin/` com a
-conta `comercial`, abra a aba **Anúncios** e cada um dos quatro espaços
-aparece como um cartão, com etiqueta de estado — `NO AR`, `LIVRE`,
-`AGENDADO` ou `ENCERRADO`. Em **Editar campanha** entram título, texto,
-imagem, link e anunciante, mais o período (`início` e `fim`, ambos
-opcionais). A peça é **enviada ali mesmo**, escolhendo o arquivo — antes era
-preciso digitar o caminho de um arquivo que já estivesse no repositório, o que
-na prática não era usável. **Tirar do ar** desliga sem apagar o que foi preenchido, de modo
-que a mesma campanha volta depois com um clique.
+Entre em `/admin/` com a conta `comercial` e abra a aba **Anúncios**. Cada
+espaço é um cartão com as campanhas dentro, o selo `3 de 10` dizendo quantas
+estão no ar e **+ Nova campanha** no rodapé. Em cada campanha há **Editar**,
+**Desligar** (sai do rodízio sem perder o que foi preenchido) e **Remover**.
 
-O período é respeitado na geração do site: uma campanha ativa mas fora da
-janela não aparece em nenhuma página. Dá para preparar a campanha do mês
-seguinte hoje e deixá-la entrar sozinha — lembrando que, como o site é
-estático, a virada só acontece na próxima publicação.
+O formulário pede título, texto, anunciante, link e o período (`início` e
+`fim`, ambos opcionais). A peça é **enviada ali mesmo**, escolhendo o arquivo.
 
-A API valida antes de gravar: campanha no ar sem título é recusada, período
-invertido (fim antes do início) é recusado, e link que não comece com
-`http://` ou `https://` é recusado.
+O período é respeitado na geração do site: campanha ativa mas fora da janela
+não ocupa vaga nem aparece. Dá para deixar a campanha do mês que vem pronta
+sem travar a deste mês — lembrando que, como o site é estático, a virada só
+acontece na próxima publicação.
+
+A API valida antes de gravar: campanha sem título é recusada, período
+invertido é recusado, link que não comece com `http://` ou `https://` é
+recusado, e passar do limite do espaço devolve *"espaço lotado"* dizendo
+quantas cabem.
 
 ### Ou direto no arquivo
 
-Preencha o registro correspondente em `data/anuncios.json` e marque
-`"ativo": true`:
+Acrescente um registro ao vetor em `data/anuncios.json`. O `id` é livre; o
+painel gera um a partir do anunciante:
 
 ```json
 {
-  "id": "home-destaque",
+  "id": "home-clinica-sorriso",
   "espaco": "home",
   "ativo": true,
   "titulo": "Título da campanha",
   "texto": "Uma linha de apoio.",
   "imagem": "assets/img/anuncios/campanha.png",
   "link": "https://anunciante.com.br",
-  "anunciante": "Nome do anunciante"
+  "anunciante": "Nome do anunciante",
+  "inicio": "2026-11-01",
+  "fim": "2026-11-30"
 }
 ```
 
@@ -309,7 +355,7 @@ como manda a recomendação do Google para conteúdo pago.
 
 ### Tabela de referência
 
-Os valores ficam em `data/anuncios.json`, no bloco `tabela` de cada espaço, e
+Os valores ficam em `data/espacos.json`, no bloco `tabela` de cada espaço, e
 são o que a página `/anuncie/` exibe. A tabela em uso:
 
 | Espaço | Onde aparece | Mensal | Trimestral | Semestral |

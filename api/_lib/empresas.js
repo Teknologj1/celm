@@ -8,7 +8,10 @@ const CAMPOS_TEXTO = [
 ];
 
 const LIMITES = {
-  nome: 120, descricao: 600, sala: 40, telefone: 40, whatsapp: 20,
+  /* A descrição aparece no cartão do diretório, onde todos têm a mesma
+     altura. Acima de ~220 caracteres o texto é cortado em tela e ninguém lê
+     o final; melhor avisar na hora de escrever. */
+  nome: 120, descricao: 220, sala: 40, telefone: 40, whatsapp: 20,
   email: 160, site: 300, instagram: 80, horario: 160, responsavel: 120,
   beneficio: 400, logo: 300, capa: 300
 };
@@ -37,6 +40,14 @@ function validar(entrada, { categorias, torres, slugsExistentes, slugAtual }) {
 
   if (!empresa.nome) problemas.push("Informe o nome da empresa.");
   if (!empresa.descricao) problemas.push("Informe a descrição.");
+
+  /* Caminho de imagem só pode apontar para as pastas do próprio site: é o
+     que o painel grava ao enviar o arquivo. */
+  ["logo", "capa"].forEach((campo) => {
+    if (empresa[campo] && !/^assets\/img\/[a-z0-9/._-]+$/i.test(empresa[campo])) {
+      problemas.push(`O campo ${campo} precisa ser uma imagem enviada pelo painel.`);
+    }
+  });
   if (!empresa.sala) problemas.push("Informe a sala.");
 
   empresa.categoria = texto(entrada.categoria, 60);

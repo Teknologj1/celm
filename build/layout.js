@@ -227,6 +227,7 @@ ${camadaDeBusca(dados, profundidade, baseFixa)}
 ${rodape(dados, profundidade, baseFixa)}
   <script src="${u("assets/js/app.js")}" defer></script>
   <script src="${u("assets/js/busca-rapida.js")}" defer></script>
+  <script src="${u("assets/js/anuncios.js")}" defer></script>
 ${scripts}
 </body>
 </html>

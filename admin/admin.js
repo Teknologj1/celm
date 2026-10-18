@@ -162,7 +162,7 @@
     if (empresa) {
       ["nome", "categoria", "torre", "andar", "sala", "descricao", "responsavel",
        "telefone", "whatsapp", "email", "site", "instagram", "horario",
-       "beneficio", "logo"].forEach(function (campo) {
+       "beneficio", "logo", "capa"].forEach(function (campo) {
         var elemento = document.getElementById(campo);
         if (elemento) elemento.value = empresa[campo] == null ? "" : empresa[campo];
       });
@@ -171,10 +171,17 @@
       document.getElementById("demo").checked = empresa.demo === true;
     }
 
+    document.getElementById("arte-logo").value = "";
+    document.getElementById("arte-capa").value = "";
     document.getElementById("arte-logo-estado").textContent =
       empresa && empresa.logo
         ? "Logotipo já enviado. Escolha outro arquivo só para substituir."
         : "Quadrado, 400×400. Com logotipo, a empresa aparece antes na lista geral.";
+    document.getElementById("arte-capa-estado").textContent =
+      empresa && empresa.capa
+        ? "Capa já enviada. Escolha outro arquivo só para substituir."
+        : "Deitada, 800×450. Entra como fundo atrás da categoria, do nome e do logotipo no cartão.";
+    atualizarContagem();
 
     modal.hidden = false;
     document.getElementById("nome").focus();
@@ -386,8 +393,20 @@
   }
 
   ligarEnvio("arte-logo", "logo", "arte-logo-estado", "empresa", "salvar");
+  ligarEnvio("arte-capa", "capa", "arte-capa-estado", "empresa", "salvar");
   ligarEnvio("b-pdf", "b-arquivo", "b-pdf-estado", "boletim", "salvar-boletim");
   ligarEnvio("a-arte", "a-imagem", "a-arte-estado", "anuncio", "salvar-anuncio");
+
+
+  /* Contador da descrição: o limite existe por causa do cartão, e saber
+     quanto falta evita escrever um parágrafo que será cortado. */
+  var campoDescricao = document.getElementById("descricao");
+  var contaDescricao = document.getElementById("conta-descricao");
+
+  function atualizarContagem() {
+    contaDescricao.textContent = campoDescricao.value.length;
+  }
+  campoDescricao.addEventListener("input", atualizarContagem);
 
 
   /* ---------------- boletim informativo ---------------- */
@@ -525,24 +544,19 @@
   var problemasAnuncio = document.getElementById("problemas-anuncio");
   var salvandoAnuncio = document.getElementById("salvando-anuncio");
 
-  var NOMES_ESPACO = {
-    home: "Página inicial",
-    diretorio: "Diretório de empresas",
-    empresa: "Fichas de empresa",
-    torre: "Páginas de torre e categoria"
-  };
-
   function hoje() {
     return new Date().toISOString().slice(0, 10);
   }
 
-  /* Situação real do espaço: no ar, agendado, encerrado ou livre. */
+  /* Situação da campanha: no ar, agendada, encerrada ou desligada. */
   function situacao(a) {
-    if (!a.ativo) return { classe: "livre", rotulo: "livre" };
-    if (a.inicio && hoje() < a.inicio) return { classe: "agendado", rotulo: "agendado" };
-    if (a.fim && hoje() > a.fim) return { classe: "encerrado", rotulo: "encerrado" };
+    if (!a.ativo) return { classe: "livre", rotulo: "desligada" };
+    if (a.inicio && hoje() < a.inicio) return { classe: "agendado", rotulo: "agendada" };
+    if (a.fim && hoje() > a.fim) return { classe: "encerrado", rotulo: "encerrada" };
     return { classe: "no-ar", rotulo: "no ar" };
   }
+
+  function noAr(a) { return situacao(a).classe === "no-ar"; }
 
   function periodoLegivel(a) {
     var br = function (d) { return d ? d.split("-").reverse().join("/") : ""; };
@@ -552,35 +566,68 @@
     return "Sem data definida";
   }
 
-  function desenharAnuncios() {
-    var lista = estado.anuncios || [];
-    var noAr = lista.filter(function (a) { return situacao(a).classe === "no-ar"; }).length;
+  function campanhasDe(espacoId) {
+    return (estado.anuncios || []).filter(function (a) { return a.espaco === espacoId; });
+  }
 
-    resumoAnuncios.textContent = lista.length + " espaços · " +
-      (noAr ? noAr + " no ar" : "nenhum no ar no momento");
+  function acharAnuncio(id) {
+    return (estado.anuncios || []).find(function (a) { return a.id === id; });
+  }
+
+  function acharEspaco(id) {
+    return (estado.espacos || []).find(function (e) { return e.id === id; });
+  }
+
+  /* Um cartão por espaço, com as campanhas dentro. O espaço é o lugar fixo
+     do site; a campanha é o que passa nele. */
+  function desenharAnuncios() {
+    var espacos = estado.espacos || [];
+    var totalNoAr = (estado.anuncios || []).filter(noAr).length;
+
+    resumoAnuncios.textContent = espacos.length + " espaços · " +
+      (totalNoAr ? totalNoAr + (totalNoAr === 1 ? " campanha no ar" : " campanhas no ar")
+                 : "nenhuma campanha no ar");
     estadoAnuncios.hidden = true;
 
-    listaAnuncios.innerHTML = lista.map(function (a) {
-      var s = situacao(a);
+    listaAnuncios.innerHTML = espacos.map(function (e) {
+      var campanhas = campanhasDe(e.id);
+      var ativas = campanhas.filter(noAr).length;
+      var vagas = Math.max(0, e.limite - ativas);
+
+      var linhas = campanhas.length
+        ? campanhas.map(function (a) {
+            var s = situacao(a);
+            return "<li class='campanha-linha'>" +
+              "<span class='selo selo-" + s.classe + "'>" + s.rotulo + "</span>" +
+              "<div class='campanha-dados'>" +
+                "<b>" + escapar(a.titulo) + "</b>" +
+                (a.anunciante ? "<span>" + escapar(a.anunciante) + "</span>" : "") +
+                "<span class='periodo'>" + escapar(periodoLegivel(a)) + "</span>" +
+              "</div>" +
+              "<div class='campanha-acoes'>" +
+                "<button class='btn btn-secundario btn-sm' data-editar-anuncio='" + escapar(a.id) + "'>Editar</button>" +
+                "<button class='btn btn-secundario btn-sm' data-alternar='" + escapar(a.id) + "'>" +
+                  (a.ativo ? "Desligar" : "Ligar") + "</button>" +
+                "<button class='btn btn-secundario btn-sm' data-remover-anuncio='" + escapar(a.id) + "'>Remover</button>" +
+              "</div>" +
+            "</li>";
+          }).join("")
+        : "<li class='campanha-vazia'>Nenhuma campanha. O site exibe o convite para anunciar.</li>";
+
       return "<div class='espaco'>" +
         "<div class='espaco-topo'>" +
-          "<div><h3>" + escapar(NOMES_ESPACO[a.espaco] || a.espaco) + "</h3>" +
-          "<p class='formato'>" + escapar(a.formato || "") + "</p></div>" +
-          "<span class='selo selo-" + s.classe + "'>" + s.rotulo + "</span>" +
+          "<div><h3>" + escapar(e.nome) + "</h3>" +
+          "<p class='formato'>" + escapar(e.formato || "") + "</p></div>" +
+          "<span class='selo selo-" + (vagas ? "livre" : "no-ar") + "'>" +
+            ativas + " de " + e.limite + "</span>" +
         "</div>" +
-        (a.titulo
-          ? "<div class='campanha'><b>" + escapar(a.titulo) + "</b>" +
-            (a.texto ? "<p>" + escapar(a.texto) + "</p>" : "") +
-            (a.anunciante ? "<p>" + escapar(a.anunciante) + "</p>" : "") + "</div>"
-          : "<div class='campanha'><p>Nenhuma campanha preenchida. O site exibe o convite para anunciar.</p></div>") +
-        "<span class='periodo'>" + escapar(periodoLegivel(a)) + "</span>" +
+        "<ul class='campanhas'>" + linhas + "</ul>" +
+        "<p class='dica'>Rodízio a cada " + e.intervalo + " s" +
+          (vagas ? " · cabem mais " + vagas : " · espaço lotado") + "</p>" +
         "<div class='espaco-rodape'>" +
-          "<button class='btn btn-secundario btn-sm' data-editar-anuncio='" + escapar(a.id) + "'>" +
-            (a.titulo ? "Editar campanha" : "Preencher campanha") + "</button>" +
-          (a.titulo
-            ? "<button class='btn btn-secundario btn-sm' data-alternar='" + escapar(a.id) + "'>" +
-              (a.ativo ? "Tirar do ar" : "Colocar no ar") + "</button>"
-            : "") +
+          "<button class='btn btn-secundario btn-sm' data-nova-campanha='" + escapar(e.id) + "'" +
+            (vagas ? "" : " title='O espaço já está no limite; a campanha entra agendada ou desligada'") +
+            ">+ Nova campanha</button>" +
         "</div>" +
       "</div>";
     }).join("");
@@ -588,6 +635,7 @@
 
   function carregarAnuncios() {
     return api("anuncios").then(function (dados) {
+      estado.espacos = dados.espacos || [];
       estado.anuncios = dados.anuncios || [];
       desenharAnuncios();
     }).catch(function (falha) {
@@ -596,24 +644,27 @@
     });
   }
 
-  function acharAnuncio(id) {
-    return (estado.anuncios || []).find(function (a) { return a.id === id; });
-  }
-
-  function abrirAnuncio(a) {
+  function abrirAnuncio(a, espacoId) {
+    var espaco = acharEspaco(a ? a.espaco : espacoId) || {};
     problemasAnuncio.hidden = true;
-    document.getElementById("a-id").value = a.id;
-    document.getElementById("a-formato").textContent = a.formato || "";
+
+    document.getElementById("a-id").value = a ? a.id : "";
+    document.getElementById("a-espaco").value = a ? a.espaco : espacoId;
+    document.getElementById("a-formato").textContent =
+      (espaco.formato || "") + (espaco.limite ? " · até " + espaco.limite + " em rodízio" : "");
     document.getElementById("titulo-anuncio").textContent =
-      (NOMES_ESPACO[a.espaco] || a.espaco);
-    document.getElementById("a-ativo").checked = a.ativo === true;
+      (a ? "Editar campanha" : "Nova campanha") + " — " + (espaco.nome || "");
+    document.getElementById("a-ativo").checked = a ? a.ativo === true : true;
+
     ["titulo", "texto", "anunciante", "link", "imagem", "inicio", "fim"].forEach(function (campo) {
-      document.getElementById("a-" + campo).value = a[campo] || "";
+      document.getElementById("a-" + campo).value = a ? (a[campo] || "") : "";
     });
+
     document.getElementById("a-arte").value = "";
-    document.getElementById("a-arte-estado").textContent = a.imagem
+    document.getElementById("a-arte-estado").textContent = a && a.imagem
       ? "Peça já enviada. Escolha outro arquivo só para substituir."
       : "PNG, JPG, WEBP ou SVG, até 3 MB.";
+
     modalAnuncio.hidden = false;
     document.getElementById("a-titulo").focus();
   }
@@ -627,26 +678,46 @@
   });
 
   listaAnuncios.addEventListener("click", function (evento) {
-    var editar = evento.target.getAttribute("data-editar-anuncio");
-    var alternar = evento.target.getAttribute("data-alternar");
+    var alvo = evento.target;
+    var nova = alvo.getAttribute("data-nova-campanha");
+    var editar = alvo.getAttribute("data-editar-anuncio");
+    var alternar = alvo.getAttribute("data-alternar");
+    var remover = alvo.getAttribute("data-remover-anuncio");
+
+    if (nova) return abrirAnuncio(null, nova);
 
     if (editar) {
       var a = acharAnuncio(editar);
       if (a) abrirAnuncio(a);
       return;
     }
+
     if (alternar) {
-      var alvo = acharAnuncio(alternar);
-      if (!alvo) return;
-      evento.target.disabled = true;
-      evento.target.textContent = "Aguarde...";
+      var campanha = acharAnuncio(alternar);
+      if (!campanha) return;
+      alvo.disabled = true;
+      alvo.textContent = "Aguarde...";
       api("anuncios", {
         method: "POST",
-        body: JSON.stringify(Object.assign({}, alvo, { ativo: !alvo.ativo }))
+        body: JSON.stringify(Object.assign({}, campanha, { ativo: !campanha.ativo }))
       }).then(carregarAnuncios).catch(function (falha) {
         window.alert("Não foi possível alterar: " + falha.message);
         desenharAnuncios();
       });
+      return;
+    }
+
+    if (remover) {
+      var fora = acharAnuncio(remover);
+      if (!fora) return;
+      if (!window.confirm("Remover a campanha \"" + fora.titulo + "\"?")) return;
+      alvo.disabled = true;
+      api("anuncios", { method: "POST", body: JSON.stringify({ id: remover, remover: true }) })
+        .then(carregarAnuncios)
+        .catch(function (falha) {
+          window.alert("Não foi possível remover: " + falha.message);
+          desenharAnuncios();
+        });
     }
   });
 
@@ -658,7 +729,11 @@
     botao.disabled = true;
     salvandoAnuncio.hidden = false;
 
-    var corpo = { id: document.getElementById("a-id").value, ativo: document.getElementById("a-ativo").checked };
+    var corpo = {
+      id: document.getElementById("a-id").value,
+      espaco: document.getElementById("a-espaco").value,
+      ativo: document.getElementById("a-ativo").checked
+    };
     ["titulo", "texto", "anunciante", "link", "imagem", "inicio", "fim"].forEach(function (campo) {
       corpo[campo] = document.getElementById("a-" + campo).value;
     });
@@ -671,6 +746,7 @@
         salvandoAnuncio.hidden = true;
       });
   });
+
 
   /* ---------------- troca da própria senha ---------------- */
   var modalSenha = document.getElementById("modal-senha");

@@ -1,0 +1,66 @@
+[
+  {
+    "id": "home",
+    "nome": "Faixa da página inicial",
+    "formato": "Faixa 970×250 na página inicial, abaixo das categorias",
+    "limite": 5,
+    "intervalo": 8,
+    "tabela": {
+      "nome": "Faixa da página inicial",
+      "medida": "970 × 250 px",
+      "onde": "Página inicial, logo abaixo das categorias",
+      "mensal": 390,
+      "trimestral": 1050,
+      "semestral": 1950,
+      "argumento": "O espaço de maior visibilidade: aparece para todo visitante que entra pelo endereço do guia."
+    }
+  },
+  {
+    "id": "diretorio",
+    "nome": "Cartão no diretório",
+    "formato": "Cartão dentro da lista de resultados, após a primeira linha",
+    "limite": 10,
+    "intervalo": 9,
+    "tabela": {
+      "nome": "Cartão no diretório",
+      "medida": "Cartão na grade",
+      "onde": "Dentro da lista de empresas, ao final da primeira dobra",
+      "mensal": 290,
+      "trimestral": 780,
+      "semestral": 1450,
+      "argumento": "Alcança quem já está procurando um serviço — o momento de maior intenção de contratar."
+    }
+  },
+  {
+    "id": "empresa",
+    "nome": "Bloco nas fichas",
+    "formato": "Bloco 300×250 na lateral das fichas de empresa",
+    "limite": 10,
+    "intervalo": 10,
+    "tabela": {
+      "nome": "Bloco nas fichas",
+      "medida": "300 × 250 px",
+      "onde": "Lateral de todas as 136 fichas de empresa",
+      "mensal": 240,
+      "trimestral": 650,
+      "semestral": 1200,
+      "argumento": "Presente em todas as fichas: é o espaço com mais páginas de exibição no site."
+    }
+  },
+  {
+    "id": "torre",
+    "nome": "Faixa de torre e categoria",
+    "formato": "Faixa ao final das páginas de torre e categoria",
+    "limite": 15,
+    "intervalo": 10,
+    "tabela": {
+      "nome": "Faixa de torre e categoria",
+      "medida": "970 × 250 px",
+      "onde": "Final das páginas de torre e de categoria",
+      "mensal": 190,
+      "trimestral": 510,
+      "semestral": 950,
+      "argumento": "Permite falar com quem busca uma área específica — útil para anúncio segmentado."
+    }
+  }
+]

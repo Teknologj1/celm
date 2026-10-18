@@ -104,7 +104,7 @@
       </div>
 
       <p id="estado-anuncios" class="estado-carregando">Carregando espaços...</p>
-      <div id="lista-anuncios" class="grade grade-2"></div>
+      <div id="lista-anuncios" class="grade"></div>
     </section>
   </main>
 
@@ -161,11 +161,12 @@
 
       <form id="form-anuncio" novalidate>
         <input type="hidden" id="a-id">
+        <input type="hidden" id="a-espaco">
         <p id="a-formato" class="dica" style="margin:0 0 16px"></p>
 
         <label class="caixa" style="margin-bottom:16px">
           <input type="checkbox" id="a-ativo">
-          <span><strong>No ar</strong> — desmarque para tirar a campanha do site</span>
+          <span><strong>No ar</strong> — desmarque para tirar esta campanha do rodízio</span>
         </label>
 
         <div class="grade-form">
@@ -249,8 +250,10 @@
 
           <div class="campo campo-largo">
             <label for="descricao">Descrição *</label>
-            <textarea id="descricao" name="descricao" required maxlength="600"
+            <textarea id="descricao" name="descricao" required maxlength="220"
                       placeholder="Duas ou três linhas sobre o que a empresa faz."></textarea>
+            <small class="dica"><span id="conta-descricao">0</span>/220 — o cartão do
+              diretório mostra até três linhas; o que passar disso fica cortado.</small>
           </div>
 
           <div class="campo">
@@ -293,11 +296,18 @@
             <textarea id="beneficio" name="beneficio" maxlength="400"
                       placeholder="Aparece na página de Vantagens."></textarea>
           </div>
-          <div class="campo campo-largo">
+          <div class="campo">
             <label for="arte-logo">Logotipo</label>
             <input id="arte-logo" type="file" accept="image/png,image/jpeg,image/webp,image/svg+xml">
             <input type="hidden" id="logo" name="logo">
             <small class="dica" id="arte-logo-estado">Quadrado, 400×400. Com logotipo, a empresa aparece antes na lista geral.</small>
+          </div>
+
+          <div class="campo">
+            <label for="arte-capa">Imagem de capa</label>
+            <input id="arte-capa" type="file" accept="image/png,image/jpeg,image/webp">
+            <input type="hidden" id="capa" name="capa">
+            <small class="dica" id="arte-capa-estado">Deitada, 800×450. Entra como fundo atrás da categoria, do nome e do logotipo no cartão.</small>
           </div>
 
           <div class="campo campo-largo caixas">
