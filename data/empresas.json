@@ -1879,6 +1879,31 @@
     "demo": false
   },
   {
+    "slug": "instituto-iois",
+    "nome": "Instituto IOIS",
+    "categoria": "odontologia",
+    "tags": [
+      "Odontologia",
+      "Ensino"
+    ],
+    "descricao": "O Instituto IOIS é uma organização dedicada à saúde e ao desenvolvimento humano, social, educacional e tecnológico, criada com o propósito de transformar vidas por meio do cuidado, do conhecimento, da inovação, da inclusão e do fortalecimento de valores fundamentais para a sociedade.\nO Instituto nasce com a missão de conectar saúde, educação, tecnologia, impacto social e desenvolvimento comunitário, criando projetos que aproximam pessoas de oportunidades reais de crescimento pessoal, profissional e espiritual.",
+    "torre": "B",
+    "andar": 4,
+    "sala": "401",
+    "telefone": "(61) 99698-7275",
+    "whatsapp": "5561996987275",
+    "email": "contato@iois.com.br",
+    "site": "https://iois.com.br",
+    "instagram": "@institutoiois",
+    "horario": "Seg a Sex de 08:00h às 18:00h",
+    "responsavel": "Drª Iolanda Schroeder",
+    "beneficio": "",
+    "logo": "assets/img/empresas/iois-odontologia.png",
+    "capa": "",
+    "destaque": true,
+    "demo": false
+  },
+  {
     "slug": "instituto-labissiere-de-odontologia",
     "nome": "Instituto Labissiere de Odontologia",
     "categoria": "odontologia",
@@ -2020,30 +2045,6 @@
     "logo": "",
     "capa": "",
     "destaque": false,
-    "demo": false
-  },
-  {
-    "slug": "iois-odontologia",
-    "nome": "Iois Odontologia",
-    "categoria": "odontologia",
-    "tags": [
-      "Odontologia e Ensino"
-    ],
-    "descricao": "Odontologia e Ensino. Instituto Iois.",
-    "torre": "B",
-    "andar": 4,
-    "sala": "401",
-    "telefone": "(61) 99698-7275",
-    "whatsapp": "5561996987275",
-    "email": "contato@iois.com.br",
-    "site": "https://iois.com.br",
-    "instagram": "@institutoiois",
-    "horario": "",
-    "responsavel": "",
-    "beneficio": "",
-    "logo": "assets/img/empresas/iois-odontologia.png",
-    "capa": "",
-    "destaque": true,
     "demo": false
   },
   {
