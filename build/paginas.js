@@ -66,7 +66,7 @@ function cartaoEmpresa(empresa, profundidade) {
     .map((tag) => `<span class="etiqueta">${escapar(tag)}</span>`)
     .join("");
 
-  return `<a class="cartao${empresa.temImagem ? " cartao-com-imagem" : ""}" href="${u("empresas/" + empresa.slug + "/")}">
+  return `<a class="cartao${empresa.temImagem ? " cartao-com-imagem" : ""}" data-area="${escapar(empresa.categoria)}" href="${u("empresas/" + empresa.slug + "/")}">
           <div class="cartao-topo">
             <span class="cartao-categoria">${escapar(empresa.categoriaIcone)} ${escapar(empresa.categoriaNome)}</span>
             ${empresa.demo ? '<span class="etiqueta etiqueta-demo">demo</span>' : ""}
@@ -147,7 +147,7 @@ function home(dados) {
         </div>
         <div class="vitrine-aba revelar">
           <div class="vitrine">
-            ${categorias.slice().sort((a, b) => b.empresas.length - a.empresas.length || a.nome.localeCompare(b.nome, "pt-BR")).map((c) => `<a class="cartao-cat" href="${url(0, "categorias/" + c.slug + "/")}">
+            ${categorias.slice().sort((a, b) => b.empresas.length - a.empresas.length || a.nome.localeCompare(b.nome, "pt-BR")).map((c) => `<a class="cartao-cat" data-area="${escapar(c.slug)}" href="${url(0, "categorias/" + c.slug + "/")}">
               <span class="icone" aria-hidden="true">${escapar(c.icone)}</span>
               <span>
                 <b>${escapar(c.nome)}</b>
@@ -387,7 +387,7 @@ function empresa(dados, item) {
         ${escapar(item.nome)}
       </nav>
 
-      <header class="empresa-topo empresa-topo-com-marca">
+      <header class="empresa-topo empresa-topo-com-marca" data-area="${escapar(item.categoria)}">
         ${marcaEmpresa(item, 2, "grande")}
         <div class="empresa-cabecalho-texto">
         <div class="empresa-meta">
@@ -496,7 +496,7 @@ function listaCategorias(dados) {
           <p>As ${dados.estatisticas.empresas} empresas do complexo, organizadas em ${dados.estatisticas.categorias} áreas de atuação.</p>
         </div>
         <div class="grade grade-3 revelar-fila">
-          ${dados.categorias.map((c) => `<a class="cartao-cat" href="${url(1, "categorias/" + c.slug + "/")}">
+          ${dados.categorias.map((c) => `<a class="cartao-cat" data-area="${escapar(c.slug)}" href="${url(1, "categorias/" + c.slug + "/")}">
             <span class="icone" aria-hidden="true">${escapar(c.icone)}</span>
             <span>
               <b>${escapar(c.nome)}</b>
@@ -612,7 +612,7 @@ function torre(dados, item) {
         </div>
 
         <div class="grade grade-3 revelar-fila" style="margin-bottom:30px">
-          ${item.categorias.map((c) => `<a class="cartao-cat" href="${url(2, base + c.slug + "/")}">
+          ${item.categorias.map((c) => `<a class="cartao-cat" data-area="${escapar(c.slug)}" href="${url(2, base + c.slug + "/")}">
             <span class="icone" aria-hidden="true">${escapar(c.icone)}</span>
             <span>
               <b>${escapar(c.nome)}</b>

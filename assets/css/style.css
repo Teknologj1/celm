@@ -37,13 +37,14 @@
   --accent-texto: #85682c;
   --accent-soft:  #f4eee2;
 
-  --bg:           #f2f2f2;
+  --bg:           #fbfaf8;
   --surface:      #ffffff;
-  --surface-alt:  #e9eaed;
+  --surface-alt:  #f4f2ee;
   --ink:          #142741;
-  --ink-soft:     #45505f;
-  --muted:        #5c6676;
-  --border:       #dcdee4;
+  --ink-soft:     #42506a;
+  --muted:        #5d6880;
+  --border:       #e7e4dd;
+  --borda-forte:  #d6d1c7;
   --shadow:       0 1px 2px rgba(16, 32, 48, .05), 0 10px 30px -12px rgba(16, 32, 48, .14);
   --shadow-lg:    0 2px 6px rgba(16, 32, 48, .06), 0 24px 56px -16px rgba(16, 32, 48, .24);
   --shadow-realce: 0 2px 8px rgba(15, 76, 117, .1), 0 28px 64px -20px rgba(15, 76, 117, .3);
@@ -320,6 +321,12 @@ p  { margin: 0 0 1em; }
   gap: 20px; flex-wrap: wrap; margin-bottom: 38px;
 }
 .secao-topo h2 { margin: 0; }
+.olho::before {
+  content: "";
+  display: inline-block; width: 22px; height: 1px; margin-right: 10px;
+  vertical-align: middle;
+  background: var(--accent);
+}
 .olho {
   display: block; font-size: .72rem; font-weight: 600; letter-spacing: .18em;
   text-transform: uppercase; color: var(--accent-texto); margin-bottom: 14px;
@@ -363,10 +370,14 @@ p  { margin: 0 0 1em; }
 }
 a.cartao:hover, .cartao:hover { text-decoration: none; }
 a.cartao:hover {
-  transform: translateY(-4px);
+  transform: translateY(-5px);
   box-shadow: var(--shadow-realce);
-  border-color: color-mix(in srgb, var(--brand) 45%, var(--border));
+  border-color: color-mix(in srgb, var(--area, var(--brand)) 40%, var(--border));
 }
+a.cartao:hover h3 { color: var(--area, var(--brand)); }
+.cartao h3 { transition: color var(--rapido); }
+a.cartao .cartao-rodape span:last-child { transition: transform var(--medio); display: inline-block; }
+a.cartao:hover .cartao-rodape span:last-child { transform: translateX(3px); }
 a.cartao:active { transform: translateY(-1px); }
 a.cartao::after {
   content: "";
@@ -386,6 +397,11 @@ a.cartao:hover::after { box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--bra
   display: flex; align-items: center; justify-content: space-between; gap: 10px;
   font-size: .85rem; color: var(--muted);
 }
+/* Salas como "220/222/224" empurravam o "Ver ficha" para a linha de baixo. */
+.cartao-rodape .etiqueta-torre {
+  min-width: 0; overflow: hidden; text-overflow: ellipsis;
+}
+.cartao-rodape > span:last-child { flex: none; }
 
 .cartao-categoria {
   display: inline-flex; align-items: center; gap: 6px;
@@ -461,6 +477,64 @@ a.cartao:hover::after { box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--bra
 .vitrine .cartao-cat .icone {
   width: 46px; height: 46px; display: grid; place-items: center;
   background: var(--surface-alt); border-radius: 13px; font-size: 1.3rem;
+}
+
+/* ---------- Cor por área de atuação --------------------------------------
+   Cada categoria tem um matiz próprio, como a sinalização por setor de um
+   shopping: o olho distingue odontologia de advocacia antes de ler. Todos
+   foram medidos acima de 5:1 sobre o fundo claro. */
+[data-area] { --area: var(--brand); }
+[data-area="odontologia"] { --area: #0d6478; }
+[data-area="psicologia"]  { --area: #6a4580; }
+[data-area="medicina"]    { --area: #0f6b4f; }
+[data-area="estetica"]    { --area: #a03f66; }
+[data-area="nutricao"]    { --area: #56741f; }
+[data-area="terapias"]    { --area: #2a5c9c; }
+[data-area="advocacia"]   { --area: #26405f; }
+[data-area="financas"]    { --area: #8a5620; }
+[data-area="consultoria"] { --area: #455668; }
+[data-area="engenharia"]  { --area: #9b4f26; }
+[data-area="servicos"]    { --area: #7a6118; }
+[data-area="educacao"]    { --area: #4a4a8f; }
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) [data-area="odontologia"] { --area: #6cc3d6; }
+  :root:not([data-theme="light"]) [data-area="psicologia"]  { --area: #c49ad8; }
+  :root:not([data-theme="light"]) [data-area="medicina"]    { --area: #5fc9a3; }
+  :root:not([data-theme="light"]) [data-area="estetica"]    { --area: #e793b4; }
+  :root:not([data-theme="light"]) [data-area="nutricao"]    { --area: #a8ca63; }
+  :root:not([data-theme="light"]) [data-area="terapias"]    { --area: #8ab4ec; }
+  :root:not([data-theme="light"]) [data-area="advocacia"]   { --area: #9db5d8; }
+  :root:not([data-theme="light"]) [data-area="financas"]    { --area: #dda56a; }
+  :root:not([data-theme="light"]) [data-area="consultoria"] { --area: #a3b3c6; }
+  :root:not([data-theme="light"]) [data-area="engenharia"]  { --area: #e2996e; }
+  :root:not([data-theme="light"]) [data-area="servicos"]    { --area: #ceb45e; }
+  :root:not([data-theme="light"]) [data-area="educacao"]    { --area: #a0a0e0; }
+}
+
+/* A cor da área aparece numa fita no topo do cartão e na etiqueta. */
+.cartao[data-area]::before {
+  content: "";
+  position: absolute; left: 0; right: 0; top: 0; height: 3px;
+  border-radius: var(--radius) var(--radius) 0 0;
+  background: var(--area);
+  opacity: 0;
+  transition: opacity var(--medio);
+}
+.cartao[data-area]:hover::before { opacity: 1; }
+
+[data-area] .cartao-categoria {
+  color: var(--area);
+  background: color-mix(in srgb, var(--area) 11%, transparent);
+}
+.cartao-cat[data-area] .icone {
+  background: color-mix(in srgb, var(--area) 12%, transparent);
+}
+.cartao-cat[data-area]:hover {
+  border-color: color-mix(in srgb, var(--area) 42%, var(--border));
+}
+.busca-resultados [data-area] .busca-icone {
+  background: color-mix(in srgb, var(--area) 13%, transparent);
 }
 
 /* ---------- Etiquetas ----------------------------------------------------- */
@@ -656,11 +730,19 @@ a.chip:hover { text-decoration: none; }
   object-fit: contain; background: var(--surface-alt);
   border: 1px solid var(--border);
 }
+/* O monograma veste a cor da área: o cartão ganha vida mesmo sem logotipo. */
 .marca-empresa.monograma {
   display: grid; place-items: center;
-  font-family: Georgia, "Times New Roman", serif; font-weight: 700;
-  font-size: 1.05rem; color: var(--muted); letter-spacing: .03em;
-  background: var(--surface-alt);
+  font-family: var(--font-titulo); font-weight: 400;
+  font-size: 1.15rem; letter-spacing: .02em;
+  color: var(--area, var(--brand));
+  background: color-mix(in srgb, var(--area, var(--brand)) 10%, transparent);
+  border-color: color-mix(in srgb, var(--area, var(--brand)) 18%, transparent);
+  transition: background var(--medio), transform var(--medio);
+}
+a.cartao:hover .marca-empresa.monograma {
+  background: color-mix(in srgb, var(--area, var(--brand)) 16%, transparent);
+  transform: scale(1.04);
 }
 .marca-empresa-grande { width: 84px; height: 84px; border-radius: 18px; font-size: 1.9rem; }
 

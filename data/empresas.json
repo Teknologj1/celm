@@ -4,9 +4,9 @@
     "nome": "ABEM",
     "categoria": "educacao",
     "tags": [
-      "Atividade de Apoio À Edução"
+      "Atividade de Apoio à Edução"
     ],
-    "descricao": "Atividade de Apoio À Edução. Associação Brasileira de Educação Médica.",
+    "descricao": "Atividade de Apoio à Edução. Associação Brasileira de Educação Médica.",
     "torre": "A",
     "andar": 10,
     "sala": "1023",
@@ -340,9 +340,9 @@
     "nome": "APSEF",
     "categoria": "servicos",
     "tags": [
-      "Associação Sem Fins Lucrativo"
+      "Associação sem Fins Lucrativo"
     ],
-    "descricao": "Associação Sem Fins Lucrativo. Associação Nacional de Servidores Ativos, Inativos e Pensionistas do Serviço Público Federal.",
+    "descricao": "Associação sem Fins Lucrativo. Associação Nacional de Servidores Ativos, Inativos e Pensionistas do Serviço Público Federal.",
     "torre": "A",
     "andar": 4,
     "sala": "410/412",

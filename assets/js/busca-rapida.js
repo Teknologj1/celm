@@ -97,7 +97,8 @@
       : resultados.length + " resultados";
 
     lista.innerHTML = resultados.map(function (e, i) {
-      return '<li role="option" id="resultado-' + i + '" aria-selected="' + (i === selecionado) + '">' +
+      return '<li role="option" id="resultado-' + i + '" data-area="' + escapar(e.categoria || "") +
+        '" aria-selected="' + (i === selecionado) + '">' +
         '<a href="' + base + "empresas/" + escapar(e.slug) + '/"' +
           (i === selecionado ? ' class="ativo"' : '') + '>' +
           '<span class="busca-icone" aria-hidden="true">' + escapar(e.categoriaIcone) + "</span>" +

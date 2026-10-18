@@ -154,6 +154,7 @@ function construir() {
   escrever("assets/busca.json", JSON.stringify(dados.empresas.map((e) => ({
     slug: e.slug,
     nome: e.nome,
+    categoria: e.categoria,
     categoriaNome: e.categoriaNome,
     categoriaIcone: e.categoriaIcone,
     sinonimos: e.categoriaSinonimos || [],

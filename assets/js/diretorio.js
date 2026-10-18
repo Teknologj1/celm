@@ -165,7 +165,7 @@
 
     return (
       '<a class="cartao' + (empresa.temImagem ? " cartao-com-imagem" : "") +
-        '" href="' + baseUrl + "empresas/" + escapar(empresa.slug) + '/">' +
+        '" data-area="' + escapar(empresa.categoria) + '" href="' + baseUrl + "empresas/" + escapar(empresa.slug) + '/">' +
         '<div class="cartao-topo">' +
           '<span class="cartao-categoria">' + escapar(empresa.categoriaIcone) + " " + escapar(empresa.categoriaNome) + "</span>" +
           (empresa.demo ? '<span class="etiqueta etiqueta-demo">demo</span>' : "") +
