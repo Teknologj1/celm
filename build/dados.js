@@ -14,11 +14,14 @@ const path = require("path");
 const RAIZ = path.join(__dirname, "..");
 const DIR_DADOS = path.join(RAIZ, "data");
 
-function lerJson(arquivo) {
+function lerJson(arquivo, padrao) {
   const caminho = path.join(DIR_DADOS, arquivo);
   try {
     return JSON.parse(fs.readFileSync(caminho, "utf8"));
   } catch (erro) {
+    /* Alguns arquivos nascem só quando a administração usa o painel pela
+       primeira vez; para esses, a ausência é um estado normal. */
+    if (erro.code === "ENOENT" && padrao !== undefined) return padrao;
     throw new Error(`Falha ao ler data/${arquivo}: ${erro.message}`);
   }
 }
@@ -133,6 +136,9 @@ function carregar() {
   const categorias = lerJson("categorias.json");
   const brutas = lerJson("empresas.json");
   const anuncios = lerJson("anuncios.json");
+  const boletins = lerJson("boletins.json", [])
+    .filter((b) => b && b.titulo && b.arquivo)
+    .sort((a, b) => String(b.data).localeCompare(String(a.data)));
 
   validar(centro, categorias, brutas);
 
@@ -204,6 +210,7 @@ function carregar() {
     /* lista geral: prioriza quem enviou imagem */
     vitrine: empresas.slice().sort(porVitrine),
     anuncios: anunciosPorEspaco,
+    boletins,
     categorias: categoriasComContagem,
     vantagens,
     estatisticas: {

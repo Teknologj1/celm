@@ -1,6 +1,7 @@
 {
   "nome": "Centro Empresarial Liberty Mall",
-  "sigla": "CELM",
+  "sigla": "Liberty Mall",
+  "descritor": "Centro Empresarial",
   "tagline": "Guia de empresas das Torres A e B",
   "descricaoCurta": "Guia das empresas do Centro Empresarial Liberty Mall: encontre consultórios, escritórios e serviços por torre, andar e categoria — e descubra o que o vizinho de andar pode fazer por você.",
   "demoMode": false,

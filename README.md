@@ -20,10 +20,10 @@ contatos passam por um filtro de privacidade antes de ir ao ar (veja
 | Torres | `/torres/`, `/torres/<a\|b>/` e `/torres/<a\|b>/<categoria>/` | Busca encadeada: escolhe a torre, depois o tipo de serviço, depois a empresa |
 | Categorias | `/categorias/` e `/categorias/<slug>/` | Navegação por área de atuação |
 | Vantagens | `/vantagens/` | Todas as condições especiais oferecidas entre condôminos |
-| O Centro | `/o-centro/` | Torres, estrutura, localização e contato da administração |
+| O Centro | `/o-centro/` | Torres, estrutura, localização, contato da administração e o **boletim informativo** |
 | Cadastro | `/cadastro/` | Formulário que gera o e-mail de cadastro para a administração |
 | Anuncie | `/anuncie/` | Espaços publicitários disponíveis e contato comercial |
-| **Painel** | `/admin/` | Área restrita: empresas (administração) e campanhas publicitárias (comercial) |
+| **Painel** | `/admin/` | Área restrita: empresas e boletim (administração) e campanhas publicitárias (comercial) |
 
 Detalhes de implementação:
 
@@ -65,6 +65,12 @@ Detalhes de implementação:
   canonical, Open Graph e dados estruturados JSON-LD (`LocalBusiness`).
 - **Acessibilidade**: navegação por teclado, marcos ARIA, link de pular para o
   conteúdo e contraste mínimo de 4,5:1 medido nos temas claro e escuro.
+- **Boletim informativo em PDF**, lido dentro da própria página (veja
+  [Boletim informativo](#boletim-informativo)).
+- **Menu enxuto**: cinco itens, e "Vantagens" só entra quando existe ao menos
+  uma condição cadastrada — item de menu que leva a página vazia é promessa
+  não cumprida. "Anuncie" fica no rodapé e em cada espaço publicitário livre,
+  que é onde um anunciante repara.
 - **Tema claro e escuro** automáticos, conforme a preferência do sistema.
 
 ## Como funciona
@@ -79,6 +85,7 @@ data/            ← a fonte da verdade (conteúdo do guia)
   categorias.json  áreas de atuação e sinônimos usados na busca
   empresas.json    as empresas do guia
   anuncios.json    os espaços publicitários e as campanhas em cartaz
+  boletins.json    as edições do boletim informativo
 build.js         ← gerador: lê data/ e escreve as páginas
 build/
   dados.js         carrega, valida e normaliza os dados
@@ -89,6 +96,7 @@ assets/          ← CSS, JavaScript, fontes e imagens
 admin/           ← painel da administração (login e tela de cadastro)
 api/             ← funções da Vercel que atendem o painel
   login.js, logout.js, sessao.js, empresas.js, anuncios.js
+  boletins.js, arquivos.js   edições do boletim e envio de PDF/imagem
   _lib/            autenticação, armazenamento e validação
 scripts/
   dev.js           servidor local com site + API
@@ -157,17 +165,13 @@ Acrescente um objeto ao vetor em `data/empresas.json`:
 Depois, rode `npm run build` e faça commit das alterações (incluindo o HTML
 gerado).
 
-### Trocar os dados de demonstração pelos reais
+### O que ainda precisa ser conferido com o condomínio
 
-1. Substitua o conteúdo de `data/empresas.json` pelas empresas reais, com
-   `"demo": false` em cada uma.
-2. Confirme em `data/centro.json` o endereço, o CEP, a faixa de andares de cada
-   torre, os itens de estrutura e os contatos da administração — os valores
-   atuais são provisórios e precisam ser conferidos com o condomínio.
-3. Mude `"demoMode": false` para retirar a tarja de demonstração do topo.
-4. Atualize `"atualizadoEm"` com a data da revisão (formato `AAAA-MM-DD`); é ela
-   que aparece no rodapé e no `sitemap.xml`.
-5. Rode `npm run check` e faça commit.
+As empresas já são as reais, importadas do cadastro. Continuam provisórios em
+`data/centro.json`: o endereço completo, o CEP, a faixa de andares de cada
+torre, os itens de estrutura e os contatos da administração. Ao revisar,
+atualize `"atualizadoEm"` (formato `AAAA-MM-DD`) — é essa data que aparece no
+rodapé e no `sitemap.xml`.
 
 O gerador valida os dados e interrompe o build com uma mensagem clara se uma
 categoria não existir, um `slug` estiver repetido ou um campo obrigatório
@@ -201,6 +205,47 @@ Empresa sem `logo` não fica sem nada: o site desenha um monograma com as
 iniciais dela. Mas **só quem envia imagem aparece primeiro na lista geral** —
 é o incentivo para que os condôminos mandem o material.
 
+## Boletim informativo
+
+A administração publica cada edição em `/admin/` → aba **Boletim**: título,
+data, um resumo de uma linha e o PDF. O arquivo sobe pelo próprio painel —
+não é preciso saber caminho de pasta nem mexer no repositório.
+
+A edição mais recente aparece aberta dentro da página **O Centro**, com as
+anteriores listadas abaixo; clicar em uma troca o que está sendo lido sem sair
+da página. No rodapé há um atalho direto, e a seção só existe no site depois
+da primeira edição.
+
+### Por que o PDF é desenhado, e não embutido
+
+O leitor usa o [pdf.js](https://mozilla.github.io/pdf.js/) (servido pelo
+próprio site, em `assets/vendor/pdfjs/`) para desenhar as páginas em `canvas`.
+É mais trabalho do que jogar o arquivo num `<iframe>`, e é o que faz o boletim
+ser legível no celular: o Chrome do Android oferece baixar em vez de exibir, e
+o Safari do iPhone mostra só a primeira página, sem rolagem. Desenhando, o
+comportamento é o mesmo em todo lugar e o condômino não instala nada.
+
+O custo é 1,7 MB de biblioteca, então ela só é buscada quando a seção se
+aproxima da tela — quem não rola até lá não paga por ela. Enquanto carrega, e
+se algo falhar, o link para o PDF continua na página: o leitor é uma
+comodidade, nunca a única porta.
+
+| Limite | Valor | Por quê |
+| --- | --- | --- |
+| Tamanho do PDF | 3 MB | A Vercel recusa corpos acima de 4,5 MB e o base64 engorda o arquivo em um terço |
+| Formato | PDF | Conferido pelo conteúdo (`%PDF-`), não só pela extensão |
+
+PDF acima de 3 MB quase sempre é imagem não comprimida; comprimir antes de
+enviar resolve e ainda deixa a leitura mais rápida para quem está no 4G.
+
+### Envio de arquivos
+
+`api/arquivos.js` atende tanto o boletim quanto a peça dos anúncios. O arquivo
+viaja em base64 dentro do JSON — dispensa `multipart` na função serverless — e
+é gravado no repositório como qualquer outra alteração do painel, virando um
+commit. O nome é normalizado (sem acento, sem espaço, sem caminho) e recebe a
+data como prefixo, de modo que uma edição nova nunca sobrescreve a anterior.
+
 ## Espaços publicitários
 
 São quatro, definidos em `data/anuncios.json`:
@@ -219,7 +264,9 @@ conta `comercial`, abra a aba **Anúncios** e cada um dos quatro espaços
 aparece como um cartão, com etiqueta de estado — `NO AR`, `LIVRE`,
 `AGENDADO` ou `ENCERRADO`. Em **Editar campanha** entram título, texto,
 imagem, link e anunciante, mais o período (`início` e `fim`, ambos
-opcionais). **Tirar do ar** desliga sem apagar o que foi preenchido, de modo
+opcionais). A peça é **enviada ali mesmo**, escolhendo o arquivo — antes era
+preciso digitar o caminho de um arquivo que já estivesse no repositório, o que
+na prática não era usável. **Tirar do ar** desliga sem apagar o que foi preenchido, de modo
 que a mesma campanha volta depois com um clique.
 
 O período é respeitado na geração do site: uma campanha ativa mas fora da
@@ -301,12 +348,14 @@ Cada conta tem um `papel`, e o painel mostra só o que aquele papel pode fazer:
 
 | Papel | Quem usa | O que acessa |
 | --- | --- | --- |
-| `administracao` | Administração do Liberty Mall | Apenas **Empresas**: incluir, editar e remover condôminos |
-| `comercial` | Teknologji | **Empresas** e **Anúncios**: além do cadastro, coloca e tira campanhas do ar |
+| `administracao` | Administração do Liberty Mall | **Empresas** e **Boletim**: cadastro dos condôminos e publicação das edições |
+| `comercial` | Teknologji | Tudo o que a administração faz, mais **Anúncios**: coloca e tira campanhas do ar |
 
 A separação não é só visual. A aba "Anúncios" fica oculta para quem é
 `administracao`, e a API recusa a rota `/api/anuncios` para esse papel —
-leitura e escrita — com `403`. Quem não informa papel ao criar a conta entra
+leitura e escrita — com `403`; o mesmo vale para enviar peça de anúncio por
+`/api/arquivos`. O boletim é tarefa do condomínio, então basta estar
+autenticado. Quem não informa papel ao criar a conta entra
 como `administracao`, o perfil de menos poder.
 
 O painel descobre o papel em `/api/sessao`, que devolve `papel` e
@@ -480,34 +529,30 @@ Enquanto o site também estiver no GitHub Pages, as duas publicações convivem:
 o Pages reconstrói pelo workflow, a Vercel pelo próprio build. O painel só
 existe na Vercel, porque o Pages não executa funções.
 
-## Publicação no GitHub Pages
+## Integração contínua
 
-O workflow `.github/workflows/site.yml` roda a cada push: gera o site, verifica
-os links e confere se o HTML commitado está atualizado. Quando o push é para o
-branch padrão, publica automaticamente no GitHub Pages.
+O workflow `.github/workflows/site.yml` roda a cada push: gera o site e
+verifica os links internos, os `<h1>` e as meta descriptions. Ele não publica
+nada — quem publica é a Vercel, a partir do próprio repositório.
 
-**Antes do primeiro deploy, ligue o Pages à mão:** em **Settings → Pages →
-Source**, escolha **GitHub Actions**. Sem isso o job de publicação falha com
-`Get Pages site failed`, embora o de build e verificação continue passando.
-
-Esse passo não dá para automatizar: criar o site do Pages exige permissão de
-administração do repositório, que o `GITHUB_TOKEN` do workflow não tem —
-`enablement: true` devolve `Resource not accessible by integration`.
-
-Se o endereço final não for `https://teknologj1.github.io/celm`, ajuste
-`siteUrl` em `data/centro.json` — esse valor alimenta as URLs canônicas, o
-`sitemap.xml` e os links absolutos da página 404.
+> O site chegou a sair também pelo GitHub Pages. Com o repositório privado
+> isso deixou de ser possível: no plano Free, o Pages só publica de
+> repositório público, e o job passaria a falhar a cada push. Como o endereço
+> oficial já é o da Vercel — e só lá o painel funciona, porque o Pages não
+> executa funções —, o job foi retirado em vez de mantido vermelho.
 
 ## Próximos passos possíveis
 
-O painel hoje cobre o cadastro de empresas e as campanhas publicitárias. A mesma estrutura atende, sem
+O painel hoje cobre o cadastro de empresas, o boletim informativo e as
+campanhas publicitárias. A mesma estrutura atende, sem
 mudança de arquitetura:
 
 - **Categorias e dados do complexo** pelo painel: cada um é outro arquivo em
   `data/`, e `api/_lib/armazenamento.js` já sabe gravar qualquer um deles — é
-  o mesmo caminho que os anúncios já seguem.
-- **Envio de logotipo pelo navegador**, gravando a imagem no repositório pela
-  mesma API — hoje o painel recebe o caminho do arquivo.
+  o mesmo caminho que os anúncios e o boletim já seguem.
+- **Envio de logotipo pelo navegador**: `api/arquivos.js` já faz isso para a
+  peça do anúncio e para o PDF do boletim; falta ligar o mesmo controle à
+  ficha da empresa, que ainda recebe o caminho digitado.
 - **Cadastro pelo próprio condômino**, com a solicitação entrando numa fila que
   a administração aprova antes de publicar.
 - **Banco de dados**, se o volume crescer: trocar o backend em

@@ -30,20 +30,41 @@ function dataPorExtenso(iso) {
   return `${String(dia).padStart(2, "0")} de ${meses[mes - 1]} de ${ano}`;
 }
 
-const MENU = [
+/* O menu principal carrega só o que leva a algum lugar. "Vantagens" entra
+   quando existe ao menos uma condição cadastrada — menu com página vazia é
+   promessa não cumprida. "Anuncie" não é página de visitante: vive no rodapé
+   e em cada espaço publicitário livre, que é onde um anunciante repara. */
+const MENU_FIXO = [
   { href: "", rotulo: "Início", chave: "inicio" },
   { href: "empresas/", rotulo: "Empresas", chave: "empresas" },
   { href: "torres/", rotulo: "Torres", chave: "torres" },
   { href: "categorias/", rotulo: "Categorias", chave: "categorias" },
-  { href: "vantagens/", rotulo: "Vantagens", chave: "vantagens" },
-  { href: "o-centro/", rotulo: "O Centro", chave: "centro" },
-  { href: "anuncie/", rotulo: "Anuncie", chave: "anuncie" }
+  { href: "o-centro/", rotulo: "O Centro", chave: "centro" }
 ];
+
+function menuRodape(dados) {
+  const itens = [];
+  /* O boletim mora dentro de "O Centro"; o rodapé é o atalho direto para
+     quem já sabe o que procura. Só aparece quando há alguma edição. */
+  if ((dados.boletins || []).length) {
+    itens.push({ href: "o-centro/#boletim", rotulo: "Boletim informativo" });
+  }
+  itens.push({ href: "anuncie/", rotulo: "Anuncie" });
+  return itens;
+}
+
+function menu(dados) {
+  const itens = MENU_FIXO.slice();
+  if (dados.empresas.some((e) => e.beneficio)) {
+    itens.splice(4, 0, { href: "vantagens/", rotulo: "Vantagens", chave: "vantagens" });
+  }
+  return itens;
+}
 
 function cabecalho(dados, profundidade, atual, baseFixa) {
   const u = (caminho) => url(profundidade, caminho, baseFixa);
 
-  const itens = MENU.map((item) => {
+  const itens = menu(dados).map((item) => {
     const marcado = item.chave === atual ? ' aria-current="page"' : "";
     return `<a href="${u(item.href)}"${marcado}>${escapar(item.rotulo)}</a>`;
   }).join("\n        ");
@@ -102,7 +123,7 @@ function rodape(dados, profundidade, baseFixa) {
         <div>
           <h4>Navegar</h4>
           <ul>
-            ${MENU.map((i) => `<li><a href="${u(i.href)}">${escapar(i.rotulo)}</a></li>`).join("\n            ")}
+            ${menu(dados).concat(menuRodape(dados)).map((i) => `<li><a href="${u(i.href)}">${escapar(i.rotulo)}</a></li>`).join("\n            ")}
           </ul>
         </div>
         <div>
@@ -163,7 +184,7 @@ function pagina(dados, opcoes) {
   const baseFixa = opcoes.baseFixa;
   const u = (caminho) => url(profundidade, caminho, baseFixa);
   const tituloCompleto = opcoes.titulo
-    ? `${opcoes.titulo} | ${dados.centro.sigla} — ${dados.centro.nome}`
+    ? `${opcoes.titulo} | ${dados.centro.sigla} — ${dados.centro.descritor}`
     : `${dados.centro.nome} | ${dados.centro.tagline}`;
 
   const canonical = dados.centro.siteUrl && opcoes.caminho != null
@@ -212,4 +233,4 @@ ${scripts}
 `;
 }
 
-module.exports = { pagina, escapar, url };
+module.exports = { pagina, escapar, url, dataPorExtenso };

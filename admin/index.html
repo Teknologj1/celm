@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Painel — Guia CELM</title>
+  <title>Painel — Guia Liberty Mall</title>
   <meta name="robots" content="noindex, nofollow">
   <link rel="icon" href="/assets/img/favicon.svg" type="image/svg+xml">
   <link rel="stylesheet" href="/assets/css/style.css">
@@ -28,6 +28,7 @@
   <nav class="abas" id="abas" aria-label="Áreas do painel">
     <div class="container">
       <button class="aba" type="button" data-aba="empresas" aria-current="page">Empresas</button>
+      <button class="aba" type="button" data-aba="boletim">Boletim</button>
       <button class="aba" type="button" data-aba="anuncios" hidden>Anúncios</button>
     </div>
   </nav>
@@ -76,6 +77,21 @@
     </div>
     </section>
 
+    <!-- Boletim informativo: a administração sobe o PDF de cada edição -->
+    <section id="painel-boletim" hidden>
+      <div class="secao-topo" style="margin-top:28px">
+        <div>
+          <span class="olho">Comunicação</span>
+          <h1 style="margin:0">Boletim informativo</h1>
+          <p id="resumo-boletim" style="color:var(--ink-soft);margin:6px 0 0"></p>
+        </div>
+        <button class="btn" type="button" id="novo-boletim">+ Nova edição</button>
+      </div>
+
+      <p id="estado-boletim" class="estado-carregando">Carregando edições...</p>
+      <div id="lista-boletim" class="grade grade-2"></div>
+    </section>
+
     <!-- Espaços publicitários: só aparece para o perfil comercial -->
     <section id="painel-anuncios" hidden>
       <div class="secao-topo" style="margin-top:28px">
@@ -91,6 +107,49 @@
       <div id="lista-anuncios" class="grade grade-2"></div>
     </section>
   </main>
+
+  <!-- Formulário de edição do boletim -->
+  <div class="modal" id="modal-boletim" hidden>
+    <div class="modal-caixa" role="dialog" aria-modal="true" aria-labelledby="titulo-boletim">
+      <div class="modal-topo">
+        <h2 id="titulo-boletim">Edição do boletim</h2>
+        <button class="btn btn-secundario btn-sm" type="button" id="fechar-boletim">Fechar</button>
+      </div>
+
+      <form id="form-boletim" novalidate>
+        <input type="hidden" id="b-id">
+        <input type="hidden" id="b-arquivo">
+
+        <div class="grade-form">
+          <div class="campo campo-largo">
+            <label for="b-titulo">Título da edição *</label>
+            <input id="b-titulo" type="text" maxlength="120" placeholder="Boletim de outubro">
+          </div>
+          <div class="campo">
+            <label for="b-data">Data *</label>
+            <input id="b-data" type="date">
+          </div>
+          <div class="campo campo-largo">
+            <label for="b-resumo">Resumo</label>
+            <textarea id="b-resumo" maxlength="300" placeholder="Uma ou duas linhas sobre o que tem nesta edição."></textarea>
+          </div>
+          <div class="campo campo-largo">
+            <label for="b-pdf">Arquivo PDF *</label>
+            <input id="b-pdf" type="file" accept="application/pdf,.pdf">
+            <small class="dica" id="b-pdf-estado">Até 3 MB. O boletim é exibido dentro do site, sem precisar baixar.</small>
+          </div>
+        </div>
+
+        <div id="problemas-boletim" class="aviso-erro" role="alert" hidden></div>
+
+        <div class="modal-rodape">
+          <button class="btn" type="submit" id="salvar-boletim">Publicar edição</button>
+          <button class="btn btn-secundario" type="button" id="cancelar-boletim">Cancelar</button>
+          <span id="salvando-boletim" class="dica" hidden>Gravando e republicando...</span>
+        </div>
+      </form>
+    </div>
+  </div>
 
   <!-- Formulário de campanha -->
   <div class="modal" id="modal-anuncio" hidden>
@@ -127,8 +186,10 @@
             <input id="a-link" type="url" maxlength="500" placeholder="https://">
           </div>
           <div class="campo campo-largo">
-            <label for="a-imagem">Caminho da imagem</label>
-            <input id="a-imagem" type="text" maxlength="300" placeholder="assets/img/anuncios/campanha.png">
+            <label for="a-arte">Peça do anúncio</label>
+            <input id="a-arte" type="file" accept="image/png,image/jpeg,image/webp,image/svg+xml">
+            <input type="hidden" id="a-imagem">
+            <small class="dica" id="a-arte-estado">PNG, JPG, WEBP ou SVG, até 3 MB.</small>
           </div>
           <div class="campo">
             <label for="a-inicio">Início da veiculação</label>

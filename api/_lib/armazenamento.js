@@ -33,6 +33,13 @@ const local = {
     return { alterado: true };
   },
 
+  async salvarArquivo(arquivo, base64) {
+    const destino = path.join(RAIZ, arquivo);
+    fs.mkdirSync(path.dirname(destino), { recursive: true });
+    fs.writeFileSync(destino, Buffer.from(base64, "base64"));
+    return { alterado: true };
+  },
+
   async alterarJson(arquivo, transformar) {
     const { dados } = await local.lerJson(arquivo);
     const novos = await transformar(dados);
@@ -50,6 +57,7 @@ function backend() {
 module.exports = {
   lerJson: (...args) => backend().lerJson(...args),
   salvarJson: (...args) => backend().salvarJson(...args),
+  salvarArquivo: (...args) => backend().salvarArquivo(...args),
   alterarJson: (...args) => backend().alterarJson(...args),
   modoLocal
 };

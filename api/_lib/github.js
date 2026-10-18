@@ -72,7 +72,7 @@ async function gravarJson(arquivo, dados, sha, mensagem, autor) {
   if (autor && autor.nome) {
     /* Registra quem alterou. O e-mail 'noreply' evita expor endereço real. */
     corpo.author = {
-      name: `${autor.nome} (painel CELM)`,
+      name: `${autor.nome} (painel Liberty Mall)`,
       email: autor.email || "painel@users.noreply.github.com"
     };
   }
@@ -95,6 +95,36 @@ async function salvarJson(arquivo, dados, mensagem, autor) {
   return gravarJson(arquivo, dados, sha, mensagem, autor);
 }
 
+/* Grava um arquivo binário (imagem, PDF) já em base64. É o mesmo endpoint
+   de conteúdo do GitHub: o que muda é que o conteúdo não passa por JSON. */
+async function salvarArquivo(arquivo, base64, mensagem, autor) {
+  const { repo, branch } = configuracao();
+
+  let sha;
+  try {
+    const atual = await chamar(
+      `/repos/${repo}/contents/${encodeURIComponent(arquivo)}?ref=${encodeURIComponent(branch)}`
+    );
+    sha = atual.sha;
+  } catch (falha) {
+    if (falha.status !== 404) throw falha;
+    sha = undefined; /* arquivo novo */
+  }
+
+  const corpo = { message: mensagem, content: base64, branch, sha };
+  if (autor && autor.nome) {
+    corpo.author = {
+      name: `${autor.nome} (painel Liberty Mall)`,
+      email: autor.email || "painel@users.noreply.github.com"
+    };
+  }
+
+  return chamar(`/repos/${repo}/contents/${encodeURIComponent(arquivo)}`, {
+    method: "PUT",
+    body: JSON.stringify(corpo)
+  });
+}
+
 /* Lê, aplica a alteração e grava. Se outra edição entrou no meio, o GitHub
    recusa por conflito de sha e a operação é refeita sobre o estado novo. */
 async function alterarJson(arquivo, transformar, mensagem, autor, tentativas = 3) {
@@ -114,4 +144,4 @@ async function alterarJson(arquivo, transformar, mensagem, autor, tentativas = 3
   throw new Error("Não foi possível gravar: o arquivo mudou durante a edição.");
 }
 
-module.exports = { lerJson, gravarJson, salvarJson, alterarJson, configuracao };
+module.exports = { lerJson, gravarJson, salvarJson, salvarArquivo, alterarJson, configuracao };

@@ -1,6 +1,6 @@
 "use strict";
 
-const { pagina, escapar, url } = require("./layout");
+const { pagina, escapar, url, dataPorExtenso } = require("./layout");
 const { paraBusca } = require("./dados");
 
 /* ---------- componentes reutilizáveis ------------------------------------ */
@@ -131,7 +131,7 @@ function home(dados) {
         <div class="hero-atalhos">
           <span>Atalhos:</span>
           ${dados.torres.map((t) => `<a href="${url(0, "torres/" + t.id.toLowerCase() + "/")}">Serviços da ${escapar(t.nome)}</a>`).join("\n          ")}
-          <a href="${url(0, "vantagens/")}">Vantagens entre condôminos</a>
+          ${vantagens.length ? `<a href="${url(0, "vantagens/")}">Vantagens entre condôminos</a>` : ""}
           <a href="${url(0, "cadastro/")}">Cadastrar minha empresa</a>
         </div>
 
@@ -748,6 +748,61 @@ function vantagens(dados) {
   });
 }
 
+/* Boletim informativo.
+ *
+ * O PDF é lido na própria página: o leitor desenha as páginas em tela, o
+ * que funciona igual no computador e no celular — onde abrir um PDF dentro
+ * de um quadro costuma virar um download em vez de uma leitura. Sem
+ * JavaScript, e enquanto o leitor carrega, o link para o arquivo continua
+ * valendo; é por isso que ele vem no HTML e não é criado em tela. */
+function secaoBoletim(dados, profundidade) {
+  const edicoes = dados.boletins || [];
+  if (!edicoes.length) return "";
+
+  const u = (caminho) => url(profundidade, caminho);
+  const atual = edicoes[0];
+  const anteriores = edicoes.slice(1);
+
+  const lista = anteriores.length
+    ? `<div class="boletim-anteriores">
+          <h3>Edições anteriores</h3>
+          <ul class="boletim-lista">
+            ${anteriores.map((b) => `<li>
+              <button type="button" class="boletim-edicao" data-arquivo="${escapar(u(b.arquivo))}"
+                      data-titulo="${escapar(b.titulo)}" data-data="${escapar(dataPorExtenso(b.data))}">
+                <span class="boletim-edicao-titulo">${escapar(b.titulo)}</span>
+                <span class="boletim-edicao-data">${escapar(dataPorExtenso(b.data))}</span>
+              </button>
+            </li>`).join("\n            ")}
+          </ul>
+        </div>`
+    : "";
+
+  return `<div class="bloco bloco-boletim" id="boletim">
+          <div class="boletim-cabecalho">
+            <div>
+              <span class="olho">Boletim informativo</span>
+              <h2 id="boletim-titulo">${escapar(atual.titulo)}</h2>
+              <p class="boletim-data" id="boletim-data">${escapar(dataPorExtenso(atual.data))}</p>
+              ${atual.resumo ? `<p>${escapar(atual.resumo)}</p>` : ""}
+            </div>
+            <a class="btn btn-secundario btn-sm" id="boletim-baixar"
+               href="${escapar(u(atual.arquivo))}" download>Baixar PDF</a>
+          </div>
+
+          <div class="boletim-leitor" id="boletim-leitor"
+               data-arquivo="${escapar(u(atual.arquivo))}"
+               data-motor="${escapar(u("assets/vendor/pdfjs/pdf.min.js"))}"
+               data-operario="${escapar(u("assets/vendor/pdfjs/pdf.worker.min.js"))}">
+            <p class="boletim-aviso">
+              <a href="${escapar(u(atual.arquivo))}">Abrir o boletim em PDF</a>
+            </p>
+          </div>
+
+          ${lista}
+        </div>`;
+}
+
 function oCentro(dados) {
   const { centro, torres, estatisticas } = dados;
 
@@ -760,6 +815,8 @@ function oCentro(dados) {
         </div>
 
         ${figuraComplexo(centro.imagens && centro.imagens.fachada, 1, "figura figura-larga")}
+
+        ${secaoBoletim(dados, 1)}
 
         <div class="grade grade-2 revelar-fila" style="margin-bottom:34px">
           ${torres.map((t) => `<div class="cartao cartao-torre">
@@ -832,6 +889,7 @@ function oCentro(dados) {
     caminho: "o-centro/",
     atual: "centro",
     titulo: "O Centro Empresarial",
+    scripts: (dados.boletins || []).length ? ["boletim.js"] : [],
     descricao: `Estrutura, torres e localização do ${centro.nome}, em ${centro.endereco.bairro}, ${centro.endereco.cidade}.`,
     conteudo
   });

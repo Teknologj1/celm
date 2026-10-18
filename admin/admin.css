@@ -229,3 +229,65 @@
   :root:not([data-theme="light"]) .selo-no-ar { color: #5fcf94; }
   :root:not([data-theme="light"]) .selo-encerrado { color: #ff8b9a; }
 }
+
+/* ---------- Envio de arquivo -------------------------------------------- */
+/* O controle nativo vem com rótulo do sistema e sem relação com o resto do
+   painel. Aqui ele vira um alvo largo, do tamanho de um botão de dedo. */
+input[type="file"] {
+  width: 100%;
+  padding: 10px 12px;
+  border: 1px dashed var(--border);
+  border-radius: 10px;
+  background: var(--surface-alt);
+  color: var(--ink);
+  font: inherit;
+  cursor: pointer;
+}
+input[type="file"]::file-selector-button {
+  margin-right: 12px;
+  padding: 8px 14px;
+  min-height: 36px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  background: var(--surface);
+  color: var(--ink);
+  font: inherit;
+  font-weight: 600;
+  cursor: pointer;
+}
+input[type="file"]:hover { border-color: var(--brand); }
+
+/* ---------- Celular ------------------------------------------------------ */
+@media (max-width: 620px) {
+  /* A janela ocupa a tela e rola por dentro; as ações ficam sempre à vista,
+     em vez de empurradas para baixo de um formulário longo. */
+  .modal { padding: 0; place-items: stretch; }
+  .modal-caixa {
+    max-width: none; min-height: 100%;
+    border-radius: 0; padding: 18px 16px 0;
+    display: flex; flex-direction: column;
+  }
+  .modal-topo {
+    position: sticky; top: 0; z-index: 2;
+    margin: 0 -16px 16px; padding: 14px 16px;
+    background: var(--surface); border-bottom: 1px solid var(--border);
+  }
+  .modal-topo h2 { font-size: 1.15rem; }
+  .modal-rodape {
+    position: sticky; bottom: 0; z-index: 2;
+    margin: auto -16px 0; padding: 14px 16px;
+    padding-bottom: calc(14px + env(safe-area-inset-bottom));
+    background: var(--surface);
+  }
+  .modal-rodape .btn { flex: 1 1 140px; }
+
+  /* Abas com rolagem lateral em vez de quebrar em duas linhas. */
+  .abas .container {
+    overflow-x: auto; scrollbar-width: none; -webkit-overflow-scrolling: touch;
+  }
+  .abas .container::-webkit-scrollbar { display: none; }
+  .aba { white-space: nowrap; }
+
+  .espaco-rodape { flex-wrap: wrap; }
+  .espaco-rodape .btn { flex: 1 1 auto; }
+}

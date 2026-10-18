@@ -574,7 +574,9 @@ a.cartao:hover::after { box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--bra
 .chips { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 16px; }
 .chip {
   border: 1px solid var(--border); background: var(--surface); color: var(--ink-soft);
-  border-radius: 999px; padding: 7px 14px; font-size: .86rem; font-weight: 500;
+  border-radius: 999px; padding: 9px 16px; font-size: .86rem; font-weight: 500;
+  /* Alvo de toque confortável: abaixo de 40px o dedo erra o filtro. */
+  min-height: 40px; display: inline-flex; align-items: center;
   cursor: pointer; font-family: inherit;
 }
 .chip:hover { background: var(--surface-alt); }
@@ -606,6 +608,9 @@ a.chip:hover { text-decoration: none; }
 .empresa-resumo { color: var(--ink-soft); font-size: 1.05rem; max-width: 70ch; }
 
 .colunas { display: grid; gap: 22px; grid-template-columns: 1fr; align-items: start; }
+/* Sem isto, um filho com conteúdo largo estoura a coluna em vez de encolher:
+   em grid, a largura mínima de um item é a do conteúdo, não zero. */
+.colunas > * { min-width: 0; }
 @media (min-width: 900px) { .colunas { grid-template-columns: 1.6fr 1fr; } }
 
 .bloco {
@@ -982,3 +987,60 @@ a.cartao:hover .marca-empresa.monograma {
 .texto-centro { text-align: center; }
 .mt-0 { margin-top: 0; }
 .mb-0 { margin-bottom: 0; }
+
+/* ---------- Boletim informativo ------------------------------------------ */
+.bloco-boletim { padding: 26px; scroll-margin-top: 90px; }
+
+.boletim-cabecalho {
+  display: flex; flex-wrap: wrap; gap: 16px;
+  align-items: flex-start; justify-content: space-between;
+  margin-bottom: 20px;
+}
+.boletim-cabecalho h2 { margin: 6px 0 2px; font-size: 1.45rem; }
+.boletim-cabecalho p { margin: 6px 0 0; color: var(--ink-soft); max-width: 62ch; }
+.boletim-data {
+  color: var(--muted) !important; font-size: .86rem;
+  text-transform: uppercase; letter-spacing: .05em;
+}
+
+/* O leitor desenha uma folha por página do PDF. O fundo escuro é o que
+   separa a folha branca do resto da página, como numa mesa de leitura. */
+.boletim-leitor {
+  background: var(--surface-alt); border: 1px solid var(--border);
+  border-radius: var(--radius); padding: 14px;
+  display: grid; gap: 14px; min-height: 180px;
+}
+.boletim-pagina {
+  position: relative; background: #fff; border-radius: 6px;
+  box-shadow: 0 1px 10px rgb(10 24 40 / 14%); overflow: hidden;
+}
+.boletim-pagina canvas { display: block; width: 100%; height: auto; }
+.boletim-aviso {
+  margin: auto; padding: 26px 10px; text-align: center;
+  color: var(--ink-soft); font-size: .95rem;
+}
+
+.boletim-anteriores { margin-top: 22px; }
+.boletim-anteriores h3 { font-size: .86rem; text-transform: uppercase; letter-spacing: .06em; color: var(--muted); }
+.boletim-lista { list-style: none; margin: 0; padding: 0; display: grid; gap: 8px; }
+.boletim-edicao {
+  width: 100%; display: flex; flex-wrap: wrap; gap: 4px 14px;
+  align-items: baseline; justify-content: space-between;
+  padding: 12px 14px; min-height: 44px; text-align: left; cursor: pointer;
+  background: var(--surface-alt); color: var(--ink);
+  border: 1px solid var(--border); border-radius: 10px;
+  font: inherit; transition: border-color .18s ease, transform .18s ease;
+}
+.boletim-edicao:hover { border-color: var(--brand); transform: translateX(2px); }
+.boletim-edicao[aria-current] { border-color: var(--brand); background: var(--accent-soft); }
+.boletim-edicao-titulo { font-weight: 600; }
+.boletim-edicao-data { color: var(--muted); font-size: .84rem; }
+
+@media (max-width: 560px) {
+  .bloco { padding: 18px 14px; }
+  .bloco-boletim { padding: 18px 14px; }
+  .boletim-leitor { padding: 8px; gap: 10px; border-radius: 10px; }
+  .boletim-cabecalho { gap: 12px; }
+  .boletim-cabecalho h2 { font-size: 1.22rem; }
+  .boletim-cabecalho .btn { width: 100%; }
+}

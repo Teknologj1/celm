@@ -300,6 +300,7 @@
   var abas = document.querySelectorAll(".aba");
   var secoes = {
     empresas: document.getElementById("painel-empresas"),
+    boletim: document.getElementById("painel-boletim"),
     anuncios: document.getElementById("painel-anuncios")
   };
 
@@ -313,6 +314,7 @@
       else aba.removeAttribute("aria-current");
     });
     if (nome === "anuncios" && !estado.anuncios) carregarAnuncios();
+    if (nome === "boletim" && !estado.boletins) carregarBoletins();
   }
 
   Array.prototype.forEach.call(abas, function (aba) {
@@ -321,6 +323,194 @@
     });
   });
 
+  /* ---------------- envio de arquivos ---------------- */
+
+  /* O arquivo viaja como base64 dentro do JSON. Não é o jeito mais enxuto,
+     mas dispensa multipart na função serverless e o tamanho aqui é pequeno:
+     o servidor recusa acima de 3 MB. */
+  function lerBase64(arquivo) {
+    return new Promise(function (resolver, recusar) {
+      var leitor = new FileReader();
+      leitor.onload = function () {
+        resolver(String(leitor.result).split(",")[1] || "");
+      };
+      leitor.onerror = function () { recusar(new Error("Não foi possível ler o arquivo.")); };
+      leitor.readAsDataURL(arquivo);
+    });
+  }
+
+  function enviarArquivo(arquivo, tipo) {
+    if (arquivo.size > 3 * 1024 * 1024) {
+      return Promise.reject(new Error("Arquivo grande demais. O limite é 3 MB."));
+    }
+    return lerBase64(arquivo).then(function (conteudo) {
+      return api("arquivos", {
+        method: "POST",
+        body: JSON.stringify({ tipo: tipo, nome: arquivo.name, conteudo: conteudo })
+      });
+    });
+  }
+
+  /* Liga um <input type=file> a um campo escondido com o caminho gravado.
+     Enquanto o envio acontece, o botão de salvar fica bloqueado — salvar no
+     meio do caminho guardaria uma ficha apontando para lugar nenhum. */
+  function ligarEnvio(idArquivo, idCaminho, idEstado, tipo, idBotao) {
+    var campo = document.getElementById(idArquivo);
+    var caminho = document.getElementById(idCaminho);
+    var aviso = document.getElementById(idEstado);
+    var padrao = aviso.textContent;
+
+    campo.addEventListener("change", function () {
+      var arquivo = campo.files && campo.files[0];
+      if (!arquivo) return;
+
+      var botao = document.getElementById(idBotao);
+      botao.disabled = true;
+      aviso.textContent = "Enviando " + arquivo.name + "...";
+
+      enviarArquivo(arquivo, tipo).then(function (resposta) {
+        caminho.value = resposta.caminho;
+        aviso.textContent = "Enviado: " + arquivo.name;
+      }).catch(function (falha) {
+        campo.value = "";
+        aviso.textContent = falha.message + " " + padrao;
+      }).then(function () {
+        botao.disabled = false;
+      });
+    });
+  }
+
+  ligarEnvio("b-pdf", "b-arquivo", "b-pdf-estado", "boletim", "salvar-boletim");
+  ligarEnvio("a-arte", "a-imagem", "a-arte-estado", "anuncio", "salvar-anuncio");
+
+
+  /* ---------------- boletim informativo ---------------- */
+  var listaBoletim = document.getElementById("lista-boletim");
+  var estadoBoletim = document.getElementById("estado-boletim");
+  var resumoBoletim = document.getElementById("resumo-boletim");
+  var modalBoletim = document.getElementById("modal-boletim");
+  var formBoletim = document.getElementById("form-boletim");
+  var problemasBoletim = document.getElementById("problemas-boletim");
+  var salvandoBoletim = document.getElementById("salvando-boletim");
+
+  function dataBr(iso) {
+    return iso ? String(iso).split("-").reverse().join("/") : "";
+  }
+
+  function desenharBoletins() {
+    var lista = estado.boletins || [];
+    estadoBoletim.hidden = true;
+
+    resumoBoletim.textContent = lista.length
+      ? lista.length + (lista.length === 1 ? " edição publicada" : " edições publicadas") +
+        " · a mais recente abre sozinha no site"
+      : "Nenhuma edição ainda. A seção só aparece no site depois da primeira.";
+
+    listaBoletim.innerHTML = lista.map(function (b, i) {
+      return "<div class='espaco'>" +
+        "<div class='espaco-topo'>" +
+          "<div><h3>" + escapar(b.titulo) + "</h3>" +
+          "<p class='formato'>" + escapar(dataBr(b.data)) + "</p></div>" +
+          (i === 0 ? "<span class='selo selo-no-ar'>edição atual</span>" : "") +
+        "</div>" +
+        (b.resumo ? "<div class='campanha'><p>" + escapar(b.resumo) + "</p></div>" : "") +
+        "<div class='espaco-rodape'>" +
+          "<a class='btn btn-secundario btn-sm' href='/" + escapar(b.arquivo) +
+            "' target='_blank' rel='noopener'>Ver o PDF</a>" +
+          "<button class='btn btn-secundario btn-sm' data-editar-boletim='" + escapar(b.id) + "'>Editar</button>" +
+          "<button class='btn btn-secundario btn-sm' data-remover-boletim='" + escapar(b.id) + "'>Remover</button>" +
+        "</div>" +
+      "</div>";
+    }).join("");
+  }
+
+  function carregarBoletins() {
+    return api("boletins").then(function (dados) {
+      estado.boletins = dados.boletins || [];
+      desenharBoletins();
+    }).catch(function (falha) {
+      estadoBoletim.hidden = false;
+      estadoBoletim.textContent = "Não foi possível carregar: " + falha.message;
+    });
+  }
+
+  function abrirBoletim(b) {
+    problemasBoletim.hidden = true;
+    document.getElementById("b-id").value = b ? b.id : "";
+    document.getElementById("b-titulo").value = b ? b.titulo : "";
+    document.getElementById("b-data").value = b ? b.data : hoje();
+    document.getElementById("b-resumo").value = b ? (b.resumo || "") : "";
+    document.getElementById("b-arquivo").value = b ? b.arquivo : "";
+    document.getElementById("b-pdf").value = "";
+    document.getElementById("b-pdf-estado").textContent = b && b.arquivo
+      ? "PDF já enviado. Escolha outro arquivo só para substituir."
+      : "Até 3 MB. O boletim é exibido dentro do site, sem precisar baixar.";
+    document.getElementById("titulo-boletim").textContent = b ? "Editar edição" : "Nova edição";
+    modalBoletim.hidden = false;
+    document.getElementById("b-titulo").focus();
+  }
+
+  function fecharBoletim() { modalBoletim.hidden = true; }
+
+  document.getElementById("novo-boletim").addEventListener("click", function () { abrirBoletim(null); });
+  document.getElementById("fechar-boletim").addEventListener("click", fecharBoletim);
+  document.getElementById("cancelar-boletim").addEventListener("click", fecharBoletim);
+  modalBoletim.addEventListener("click", function (e) {
+    if (e.target === modalBoletim) fecharBoletim();
+  });
+
+  listaBoletim.addEventListener("click", function (evento) {
+    var editar = evento.target.getAttribute("data-editar-boletim");
+    var remover = evento.target.getAttribute("data-remover-boletim");
+
+    if (editar) {
+      var b = (estado.boletins || []).find(function (x) { return x.id === editar; });
+      if (b) abrirBoletim(b);
+      return;
+    }
+    if (remover) {
+      var alvo = (estado.boletins || []).find(function (x) { return x.id === remover; });
+      if (!alvo) return;
+      if (!window.confirm("Retirar \"" + alvo.titulo + "\" do site?")) return;
+
+      evento.target.disabled = true;
+      api("boletins", { method: "POST", body: JSON.stringify({ id: remover, remover: true }) })
+        .then(carregarBoletins)
+        .catch(function (falha) {
+          window.alert("Não foi possível remover: " + falha.message);
+          desenharBoletins();
+        });
+    }
+  });
+
+  formBoletim.addEventListener("submit", function (evento) {
+    evento.preventDefault();
+    problemasBoletim.hidden = true;
+
+    var botao = document.getElementById("salvar-boletim");
+    botao.disabled = true;
+    salvandoBoletim.hidden = false;
+
+    api("boletins", {
+      method: "POST",
+      body: JSON.stringify({
+        id: document.getElementById("b-id").value,
+        titulo: document.getElementById("b-titulo").value,
+        data: document.getElementById("b-data").value,
+        resumo: document.getElementById("b-resumo").value,
+        arquivo: document.getElementById("b-arquivo").value
+      })
+    })
+      .then(function () { fecharBoletim(); return carregarBoletins(); })
+      .catch(mostrarProblemasEm(problemasBoletim))
+      .then(function () {
+        botao.disabled = false;
+        salvandoBoletim.hidden = true;
+      });
+  });
+
+
+  /* ---------------- espaços publicitários ---------------- */
   var listaAnuncios = document.getElementById("lista-anuncios");
   var estadoAnuncios = document.getElementById("estado-anuncios");
   var resumoAnuncios = document.getElementById("resumo-anuncios");
@@ -414,6 +604,10 @@
     ["titulo", "texto", "anunciante", "link", "imagem", "inicio", "fim"].forEach(function (campo) {
       document.getElementById("a-" + campo).value = a[campo] || "";
     });
+    document.getElementById("a-arte").value = "";
+    document.getElementById("a-arte-estado").textContent = a.imagem
+      ? "Peça já enviada. Escolha outro arquivo só para substituir."
+      : "PNG, JPG, WEBP ou SVG, até 3 MB.";
     modalAnuncio.hidden = false;
     document.getElementById("a-titulo").focus();
   }
