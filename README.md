@@ -6,10 +6,9 @@ visibilidade** a cada condômino e **aumentar a sinergia** entre os vizinhos das
 duas torres — quem está ao lado, o que faz e que condições oferece a quem
 também trabalha no complexo.
 
-> ⚠️ **Os dados hoje publicados são de demonstração.** As 32 empresas listadas
-> são fictícias e existem apenas para mostrar o formato do guia. Substitua-as
-> pela lista real (veja [Como atualizar o conteúdo](#como-atualizar-o-conteúdo))
-> e desligue o aviso mudando `demoMode` para `false` em `data/centro.json`.
+As **136 empresas** publicadas são as do cadastro real do condomínio. Os
+contatos passam por um filtro de privacidade antes de ir ao ar (veja
+[Privacidade dos contatos](#privacidade-dos-contatos)).
 
 ## O que o site tem
 
@@ -24,7 +23,7 @@ também trabalha no complexo.
 | O Centro | `/o-centro/` | Torres, estrutura, localização e contato da administração |
 | Cadastro | `/cadastro/` | Formulário que gera o e-mail de cadastro para a administração |
 | Anuncie | `/anuncie/` | Espaços publicitários disponíveis e contato comercial |
-| **Painel** | `/admin/` | Área restrita da administração para incluir, editar e remover empresas |
+| **Painel** | `/admin/` | Área restrita: empresas (administração) e campanhas publicitárias (comercial) |
 
 Detalhes de implementação:
 
@@ -89,11 +88,11 @@ build/
 assets/          ← CSS, JavaScript, fontes e imagens
 admin/           ← painel da administração (login e tela de cadastro)
 api/             ← funções da Vercel que atendem o painel
-  login.js, logout.js, sessao.js, empresas.js
+  login.js, logout.js, sessao.js, empresas.js, anuncios.js
   _lib/            autenticação, armazenamento e validação
 scripts/
   dev.js           servidor local com site + API
-  criar-usuario.js gera a conta de acesso ao painel
+  criar-usuario.js gera a conta de acesso ao painel (com o perfil)
 ```
 
 As páginas HTML (`index.html`, `empresas/`, `categorias/`…) **não são
@@ -213,7 +212,28 @@ São quatro, definidos em `data/anuncios.json`:
 | `empresa` | Bloco na lateral de cada ficha de empresa |
 | `torre` | Faixa ao final das páginas de torre e de categoria |
 
-Para colocar uma campanha no ar, preencha o registro correspondente e marque
+### Colocar uma campanha no ar pelo painel
+
+É o caminho normal, e não exige mexer em arquivo: entre em `/admin/` com a
+conta `comercial`, abra a aba **Anúncios** e cada um dos quatro espaços
+aparece como um cartão, com etiqueta de estado — `NO AR`, `LIVRE`,
+`AGENDADO` ou `ENCERRADO`. Em **Editar campanha** entram título, texto,
+imagem, link e anunciante, mais o período (`início` e `fim`, ambos
+opcionais). **Tirar do ar** desliga sem apagar o que foi preenchido, de modo
+que a mesma campanha volta depois com um clique.
+
+O período é respeitado na geração do site: uma campanha ativa mas fora da
+janela não aparece em nenhuma página. Dá para preparar a campanha do mês
+seguinte hoje e deixá-la entrar sozinha — lembrando que, como o site é
+estático, a virada só acontece na próxima publicação.
+
+A API valida antes de gravar: campanha no ar sem título é recusada, período
+invertido (fim antes do início) é recusado, e link que não comece com
+`http://` ou `https://` é recusado.
+
+### Ou direto no arquivo
+
+Preencha o registro correspondente em `data/anuncios.json` e marque
 `"ativo": true`:
 
 ```json
@@ -237,6 +257,34 @@ os espaços vazios, mude `publicidade.mostrarEspacosVazios` para `false` em
 Os blocos são marcados como "Publicidade" e os links levam `rel="sponsored"`,
 como manda a recomendação do Google para conteúdo pago.
 
+### Tabela de referência
+
+Os valores ficam em `data/anuncios.json`, no bloco `tabela` de cada espaço, e
+são o que a página `/anuncie/` exibe. A tabela em uso:
+
+| Espaço | Onde aparece | Mensal | Trimestral | Semestral |
+| --- | --- | --- | --- | --- |
+| Faixa da página inicial | Início, abaixo das categorias | R$ 390 | R$ 1.050 | R$ 1.950 |
+| Cartão no diretório | Dentro da lista de empresas | R$ 290 | R$ 780 | R$ 1.450 |
+| Bloco nas fichas | Lateral das 136 fichas de empresa | R$ 240 | R$ 650 | R$ 1.200 |
+| Faixa de torre e categoria | Final das páginas de torre e categoria | R$ 190 | R$ 510 | R$ 950 |
+
+Condôminos do complexo têm **30% de desconto** (`publicidade.descontoCondomino`).
+O contato comercial exibido no site é `publicidade.contato`, hoje
+**contato@teknologji.com.br**, sob responsabilidade da Teknologji.
+
+> **De onde vêm esses números.** Não existe tabela pública de preços para
+> espaço publicitário em guia de condomínio empresarial — a pesquisa só
+> encontrou referências de mídia indoor (softwares de mídia em tela, a partir
+> de R$ 25–50 por tela/mês; locação de painel de LED na faixa de R$ 2.000/mês;
+> outdoor digital a partir de R$ 5.000/mês), que têm audiência e custo
+> operacional muito diferentes. A tabela acima é, portanto, um **ponto de
+> partida fundamentado**, posicionado bem abaixo da mídia indoor do próprio
+> shopping e calibrado para caber no orçamento de uma empresa de uma sala.
+> O caminho é validar na prática: as três primeiras campanhas e a audiência
+> medida dizem se o valor sobe ou desce. `publicidade.vigencia` registra a
+> data da tabela, para que ela seja revista sem constrangimento.
+
 ## Painel da administração
 
 Em `/admin/`, a administração inclui, edita e remove empresas pelo navegador,
@@ -247,9 +295,27 @@ até aparecer no ar.
 O histórico do Git é a auditoria: dá para ver quem alterou o quê, quando, e
 reverter qualquer edição.
 
+### Dois perfis de acesso
+
+Cada conta tem um `papel`, e o painel mostra só o que aquele papel pode fazer:
+
+| Papel | Quem usa | O que acessa |
+| --- | --- | --- |
+| `administracao` | Administração do Liberty Mall | Apenas **Empresas**: incluir, editar e remover condôminos |
+| `comercial` | Teknologji | **Empresas** e **Anúncios**: além do cadastro, coloca e tira campanhas do ar |
+
+A separação não é só visual. A aba "Anúncios" fica oculta para quem é
+`administracao`, e a API recusa a rota `/api/anuncios` para esse papel —
+leitura e escrita — com `403`. Quem não informa papel ao criar a conta entra
+como `administracao`, o perfil de menos poder.
+
+O painel descobre o papel em `/api/sessao`, que devolve `papel` e
+`podeAnunciar` junto com o nome de quem entrou.
+
 ### Como funciona a segurança
 
-- Senhas guardadas com **scrypt** (sal por conta, custo alto), nunca em texto.
+- Senhas guardadas com **PBKDF2-SHA256, 600 mil iterações** (sal por conta),
+  nunca em texto.
 - Sessão em cookie `HttpOnly`, `Secure`, `SameSite=Strict`, válida por 8 horas.
 - Toda rota da API exige sessão — inclusive a de leitura.
 - Escritas só são aceitas vindas da própria origem do site (defesa contra CSRF).
@@ -260,8 +326,8 @@ reverter qualquer edição.
 Duas limitações que convém conhecer:
 
 1. O bloqueio por tentativas vive na memória da instância. Com várias
-   instâncias ativas, o limite é por instância — o custo do scrypt é a defesa
-   principal contra força bruta.
+   instâncias ativas, o limite é por instância — o custo da derivação da senha
+   é a defesa principal contra força bruta.
 2. O HTML do painel é público (só o conteúdo é protegido). Isso é intencional:
    o que guarda os dados é a API, não a página.
 
@@ -272,6 +338,10 @@ as variáveis de ambiente precisam:
 
 - `SESSION_SECRET`, já sorteado;
 - `ADMIN_USERS`, com uma ou várias contas.
+
+Na página escolhe-se também o **perfil** da conta — "Administração (empresas)"
+ou "Comercial (empresas e anúncios)" —, que é o que define o que aquela pessoa
+vê no painel.
 
 O cálculo acontece dentro do navegador, pela Web Crypto — a senha não é
 enviada a lugar nenhum (dá para conferir na aba de rede: nenhuma requisição
@@ -289,8 +359,11 @@ A página não cria a conta sozinha: ela só produz o texto. Quem ativa o acesso
 Quem preferir o terminal tem o mesmo resultado por linha de comando:
 
 ```bash
-npm run usuario sindico "Maria Silva"
+npm run usuario sindico "Maria Silva"                      # administração
+npm run usuario comercial "Teknologji" comercial           # empresas + anúncios
 ```
+
+O terceiro argumento é o papel; omitido, a conta sai como `administracao`.
 
 **Nunca comite esses valores**: o repositório é público, e um hash versionado é
 material para ataque offline.
@@ -427,12 +500,12 @@ Se o endereço final não for `https://teknologj1.github.io/celm`, ajuste
 
 ## Próximos passos possíveis
 
-O painel hoje cobre o cadastro de empresas. A mesma estrutura atende, sem
+O painel hoje cobre o cadastro de empresas e as campanhas publicitárias. A mesma estrutura atende, sem
 mudança de arquitetura:
 
-- **Categorias, anúncios e dados do complexo** pelo painel: cada um é outro
-  arquivo em `data/`, e `api/_lib/armazenamento.js` já sabe gravar qualquer um
-  deles.
+- **Categorias e dados do complexo** pelo painel: cada um é outro arquivo em
+  `data/`, e `api/_lib/armazenamento.js` já sabe gravar qualquer um deles — é
+  o mesmo caminho que os anúncios já seguem.
 - **Envio de logotipo pelo navegador**, gravando a imagem no repositório pela
   mesma API — hoje o painel recebe o caminho do arquivo.
 - **Cadastro pelo próprio condômino**, com a solicitação entrando numa fila que

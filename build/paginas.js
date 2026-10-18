@@ -16,9 +16,19 @@ function marcaEmpresa(empresa, profundidade, tamanho) {
 
 /* Espaço publicitário. Sem anúncio ativo, mostra o espaço disponível —
    o que serve tanto de reserva no layout quanto de vitrine comercial. */
+/* Um anúncio só vai ao ar se estiver marcado como ativo e dentro do período
+   contratado — assim a campanha sai sozinha no fim da veiculação, sem
+   depender de alguém lembrar de desligá-la. */
+function noPeriodo(a) {
+  const hoje = new Date().toISOString().slice(0, 10);
+  if (a.inicio && hoje < a.inicio) return false;
+  if (a.fim && hoje > a.fim) return false;
+  return true;
+}
+
 function anuncio(dados, espaco, profundidade, extra) {
   const publicidade = dados.centro.publicidade || {};
-  const ativo = (dados.anuncios[espaco] || []).find((a) => a.ativo);
+  const ativo = (dados.anuncios[espaco] || []).find((a) => a.ativo && noPeriodo(a));
 
   if (ativo) {
     const interno = `
@@ -950,48 +960,124 @@ function cadastro(dados) {
 
 function anuncie(dados) {
   const publicidade = dados.centro.publicidade || {};
-  const espacos = Object.keys(dados.anuncios).map((espaco) => ({
-    espaco,
-    modelo: dados.anuncios[espaco][0] || {},
-    ocupado: dados.anuncios[espaco].some((a) => a.ativo)
-  }));
+  const desconto = Number(publicidade.descontoCondomino) || 0;
+  const moeda = (v) => "R$ " + Number(v).toLocaleString("pt-BR");
+  const comDesconto = (v) => Math.round(v * (1 - desconto / 100));
 
-  const nomes = {
-    home: "Página inicial",
-    diretorio: "Diretório de empresas",
-    empresa: "Fichas de empresa",
-    torre: "Páginas de torre e categoria"
-  };
+  const espacos = Object.keys(dados.anuncios)
+    .map((espaco) => (dados.anuncios[espaco] || [])[0])
+    .filter((a) => a && a.tabela)
+    .sort((a, b) => b.tabela.mensal - a.tabela.mensal);
+
+  const ocupado = (a) => (dados.anuncios[a.espaco] || []).some((x) => x.ativo);
+
+  const linhas = espacos.map((a) => {
+    const t = a.tabela;
+    return `<tr>
+            <td>
+              <strong>${escapar(t.nome)}</strong>
+              <span class="tabela-sub">${escapar(t.onde)}</span>
+              <span class="tabela-sub">${escapar(t.medida)}</span>
+            </td>
+            <td class="valor">${moeda(t.mensal)}<span class="tabela-sub">por mês</span></td>
+            <td class="valor">${moeda(t.trimestral)}<span class="tabela-sub">3 meses</span></td>
+            <td class="valor">${moeda(t.semestral)}<span class="tabela-sub">6 meses</span></td>
+            <td><span class="etiqueta ${ocupado(a) ? "" : "etiqueta-destaque"}">${ocupado(a) ? "ocupado" : "disponível"}</span></td>
+          </tr>`;
+  }).join("\n          ");
+
+  const cartoes = espacos.map((a) => `<div class="cartao">
+            <div class="cartao-topo">
+              <span class="cartao-categoria">📐 ${escapar(a.tabela.medida)}</span>
+              <span class="etiqueta ${ocupado(a) ? "" : "etiqueta-destaque"}">${ocupado(a) ? "ocupado" : "disponível"}</span>
+            </div>
+            <h3>${escapar(a.tabela.nome)}</h3>
+            <p>${escapar(a.tabela.argumento)}</p>
+            <div class="cartao-rodape">
+              <span class="etiqueta etiqueta-torre">${moeda(a.tabela.mensal)}/mês</span>
+              <span>${moeda(comDesconto(a.tabela.mensal))} para condômino</span>
+            </div>
+          </div>`).join("\n          ");
 
   const conteudo = `    <section class="secao">
       <div class="container">
         <div class="secao-cabecalho revelar">
           <span class="olho">Mídia</span>
           <h1>Anuncie no guia do complexo</h1>
-          <p>O guia é consultado por quem já está dentro do ${escapar(dados.centro.nome)}: condôminos procurando fornecedor, clientes localizando uma sala e visitantes decidindo onde almoçar. São ${dados.estatisticas.empresas} empresas cadastradas em ${dados.estatisticas.torres} torres.</p>
+          <p>O guia é consultado por quem já está dentro do ${escapar(dados.centro.nome)}:
+          condômino procurando fornecedor, paciente localizando um consultório, visitante
+          decidindo onde almoçar. São ${dados.estatisticas.empresas} empresas cadastradas
+          em ${dados.estatisticas.torres} torres e ${dados.estatisticas.andares} andares.</p>
         </div>
 
-        <div class="grade grade-2">
-          ${espacos.map((item) => `<div class="cartao">
-            <div class="cartao-topo">
-              <span class="cartao-categoria">📢 ${escapar(nomes[item.espaco] || item.espaco)}</span>
-              <span class="etiqueta ${item.ocupado ? "" : "etiqueta-destaque"}">${item.ocupado ? "ocupado" : "disponível"}</span>
-            </div>
-            <p>${escapar(item.modelo.formato || "Formato a definir")}.</p>
-          </div>`).join("\n          ")}
+        <div class="grade grade-2 revelar-fila">
+          ${cartoes}
+        </div>
+      </div>
+    </section>
+
+    <section class="secao secao-alt">
+      <div class="container">
+        <div class="secao-cabecalho revelar">
+          <span class="olho">Valores</span>
+          <h2>Tabela de referência</h2>
+          <p>Condôminos do complexo têm <strong>${desconto}% de desconto</strong> em qualquer
+          espaço. Os períodos mais longos já saem com abatimento sobre o valor mensal.</p>
         </div>
 
-        <div class="chamada" style="margin-top:32px">
+        <div class="tabela-rolagem revelar">
+          <table class="tabela-precos">
+            <caption class="sr-only">Valores por espaço e período de veiculação</caption>
+            <thead>
+              <tr>
+                <th scope="col">Espaço</th>
+                <th scope="col">Mensal</th>
+                <th scope="col">Trimestral</th>
+                <th scope="col">Semestral</th>
+                <th scope="col">Situação</th>
+              </tr>
+            </thead>
+            <tbody>
+          ${linhas}
+            </tbody>
+          </table>
+        </div>
+
+        <p class="nota-tabela">
+          ${escapar(publicidade.vigencia || "")} ·
+          ${escapar(publicidade.observacao || "")}
+          A veiculação começa na data combinada e sai do ar sozinha no fim do período.
+        </p>
+
+        <div class="chamada revelar" style="margin-top:36px">
           <div>
-            <h2>Quer reservar um espaço?</h2>
-            <p>Fale com a administração do guia para receber formatos, medidas e valores. Condôminos têm condição diferenciada.</p>
+            <h2>Reservar um espaço</h2>
+            <p>Escreva para combinar formato, período e material. Fechamos a reserva e a
+            campanha entra no ar no mesmo dia.</p>
           </div>
-          <a class="btn btn-accent" href="mailto:${escapar(publicidade.contato || dados.centro.contato.administracao)}">Falar com o comercial</a>
+          <a class="btn btn-accent" href="mailto:${escapar(publicidade.contato || dados.centro.contato.administracao)}?subject=${encodeURIComponent("Anúncio no guia do Liberty Mall")}">
+            ${escapar(publicidade.contato || dados.centro.contato.administracao)}
+          </a>
         </div>
 
-        <div class="bloco" style="margin-top:28px">
-          <h2>Como funciona na prática</h2>
-          <p style="color:var(--ink-soft)">Cada espaço é um registro em <code>data/anuncios.json</code>. Para colocar uma campanha no ar, basta preencher o anúncio correspondente com título, texto, imagem e link, marcar <code>"ativo": true</code> e publicar. Enquanto nenhum anúncio está ativo, o espaço exibe um convite para anunciar, sem quebrar o layout da página.</p>
+        <div class="colunas" style="margin-top:36px">
+          <div class="bloco">
+            <h2>O que entra no valor</h2>
+            <ul style="margin:0;padding-left:20px;display:grid;gap:9px;color:var(--ink-soft)">
+              <li>Veiculação no espaço contratado durante todo o período.</li>
+              <li>Publicação da peça e das alterações durante a campanha.</li>
+              <li>Link para o site, WhatsApp ou página que o anunciante indicar.</li>
+              <li>Identificação como publicidade, conforme a recomendação do Google e o Código de Defesa do Consumidor.</li>
+            </ul>
+          </div>
+          <div class="bloco">
+            <h2>O que não entra</h2>
+            <ul style="margin:0;padding-left:20px;display:grid;gap:9px;color:var(--ink-soft)">
+              <li>Criação da peça publicitária — o material é fornecido pelo anunciante.</li>
+              <li>Exclusividade de categoria, que pode ser negociada à parte.</li>
+              <li>Garantia de número de cliques ou de contatos.</li>
+            </ul>
+          </div>
         </div>
       </div>
     </section>`;
@@ -1001,7 +1087,7 @@ function anuncie(dados) {
     caminho: "anuncie/",
     atual: "anuncie",
     titulo: "Anuncie",
-    descricao: `Espaços publicitários disponíveis no guia de empresas do ${dados.centro.nome}.`,
+    descricao: `Espaços publicitários no guia de empresas do ${dados.centro.nome}: formatos, valores e disponibilidade.`,
     conteudo
   });
 }

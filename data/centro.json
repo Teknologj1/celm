@@ -106,6 +106,10 @@
   },
   "publicidade": {
     "mostrarEspacosVazios": true,
-    "contato": "comercial@exemplo.com.br"
+    "contato": "contato@teknologji.com.br",
+    "responsavel": "Teknologji",
+    "descontoCondomino": 30,
+    "observacao": "Valores de referência para a primeira temporada do guia, enquanto a audiência é medida. Condôminos do complexo têm desconto.",
+    "vigencia": "Tabela de outubro de 2026"
   }
 }

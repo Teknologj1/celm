@@ -4,6 +4,10 @@
 /* Gera o registro de uma conta do painel para a variável ADMIN_USERS.
  *
  *   node scripts/criar-usuario.js sindico "Maria Silva"
+ *   node scripts/criar-usuario.js comercial "Teknologji" comercial
+ *
+ * O terceiro argumento é o papel: "administracao" (padrão, cuida das
+ * empresas) ou "comercial" (empresas e espaços publicitários).
  *
  * A senha é pedida no terminal e nunca fica salva em arquivo. Copie o JSON
  * resultante para a variável de ambiente ADMIN_USERS na Vercel. */
@@ -13,9 +17,14 @@ const { criarHash } = require("../api/_lib/auth");
 
 const usuario = (process.argv[2] || "").trim().toLowerCase();
 const nome = (process.argv[3] || "").trim();
+const papel = (process.argv[4] || "administracao").trim().toLowerCase();
 
 if (!usuario) {
-  console.error("Uso: node scripts/criar-usuario.js <usuario> [\"Nome Completo\"]");
+  console.error("Uso: node scripts/criar-usuario.js <usuario> [\"Nome Completo\"] [administracao|comercial]");
+  process.exit(1);
+}
+if (!["administracao", "comercial"].includes(papel)) {
+  console.error('O papel deve ser "administracao" ou "comercial".');
   process.exit(1);
 }
 if (!/^[a-z0-9._-]{3,40}$/.test(usuario)) {
@@ -58,9 +67,10 @@ function perguntarSenha(rotulo) {
   }
 
   const { salt, hash } = criarHash(senha);
-  const conta = { usuario, nome: nome || usuario, salt, hash };
+  const conta = { usuario, nome: nome || usuario, papel, salt, hash };
 
-  console.log("\n✓ Conta gerada. Acrescente ao vetor da variável ADMIN_USERS:\n");
+  console.log(`\n✓ Conta de ${papel === "comercial" ? "gestão comercial (empresas + anúncios)" : "administração (empresas)"} gerada.`);
+  console.log("Acrescente ao vetor da variável ADMIN_USERS:\n");
   console.log(JSON.stringify(conta));
   console.log("\nCom uma conta só, o valor da variável fica assim:\n");
   console.log(JSON.stringify([conta]));

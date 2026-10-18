@@ -62,7 +62,8 @@ module.exports = async function (req, res) {
 
       return json(res, 200, {
         usuario: conta.usuario,
-        nome: conta.nome || conta.usuario
+        nome: conta.nome || conta.usuario,
+        papel: auth.papelDaConta(conta)
       });
     }
   });

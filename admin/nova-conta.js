@@ -59,6 +59,7 @@
     listaContas.hidden = contas.length === 0;
     document.getElementById("contas").innerHTML = contas.map(function (c, i) {
       return "<li><strong>" + c.usuario + "</strong> — " + c.nome +
+        " <span class='etiqueta'>" + (c.papel === "comercial" ? "comercial" : "administração") + "</span>" +
         " <button class='btn btn-secundario btn-sm btn-perigo' data-tirar='" + i + "'>Tirar</button></li>";
     }).join("");
   }
@@ -123,6 +124,7 @@
       contas.push({
         usuario: usuario,
         nome: nome,
+        papel: document.getElementById("papel").value,
         algoritmo: "pbkdf2",
         iteracoes: ITERACOES,
         salt: hex(salt),

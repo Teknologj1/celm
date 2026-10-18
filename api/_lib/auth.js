@@ -18,6 +18,20 @@ const crypto = require("crypto");
 const cofre = require("./cofre");
 const armazenamento = require("./armazenamento");
 
+/* Papéis de acesso ao painel:
+   - "administracao": o condomínio cuida do cadastro de empresas;
+   - "comercial": além das empresas, cuida dos espaços publicitários. */
+const PAPEIS = { ADMINISTRACAO: "administracao", COMERCIAL: "comercial" };
+
+function papelDaConta(conta) {
+  const p = String((conta && conta.papel) || "").toLowerCase();
+  return p === PAPEIS.COMERCIAL ? PAPEIS.COMERCIAL : PAPEIS.ADMINISTRACAO;
+}
+
+function podeAnunciar(sessao) {
+  return Boolean(sessao) && sessao.p === PAPEIS.COMERCIAL;
+}
+
 const DURACAO_SESSAO_S = 8 * 60 * 60; /* 8 horas */
 const NOME_COOKIE = "celm_sessao";
 
@@ -147,6 +161,7 @@ function criarToken(conta) {
   const carga = Buffer.from(JSON.stringify({
     u: conta.usuario,
     n: conta.nome || conta.usuario,
+    p: papelDaConta(conta),
     exp: agora + DURACAO_SESSAO_S
   })).toString("base64url");
   return `${carga}.${assinar(carga)}`;
@@ -236,6 +251,7 @@ function limparFalhas(chave) {
 
 module.exports = {
   criarHash, senhaConfere, acharConta, contas, contasEfetivas, guardarSenha,
+  PAPEIS, papelDaConta, podeAnunciar,
   criarToken, sessaoDe, cookieDeSessao, cookieVazio,
   registrarFalha, bloqueado, limparFalhas,
   NOME_COOKIE, DURACAO_SESSAO_S

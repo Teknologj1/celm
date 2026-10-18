@@ -51,6 +51,17 @@
 
 .acoes-topo { margin-left: auto; display: flex; align-items: center; gap: 10px; }
 
+/* No painel o logotipo divide espaço com o nome da área. */
+.marca-texto-painel {
+  display: flex; flex-direction: column; line-height: 1.2;
+  padding-left: 14px; margin-left: 14px; border-left: 1px solid var(--border);
+}
+.marca-texto-painel b { font-size: .92rem; color: var(--ink); }
+.marca-texto-painel span { font-size: .76rem; color: var(--muted); }
+.tela-login .marca-texto-painel { border: 0; padding: 0; margin: 10px 0 0; text-align: center; }
+.tela-login .marca { flex-direction: column; }
+@media (max-width: 760px) { .marca-texto-painel { display: none; } }
+
 /* Em classe, não em style inline: assim a media query do layout continua
    valendo no celular. */
 .filtros-painel {
@@ -172,3 +183,49 @@
   font-size: .92rem;
 }
 .contas li button { margin-left: auto; }
+
+/* ---------- Abas do painel ----------------------------------------------- */
+.abas {
+  background: var(--surface);
+  border-bottom: 1px solid var(--border);
+}
+.abas .container { display: flex; gap: 4px; }
+.aba {
+  padding: 13px 18px; border: 0; background: none; cursor: pointer;
+  font-family: inherit; font-size: .94rem; font-weight: 500; color: var(--muted);
+  border-bottom: 2px solid transparent; margin-bottom: -1px;
+  transition: color .15s, border-color .15s;
+}
+.aba:hover { color: var(--ink); }
+.aba[aria-current="page"] { color: var(--brand); border-bottom-color: var(--accent); font-weight: 600; }
+
+/* ---------- Cartão de espaço publicitário -------------------------------- */
+.espaco {
+  background: var(--surface); border: 1px solid var(--border);
+  border-radius: var(--radius); padding: 20px; box-shadow: var(--shadow);
+  display: flex; flex-direction: column; gap: 12px;
+}
+.espaco-topo { display: flex; align-items: flex-start; justify-content: space-between; gap: 12px; }
+.espaco h3 { margin: 0; font-size: 1.02rem; }
+.espaco .formato { color: var(--muted); font-size: .86rem; margin: 0; }
+.espaco .campanha {
+  background: var(--surface-alt); border-radius: var(--radius-sm);
+  padding: 12px 14px; font-size: .9rem;
+}
+.espaco .campanha b { display: block; margin-bottom: 3px; }
+.espaco .campanha p { margin: 0; color: var(--ink-soft); font-size: .86rem; }
+.espaco .periodo { color: var(--muted); font-size: .82rem; }
+.espaco-rodape { margin-top: auto; display: flex; gap: 8px; align-items: center; }
+
+.selo { font-size: .72rem; font-weight: 700; letter-spacing: .06em; text-transform: uppercase;
+  padding: 4px 10px; border-radius: 999px; white-space: nowrap; }
+.selo-no-ar { background: color-mix(in srgb, #1d8a53 15%, transparent); color: #156b40; }
+.selo-no-ar { color: #156b40; }
+.selo-livre { background: var(--surface-alt); color: var(--muted); }
+.selo-agendado { background: var(--accent-soft); color: var(--accent-texto); }
+.selo-encerrado { background: color-mix(in srgb, #d7263d 12%, transparent); color: #a81d30; }
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) .selo-no-ar { color: #5fcf94; }
+  :root:not([data-theme="light"]) .selo-encerrado { color: #ff8b9a; }
+}

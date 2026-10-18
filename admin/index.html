@@ -13,11 +13,8 @@
   <header class="topo">
     <div class="container">
       <a class="marca" href="/">
-        <span class="marca-sigla" aria-hidden="true">CELM</span>
-        <span class="marca-texto">
-          <b>Painel da administração</b>
-          <span>Empresas do guia</span>
-        </span>
+        <span class="marca-logo"></span>
+        <span class="marca-texto-painel"><b>Painel da administração</b><span>Empresas do guia</span></span>
       </a>
       <div class="acoes-topo">
         <span id="quem" class="etiqueta"></span>
@@ -28,7 +25,15 @@
     </div>
   </header>
 
+  <nav class="abas" id="abas" aria-label="Áreas do painel">
+    <div class="container">
+      <button class="aba" type="button" data-aba="empresas" aria-current="page">Empresas</button>
+      <button class="aba" type="button" data-aba="anuncios" hidden>Anúncios</button>
+    </div>
+  </nav>
+
   <main class="container" id="conteudo">
+    <section id="painel-empresas">
     <div class="secao-topo" style="margin-top:28px">
       <div>
         <span class="olho">Cadastro</span>
@@ -69,7 +74,83 @@
         <tbody id="linhas"></tbody>
       </table>
     </div>
+    </section>
+
+    <!-- Espaços publicitários: só aparece para o perfil comercial -->
+    <section id="painel-anuncios" hidden>
+      <div class="secao-topo" style="margin-top:28px">
+        <div>
+          <span class="olho">Comercial</span>
+          <h1 style="margin:0">Espaços publicitários</h1>
+          <p id="resumo-anuncios" style="color:var(--ink-soft);margin:6px 0 0"></p>
+        </div>
+        <a class="btn btn-secundario btn-sm" href="/anuncie/" target="_blank" rel="noopener">Ver a página comercial</a>
+      </div>
+
+      <p id="estado-anuncios" class="estado-carregando">Carregando espaços...</p>
+      <div id="lista-anuncios" class="grade grade-2"></div>
+    </section>
   </main>
+
+  <!-- Formulário de campanha -->
+  <div class="modal" id="modal-anuncio" hidden>
+    <div class="modal-caixa" role="dialog" aria-modal="true" aria-labelledby="titulo-anuncio">
+      <div class="modal-topo">
+        <h2 id="titulo-anuncio">Campanha</h2>
+        <button class="btn btn-secundario btn-sm" type="button" id="fechar-anuncio">Fechar</button>
+      </div>
+
+      <form id="form-anuncio" novalidate>
+        <input type="hidden" id="a-id">
+        <p id="a-formato" class="dica" style="margin:0 0 16px"></p>
+
+        <label class="caixa" style="margin-bottom:16px">
+          <input type="checkbox" id="a-ativo">
+          <span><strong>No ar</strong> — desmarque para tirar a campanha do site</span>
+        </label>
+
+        <div class="grade-form">
+          <div class="campo campo-largo">
+            <label for="a-titulo">Título *</label>
+            <input id="a-titulo" type="text" maxlength="120" placeholder="O que o anúncio diz em uma linha">
+          </div>
+          <div class="campo campo-largo">
+            <label for="a-texto">Texto de apoio</label>
+            <textarea id="a-texto" maxlength="300" placeholder="Uma ou duas linhas."></textarea>
+          </div>
+          <div class="campo">
+            <label for="a-anunciante">Anunciante</label>
+            <input id="a-anunciante" type="text" maxlength="120">
+          </div>
+          <div class="campo">
+            <label for="a-link">Link de destino</label>
+            <input id="a-link" type="url" maxlength="500" placeholder="https://">
+          </div>
+          <div class="campo campo-largo">
+            <label for="a-imagem">Caminho da imagem</label>
+            <input id="a-imagem" type="text" maxlength="300" placeholder="assets/img/anuncios/campanha.png">
+          </div>
+          <div class="campo">
+            <label for="a-inicio">Início da veiculação</label>
+            <input id="a-inicio" type="date">
+          </div>
+          <div class="campo">
+            <label for="a-fim">Fim da veiculação</label>
+            <input id="a-fim" type="date">
+            <small class="dica">Vazio: sem data para sair.</small>
+          </div>
+        </div>
+
+        <div id="problemas-anuncio" class="aviso-erro" role="alert" hidden></div>
+
+        <div class="modal-rodape">
+          <button class="btn" type="submit" id="salvar-anuncio">Salvar</button>
+          <button class="btn btn-secundario" type="button" id="cancelar-anuncio">Cancelar</button>
+          <span id="salvando-anuncio" class="dica" hidden>Gravando e republicando...</span>
+        </div>
+      </form>
+    </div>
+  </div>
 
   <!-- Formulário de inclusão e edição -->
   <div class="modal" id="modal" hidden>

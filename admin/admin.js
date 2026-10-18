@@ -68,7 +68,7 @@
   }
 
   /* ---------------- painel ---------------- */
-  var estado = { empresas: [], categorias: [], torres: [] };
+  var estado = { empresas: [], categorias: [], torres: [], anuncios: null };
 
   var corpo = document.body;
   var linhas = document.getElementById("linhas");
@@ -203,16 +203,19 @@
     };
   }
 
-  function mostrarProblemas(falha) {
-    if (falha.problemas && falha.problemas.length) {
-      problemas.innerHTML = "<strong>Corrija antes de salvar:</strong><ul>" +
-        falha.problemas.map(function (p) { return "<li>" + escapar(p) + "</li>"; }).join("") +
-        "</ul>";
-    } else {
-      problemas.textContent = falha.message;
-    }
-    problemas.hidden = false;
+  function mostrarProblemasEm(destino) {
+    return function (falha) {
+      if (falha.problemas && falha.problemas.length) {
+        destino.innerHTML = "<strong>Corrija antes de salvar:</strong><ul>" +
+          falha.problemas.map(function (p) { return "<li>" + escapar(p) + "</li>"; }).join("") +
+          "</ul>";
+      } else {
+        destino.textContent = falha.message;
+      }
+      destino.hidden = false;
+    };
   }
+  var mostrarProblemas = mostrarProblemasEm(problemas);
 
   function carregar() {
     return api("empresas").then(function (dados) {
@@ -236,6 +239,7 @@
     if (evento.key !== "Escape") return;
     if (!modal.hidden) fecharModal();
     if (modalSenha && !modalSenha.hidden) fecharSenha();
+    if (modalAnuncio && !modalAnuncio.hidden) fecharAnuncio();
   });
 
   [busca, filtroTorre, filtroCategoria].forEach(function (controle) {
@@ -288,6 +292,183 @@
       .then(function () {
         botao.disabled = false;
         salvando.hidden = true;
+      });
+  });
+
+
+  /* ---------------- abas e espaços publicitários ---------------- */
+  var abas = document.querySelectorAll(".aba");
+  var secoes = {
+    empresas: document.getElementById("painel-empresas"),
+    anuncios: document.getElementById("painel-anuncios")
+  };
+
+  function mostrarAba(nome) {
+    Object.keys(secoes).forEach(function (chave) {
+      secoes[chave].hidden = chave !== nome;
+    });
+    Array.prototype.forEach.call(abas, function (aba) {
+      var ativa = aba.getAttribute("data-aba") === nome;
+      if (ativa) aba.setAttribute("aria-current", "page");
+      else aba.removeAttribute("aria-current");
+    });
+    if (nome === "anuncios" && !estado.anuncios) carregarAnuncios();
+  }
+
+  Array.prototype.forEach.call(abas, function (aba) {
+    aba.addEventListener("click", function () {
+      mostrarAba(aba.getAttribute("data-aba"));
+    });
+  });
+
+  var listaAnuncios = document.getElementById("lista-anuncios");
+  var estadoAnuncios = document.getElementById("estado-anuncios");
+  var resumoAnuncios = document.getElementById("resumo-anuncios");
+  var modalAnuncio = document.getElementById("modal-anuncio");
+  var formAnuncio = document.getElementById("form-anuncio");
+  var problemasAnuncio = document.getElementById("problemas-anuncio");
+  var salvandoAnuncio = document.getElementById("salvando-anuncio");
+
+  var NOMES_ESPACO = {
+    home: "Página inicial",
+    diretorio: "Diretório de empresas",
+    empresa: "Fichas de empresa",
+    torre: "Páginas de torre e categoria"
+  };
+
+  function hoje() {
+    return new Date().toISOString().slice(0, 10);
+  }
+
+  /* Situação real do espaço: no ar, agendado, encerrado ou livre. */
+  function situacao(a) {
+    if (!a.ativo) return { classe: "livre", rotulo: "livre" };
+    if (a.inicio && hoje() < a.inicio) return { classe: "agendado", rotulo: "agendado" };
+    if (a.fim && hoje() > a.fim) return { classe: "encerrado", rotulo: "encerrado" };
+    return { classe: "no-ar", rotulo: "no ar" };
+  }
+
+  function periodoLegivel(a) {
+    var br = function (d) { return d ? d.split("-").reverse().join("/") : ""; };
+    if (a.inicio && a.fim) return "De " + br(a.inicio) + " a " + br(a.fim);
+    if (a.inicio) return "A partir de " + br(a.inicio);
+    if (a.fim) return "Até " + br(a.fim);
+    return "Sem data definida";
+  }
+
+  function desenharAnuncios() {
+    var lista = estado.anuncios || [];
+    var noAr = lista.filter(function (a) { return situacao(a).classe === "no-ar"; }).length;
+
+    resumoAnuncios.textContent = lista.length + " espaços · " +
+      (noAr ? noAr + " no ar" : "nenhum no ar no momento");
+    estadoAnuncios.hidden = true;
+
+    listaAnuncios.innerHTML = lista.map(function (a) {
+      var s = situacao(a);
+      return "<div class='espaco'>" +
+        "<div class='espaco-topo'>" +
+          "<div><h3>" + escapar(NOMES_ESPACO[a.espaco] || a.espaco) + "</h3>" +
+          "<p class='formato'>" + escapar(a.formato || "") + "</p></div>" +
+          "<span class='selo selo-" + s.classe + "'>" + s.rotulo + "</span>" +
+        "</div>" +
+        (a.titulo
+          ? "<div class='campanha'><b>" + escapar(a.titulo) + "</b>" +
+            (a.texto ? "<p>" + escapar(a.texto) + "</p>" : "") +
+            (a.anunciante ? "<p>" + escapar(a.anunciante) + "</p>" : "") + "</div>"
+          : "<div class='campanha'><p>Nenhuma campanha preenchida. O site exibe o convite para anunciar.</p></div>") +
+        "<span class='periodo'>" + escapar(periodoLegivel(a)) + "</span>" +
+        "<div class='espaco-rodape'>" +
+          "<button class='btn btn-secundario btn-sm' data-editar-anuncio='" + escapar(a.id) + "'>" +
+            (a.titulo ? "Editar campanha" : "Preencher campanha") + "</button>" +
+          (a.titulo
+            ? "<button class='btn btn-secundario btn-sm' data-alternar='" + escapar(a.id) + "'>" +
+              (a.ativo ? "Tirar do ar" : "Colocar no ar") + "</button>"
+            : "") +
+        "</div>" +
+      "</div>";
+    }).join("");
+  }
+
+  function carregarAnuncios() {
+    return api("anuncios").then(function (dados) {
+      estado.anuncios = dados.anuncios || [];
+      desenharAnuncios();
+    }).catch(function (falha) {
+      estadoAnuncios.hidden = false;
+      estadoAnuncios.textContent = "Não foi possível carregar: " + falha.message;
+    });
+  }
+
+  function acharAnuncio(id) {
+    return (estado.anuncios || []).find(function (a) { return a.id === id; });
+  }
+
+  function abrirAnuncio(a) {
+    problemasAnuncio.hidden = true;
+    document.getElementById("a-id").value = a.id;
+    document.getElementById("a-formato").textContent = a.formato || "";
+    document.getElementById("titulo-anuncio").textContent =
+      (NOMES_ESPACO[a.espaco] || a.espaco);
+    document.getElementById("a-ativo").checked = a.ativo === true;
+    ["titulo", "texto", "anunciante", "link", "imagem", "inicio", "fim"].forEach(function (campo) {
+      document.getElementById("a-" + campo).value = a[campo] || "";
+    });
+    modalAnuncio.hidden = false;
+    document.getElementById("a-titulo").focus();
+  }
+
+  function fecharAnuncio() { modalAnuncio.hidden = true; }
+
+  document.getElementById("fechar-anuncio").addEventListener("click", fecharAnuncio);
+  document.getElementById("cancelar-anuncio").addEventListener("click", fecharAnuncio);
+  modalAnuncio.addEventListener("click", function (e) {
+    if (e.target === modalAnuncio) fecharAnuncio();
+  });
+
+  listaAnuncios.addEventListener("click", function (evento) {
+    var editar = evento.target.getAttribute("data-editar-anuncio");
+    var alternar = evento.target.getAttribute("data-alternar");
+
+    if (editar) {
+      var a = acharAnuncio(editar);
+      if (a) abrirAnuncio(a);
+      return;
+    }
+    if (alternar) {
+      var alvo = acharAnuncio(alternar);
+      if (!alvo) return;
+      evento.target.disabled = true;
+      evento.target.textContent = "Aguarde...";
+      api("anuncios", {
+        method: "POST",
+        body: JSON.stringify(Object.assign({}, alvo, { ativo: !alvo.ativo }))
+      }).then(carregarAnuncios).catch(function (falha) {
+        window.alert("Não foi possível alterar: " + falha.message);
+        desenharAnuncios();
+      });
+    }
+  });
+
+  formAnuncio.addEventListener("submit", function (evento) {
+    evento.preventDefault();
+    problemasAnuncio.hidden = true;
+
+    var botao = document.getElementById("salvar-anuncio");
+    botao.disabled = true;
+    salvandoAnuncio.hidden = false;
+
+    var corpo = { id: document.getElementById("a-id").value, ativo: document.getElementById("a-ativo").checked };
+    ["titulo", "texto", "anunciante", "link", "imagem", "inicio", "fim"].forEach(function (campo) {
+      corpo[campo] = document.getElementById("a-" + campo).value;
+    });
+
+    api("anuncios", { method: "POST", body: JSON.stringify(corpo) })
+      .then(function () { fecharAnuncio(); return carregarAnuncios(); })
+      .catch(mostrarProblemasEm(problemasAnuncio))
+      .then(function () {
+        botao.disabled = false;
+        salvandoAnuncio.hidden = true;
       });
   });
 
@@ -373,6 +554,10 @@
   /* Só mostra o painel depois de confirmar a sessão no servidor. */
   api("sessao").then(function (sessao) {
     document.getElementById("quem").textContent = sessao.nome;
+
+    if (sessao.podeAnunciar) {
+      document.querySelector('[data-aba="anuncios"]').hidden = false;
+    }
     corpo.hidden = false;
     return carregar();
   }).catch(function (falha) {

@@ -13,7 +13,13 @@ module.exports = async function (req, res) {
         return erro(res, 500, "Servidor sem SESSION_SECRET configurado.");
       }
       if (!sessao) return erro(res, 401, "Sessão expirada ou inexistente.");
-      return json(res, 200, { usuario: sessao.u, nome: sessao.n, expiraEm: sessao.exp });
+      return json(res, 200, {
+        usuario: sessao.u,
+        nome: sessao.n,
+        papel: sessao.p || auth.PAPEIS.ADMINISTRACAO,
+        podeAnunciar: auth.podeAnunciar(sessao),
+        expiraEm: sessao.exp
+      });
     }
   });
 };

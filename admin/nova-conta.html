@@ -60,6 +60,13 @@
             <label for="nome">Nome de quem acessa *</label>
             <input id="nome" type="text" required placeholder="Maria Silva" maxlength="80">
           </div>
+          <div class="campo campo-largo">
+            <label for="papel">Tipo de acesso *</label>
+            <select id="papel" required>
+              <option value="administracao">Administração do condomínio — cadastro de empresas</option>
+              <option value="comercial">Gestão comercial — empresas e espaços publicitários</option>
+            </select>
+          </div>
           <div class="campo">
             <label for="senha">Senha *</label>
             <input id="senha" type="password" required minlength="12" autocomplete="new-password">
