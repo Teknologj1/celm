@@ -334,6 +334,13 @@ function empresa(dados, item) {
   const endereco = centro.endereco;
 
   const contatos = [];
+
+  /* Quando a política de privacidade tira o celular do texto, a ficha diria
+     "Contato e atendimento" e não listaria nada: esta linha explica por onde
+     falar com a empresa. */
+  if (!item.telefone && item.whatsapp) {
+    contatos.push(`<div><dt>Contato</dt><dd>Por WhatsApp, no botão abaixo</dd></div>`);
+  }
   if (item.telefone) {
     contatos.push(`<div><dt>Telefone</dt><dd><a href="tel:${escapar(item.telefone.replace(/[^0-9+]/g, ""))}">${escapar(item.telefone)}</a></dd></div>`);
   }

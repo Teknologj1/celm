@@ -61,6 +61,9 @@ function validar(entrada, { categorias, torres, slugsExistentes, slugAtual }) {
   if (empresa.site && !/^https?:\/\//i.test(empresa.site)) {
     problemas.push("O site deve começar com http:// ou https://");
   }
+  if (empresa.site && empresa.site.includes("@")) {
+    problemas.push("O campo do site recebeu um endereço de e-mail. Use o campo de e-mail.");
+  }
   if (empresa.whatsapp && !/^\d{10,15}$/.test(empresa.whatsapp)) {
     problemas.push("WhatsApp deve conter só números, com DDI e DDD. Ex.: 5561900001208");
   }

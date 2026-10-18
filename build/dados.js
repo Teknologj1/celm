@@ -23,6 +23,52 @@ function lerJson(arquivo) {
   }
 }
 
+/* Provedores de e-mail de uso pessoal. Um endereço nesses domínios é da
+   pessoa, não da empresa, e publicá-lo num site aberto expõe o indivíduo. */
+const PROVEDORES_PESSOAIS = new Set([
+  "gmail.com", "hotmail.com", "hotmail.com.br", "outlook.com", "outlook.com.br",
+  "yahoo.com", "yahoo.com.br", "uol.com.br", "bol.com.br", "terra.com.br",
+  "ig.com.br", "live.com", "msn.com", "icloud.com", "me.com", "globo.com",
+  "oi.com.br", "zipmail.com.br", "aol.com", "protonmail.com", "gmail.com.br"
+]);
+
+function ehEmailPessoal(email) {
+  const dominio = String(email || "").split("@")[1];
+  return dominio ? PROVEDORES_PESSOAIS.has(dominio.toLowerCase()) : false;
+}
+
+function ehCelular(telefone) {
+  const d = String(telefone || "").replace(/\D/g, "");
+  return d.length === 11 && d[2] === "9";
+}
+
+/* Aplica a política de privacidade de contatos declarada em centro.json.
+   Os dados brutos continuam intactos — quem administra o guia segue vendo
+   tudo no painel; o filtro vale para o que é publicado. */
+function aplicarPrivacidade(empresa, politica) {
+  if (politica === "todos") return empresa;
+
+  const copia = Object.assign({}, empresa);
+
+  if (ehEmailPessoal(copia.email)) copia.email = "";
+
+  /* Um e-mail digitado no campo do site escaparia do filtro acima. */
+  if (copia.site && copia.site.includes("@")) {
+    if (ehEmailPessoal(copia.site.split("//").pop())) copia.site = "";
+  }
+
+  if (ehCelular(copia.telefone)) {
+    /* "institucionais": o número deixa de aparecer como texto na página —
+       e portanto de ser indexado e raspado —, mas o botão de WhatsApp
+       continua levando a empresa ao visitante.
+       "restrito": o contato sai inteiro. */
+    copia.telefone = "";
+    if (politica === "restrito") copia.whatsapp = "";
+  }
+
+  return copia;
+}
+
 /* Converte "Clínica Cerrado Saúde" em "clinica-cerrado-saude". */
 function slugificar(texto) {
   return String(texto)
@@ -92,8 +138,11 @@ function carregar() {
 
   const porSlug = new Map(categorias.map((c) => [c.slug, c]));
 
+  const politica = (centro.privacidade && centro.privacidade.contatos) || "todos";
+
   const empresas = brutas
-    .map((empresa) => {
+    .map((bruta) => {
+      const empresa = aplicarPrivacidade(bruta, politica);
       const categoria = porSlug.get(empresa.categoria);
       return Object.assign({}, empresa, {
         slug: empresa.slug || slugificar(empresa.nome),
@@ -161,6 +210,8 @@ function carregar() {
       empresas: empresas.length,
       categorias: categoriasComContagem.length,
       torres: torres.length,
+      politicaDeContatos: politica,
+      semContato: empresas.filter((e) => !e.telefone && !e.whatsapp && !e.email && !e.site && !e.instagram).length,
       vantagens: vantagens.length,
       andares: new Set(empresas.map((e) => e.andar).filter(Boolean)).size,
       comImagem: empresas.filter((e) => e.temImagem).length

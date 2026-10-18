@@ -334,6 +334,37 @@ O scrypt resiste melhor a ataques com hardware dedicado; se em algum momento
 isso pesar mais que a conveniência, contas no formato antigo continuam
 funcionando — o campo `algoritmo` de cada conta diz como verificá-la.
 
+## Privacidade dos contatos
+
+O cadastro trouxe, na maioria dos casos, celular pessoal e e-mail de provedor
+(`gmail`, `hotmail`) como contato das empresas. Publicar isso num site aberto
+expõe a pessoa física, não só a empresa — e o consentimento recolhido no
+formulário falava em divulgação "nas redes sociais e no grupo de WhatsApp do
+condomínio", não num site indexável.
+
+O que é publicado se controla em `data/centro.json`, no campo
+`privacidade.contatos`:
+
+| Valor | O que acontece |
+| --- | --- |
+| `todos` | Publica tudo o que foi cadastrado |
+| `institucionais` *(em uso)* | O celular deixa de aparecer como texto — fica só o botão de WhatsApp, que não é indexado nem raspado como número; e-mail de provedor pessoal não é publicado |
+| `restrito` | Celular e e-mail de provedor pessoal não são publicados de forma alguma |
+
+Com `institucionais`, nenhuma das 136 empresas fica sem forma de contato:
+todas mantêm o botão de WhatsApp, 8 exibem telefone fixo e 19 exibem e-mail de
+domínio próprio. Com `restrito`, 40 empresas ficariam sem nenhum canal.
+
+O filtro vale para o que o site publica. Os dados completos continuam em
+`data/empresas.json`, que é o que a administração vê e edita pelo painel.
+
+> **O repositório precisa ser privado.** `data/empresas.json` guarda os
+> contatos como foram cadastrados, e num repositório público qualquer pessoa
+> os lê direto do GitHub, sem passar pelo site. A Vercel constrói normalmente
+> a partir de um repositório privado — é só mudar a visibilidade em
+> **Settings → General → Change repository visibility**. Enquanto isso não for
+> feito, o filtro protege o site, mas não a fonte.
+
 ## Publicação na Vercel
 
 O projeto já vem com `vercel.json`. Ao importar o repositório, a Vercel usa

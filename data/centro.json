@@ -4,6 +4,13 @@
   "tagline": "Guia de empresas das Torres A e B",
   "descricaoCurta": "Guia das empresas do Centro Empresarial Liberty Mall: encontre consultórios, escritórios e serviços por torre, andar e categoria — e descubra o que o vizinho de andar pode fazer por você.",
   "demoMode": false,
+  "privacidade": {
+    "contatos": "institucionais",
+    "_opcoes": "todos | institucionais | restrito",
+    "_todos": "publica tudo o que foi cadastrado",
+    "_institucionais": "celular vira só o botão de WhatsApp, sem aparecer como texto; e-mail de provedor pessoal (gmail, hotmail…) não é publicado",
+    "_restrito": "celular e e-mail de provedor pessoal não são publicados de forma alguma"
+  },
   "siteUrl": "https://clmall.vercel.app",
   "atualizadoEm": "2026-10-17",
   "endereco": {
