@@ -1900,7 +1900,8 @@
     "beneficio": "",
     "logo": "assets/img/empresas/iois-odontologia.png",
     "destaque": true,
-    "demo": false
+    "demo": false,
+    "capa": ""
   },
   {
     "slug": "instituto-labissiere-de-odontologia",
