@@ -60,10 +60,10 @@ const TIPOS = {
       jpeg: "image/jpeg",
       webp: "image/webp",
       svg: "image/svg+xml",
-      /* Peça animada. O GIF entra porque é o que o anunciante costuma ter à
-         mão, mas pesa várias vezes mais que os outros dois para o mesmo
-         resultado — o painel avisa isso na hora do envio. */
-      gif: "image/gif",
+      /* Peça animada. O GIF fica de fora de propósito: a mesma animação de
+         3 s em 970×250 pesa 1.260 kB em GIF contra 108 kB em MP4. Aceitar
+         os dois seria convidar o anunciante a escolher o que custa doze
+         vezes mais ao visitante. */
       mp4: "video/mp4",
       webm: "video/webm"
     },
@@ -118,6 +118,15 @@ module.exports = async function (req, res) {
 
       const nome = nomeSeguro(corpo.nome);
       const extensao = (nome.split(".").pop() || "").toLowerCase();
+
+      /* Recusa do GIF com o motivo e a saída: "formato não aceito" sozinho
+         faria o anunciante achar que o site é limitado, quando a limitação
+         é proposital. */
+      if (extensao === "gif") {
+        return erro(res, 422,
+          "GIF animado não é aceito: pesa cerca de doze vezes mais que a " +
+          "mesma animação em MP4. Converta para MP4, WEBM ou WEBP animado.");
+      }
       if (!nome || !Object.prototype.hasOwnProperty.call(tipo.extensoes, extensao)) {
         const aceitos = Object.keys(tipo.extensoes).join(", ");
         return erro(res, 422, `Formato não aceito para ${tipo.rotulo}. Envie: ${aceitos}.`);

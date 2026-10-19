@@ -197,7 +197,7 @@ para as imagens das empresas — e repetidos nas dicas do painel.
 | Faixa (home, torre) | 970 × 250 px | até 150 kB | WEBP, PNG, JPG ou SVG |
 | Cartão no diretório | 600 × 400 px | até 100 kB | WEBP, PNG, JPG ou SVG |
 | Bloco nas fichas | 300 × 250 px | até 80 kB | WEBP, PNG, JPG ou SVG |
-| Peça animada | a do espaço | até 500 kB | MP4, WEBM ou WEBP animado |
+| Peça animada | a do espaço | até 500 kB | MP4, WEBM ou WEBP animado (**GIF recusado**) |
 
 ### Animação sem peso
 
@@ -210,8 +210,8 @@ A mesma animação de 3 segundos em 970×250, medida nos quatro formatos:
 | MP4 (H.264) | 108 kB | 12× menor |
 | WEBM (VP9) | 108 kB | 12× menor |
 
-O GIF é aceito porque é o que o anunciante costuma ter à mão, e o painel
-avisa na hora do envio que o mesmo movimento em MP4 pesa cerca de um décimo.
+**GIF animado é recusado no envio**, com a razão e a saída na mensagem: doze
+vezes o peso para o mesmo movimento é diferença que o visitante paga no 4G.
 Peça em `.mp4` ou `.webm` é publicada como `<video muted loop playsinline>` —
 sem som, em laço e sem controles, ela se comporta como animação, não como
 filme.
@@ -420,8 +420,10 @@ como manda a recomendação do Google para conteúdo pago.
 
 ### Tabela de referência
 
-Os valores ficam em `data/espacos.json`, no bloco `tabela` de cada espaço, e
-são o que a página `/anuncie/` exibe. A tabela em uso:
+Os valores ficam em `data/espacos.json`, no bloco `tabela` de cada espaço.
+**Eles não são publicados**: a página `/anuncie/` fala em formato, medida e
+disponibilidade, e o valor é combinado por e-mail. A tabela serve de
+referência interna na hora de responder:
 
 | Espaço | Onde aparece | Mensal | Trimestral | Semestral |
 | --- | --- | --- | --- | --- |
@@ -430,9 +432,14 @@ são o que a página `/anuncie/` exibe. A tabela em uso:
 | Bloco nas fichas | Lateral das 136 fichas de empresa | R$ 240 | R$ 650 | R$ 1.200 |
 | Faixa de torre e categoria | Final das páginas de torre e categoria | R$ 190 | R$ 510 | R$ 950 |
 
-Condôminos do complexo têm **30% de desconto** (`publicidade.descontoCondomino`).
-O contato comercial exibido no site é `publicidade.contato`, hoje
-**contato@teknologji.com.br**, sob responsabilidade da Teknologji.
+O desconto de condômino **continua publicado** — é argumento de venda, não
+preço: `publicidade.descontoCondomino`, hoje 30%. O contato comercial exibido
+no site é `publicidade.contato`, hoje **contato@teknologji.com.br**, sob
+responsabilidade da Teknologji.
+
+O limite de campanhas por espaço e o intervalo do rodízio também saíram da
+página: são controles internos, que o anunciante não precisa conhecer para
+decidir. Continuam valendo no painel e na geração do site.
 
 > **De onde vêm esses números.** Não existe tabela pública de preços para
 > espaço publicitário em guia de condomínio empresarial — a pesquisa só

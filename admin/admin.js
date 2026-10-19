@@ -367,7 +367,7 @@
   /* Liga um <input type=file> a um campo escondido com o caminho gravado.
      Enquanto o envio acontece, o botão de salvar fica bloqueado — salvar no
      meio do caminho guardaria uma ficha apontando para lugar nenhum. */
-  var ANIMADOS = /\.(gif|mp4|webm)$/i;
+  var ANIMADOS = /\.(mp4|webm)$/i;
 
   function ligarEnvio(idArquivo, idCaminho, idEstado, tipo, idBotao, recomendado, recomendadoAnimado) {
     var campo = document.getElementById(idArquivo);
@@ -402,9 +402,6 @@
            deixar a página mais lenta. */
         aviso.textContent = "Enviado: " + arquivo.name + " (" + kb + " kB)" +
           (pesado ? " — acima dos " + teto + " kB recomendados; comprima se puder." : "") +
-          (/\.gif$/i.test(arquivo.name)
-            ? " O mesmo movimento em MP4 costuma pesar um décimo do GIF."
-            : "") +
           " — salve para publicar.";
       }).catch(function (falha) {
         campo.value = "";
@@ -690,7 +687,7 @@
     document.getElementById("a-arte").value = "";
     document.getElementById("a-arte-estado").textContent = a && a.imagem
       ? "Peça já enviada. Escolha outro arquivo só para substituir."
-      : "Parada: WEBP, PNG, JPG ou SVG, até 150 kB. Animada: MP4, WEBM ou WEBP animado, até 500 kB.";
+      : "Parada: WEBP, PNG, JPG ou SVG, até 150 kB. Animada: MP4, WEBM ou WEBP animado, até 500 kB. GIF não é aceito.";
 
     modalAnuncio.hidden = false;
     document.getElementById("a-titulo").focus();
