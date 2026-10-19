@@ -1099,7 +1099,11 @@ a.cartao:hover .marca-empresa.monograma {
 .cartao-cabeca-capa::before {
   content: ""; position: absolute; inset: 0; z-index: -1;
   border-radius: inherit;
-  background: linear-gradient(180deg, rgb(8 20 32 / 52%), rgb(8 20 32 / 84%));
+  /* Mesmo véu da ficha: escurece mais o lado onde ficam a categoria e o
+     nome, para a legibilidade não depender de como é a foto. */
+  background:
+    linear-gradient(100deg, rgb(8 20 32 / 88%) 0%, rgb(8 20 32 / 72%) 55%, rgb(8 20 32 / 44%) 100%),
+    linear-gradient(180deg, rgb(8 20 32 / 18%), rgb(8 20 32 / 52%));
 }
 .cartao-cabeca-capa h3,
 a.cartao:hover .cartao-cabeca-capa h3 { color: #fff; }
@@ -1124,3 +1128,34 @@ a.cartao:hover .cartao-cabeca-capa h3 { color: #fff; }
   color: var(--muted); font-size: .78rem;
   letter-spacing: .04em; text-transform: uppercase;
 }
+
+/* A capa também abre a ficha da empresa — mesma imagem do cartão, aqui como
+   faixa atrás da categoria, do nome e do logotipo. */
+.empresa-topo-capa {
+  position: relative; isolation: isolate;
+  background-size: cover; background-position: center;
+  border-radius: var(--radius);
+  padding: 28px 26px 30px; margin-top: 10px;
+  color: #fff;
+}
+/* O véu escurece mais o lado do texto: numa foto com rosto claro à direita,
+   um degradê só vertical deixaria o título sobre a parte iluminada. */
+.empresa-topo-capa::before {
+  content: ""; position: absolute; inset: 0; z-index: -1;
+  border-radius: inherit;
+  background:
+    linear-gradient(100deg, rgb(8 20 32 / 90%) 0%, rgb(8 20 32 / 74%) 48%, rgb(8 20 32 / 46%) 100%),
+    linear-gradient(180deg, rgb(8 20 32 / 20%), rgb(8 20 32 / 55%));
+}
+.empresa-topo-capa h1 { color: #fff; }
+.empresa-topo-capa .empresa-resumo { color: rgb(255 255 255 / 86%); }
+.empresa-topo-capa .cartao-categoria,
+.empresa-topo-capa .etiqueta {
+  color: #fff; background: rgb(255 255 255 / 16%); border-color: transparent;
+}
+.empresa-topo-capa .marca-empresa { background: #fff; }
+.empresa-topo-capa .marca-empresa.monograma {
+  background: rgb(255 255 255 / 92%); color: var(--brand-dark);
+}
+
+@media (max-width: 620px) { .empresa-topo-capa { padding: 20px 16px 22px; } }

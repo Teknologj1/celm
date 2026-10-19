@@ -39,6 +39,19 @@ const TIPOS = {
     semData: true
   },
 
+  capa: {
+    pasta: "assets/img/empresas",
+    extensoes: {
+      png: "image/png",
+      jpg: "image/jpeg",
+      jpeg: "image/jpeg",
+      webp: "image/webp"
+    },
+    assinatura: () => true,
+    rotulo: "capa",
+    semData: true
+  },
+
   anuncio: {
     pasta: "assets/img/anuncios",
     extensoes: {

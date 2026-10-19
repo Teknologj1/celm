@@ -208,9 +208,17 @@ No painel, o arquivo é escolhido dentro da própria ficha da empresa: enviar
 pelo GitHub e depois digitar o caminho não é mais necessário.
 
 Além do logotipo, cada empresa pode ter uma **capa**: uma imagem deitada
-(800×450) que entra como fundo do cabeçalho do cartão, atrás da categoria, do
-nome e do próprio logotipo. Um véu escuro é aplicado por cima para que o texto
-continue legível sobre qualquer foto, clara ou escura.
+(800×450) que entra como fundo atrás da categoria, do nome e do próprio
+logotipo — no cartão do diretório e no topo da ficha da empresa.
+
+Um véu escuro é aplicado por cima, e ele escurece mais o lado onde fica o
+texto: num retrato com o rosto claro à direita, um degradê só vertical
+deixaria o título sobre a parte iluminada. Medido sobre uma foto real, o
+título fica em 17:1 e o resumo em 11,7:1.
+
+> Enviar o arquivo e salvar a ficha são dois passos. O envio já grava a
+> imagem no repositório, mas a empresa só passa a apontar para ela quando a
+> ficha é salva — por isso o aviso do campo diz "salve para publicar".
 
 A descrição é limitada a **220 caracteres** e o cartão mostra três linhas. Não
 é capricho tipográfico: sem limite, uma empresa com três parágrafos estica a

@@ -432,7 +432,8 @@ function empresa(dados, item) {
         ${escapar(item.nome)}
       </nav>
 
-      <header class="empresa-topo empresa-topo-com-marca" data-area="${escapar(item.categoria)}">
+      <header class="empresa-topo empresa-topo-com-marca${item.capa ? " empresa-topo-capa" : ""}" data-area="${escapar(item.categoria)}"${item.capa
+        ? ` style="background-image:url('${escapar(u(item.capa))}')"` : ""}>
         ${marcaEmpresa(item, 2, "grande")}
         <div class="empresa-cabecalho-texto">
         <div class="empresa-meta">

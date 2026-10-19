@@ -210,6 +210,7 @@
       tags: document.getElementById("tags").value,
       beneficio: document.getElementById("beneficio").value,
       logo: document.getElementById("logo").value,
+      capa: document.getElementById("capa").value,
       destaque: document.getElementById("destaque").checked,
       demo: document.getElementById("demo").checked
     };
@@ -382,7 +383,10 @@
 
       enviarArquivo(arquivo, tipo).then(function (resposta) {
         caminho.value = resposta.caminho;
-        aviso.textContent = "Enviado: " + arquivo.name;
+        /* O arquivo já está no repositório, mas a ficha só passa a apontar
+           para ele depois de salva — e confundir as duas coisas custa uma
+           imagem que "sumiu". */
+        aviso.textContent = "Enviado: " + arquivo.name + " — salve para publicar.";
       }).catch(function (falha) {
         campo.value = "";
         aviso.textContent = falha.message + " " + padrao;
@@ -393,7 +397,7 @@
   }
 
   ligarEnvio("arte-logo", "logo", "arte-logo-estado", "empresa", "salvar");
-  ligarEnvio("arte-capa", "capa", "arte-capa-estado", "empresa", "salvar");
+  ligarEnvio("arte-capa", "capa", "arte-capa-estado", "capa", "salvar");
   ligarEnvio("b-pdf", "b-arquivo", "b-pdf-estado", "boletim", "salvar-boletim");
   ligarEnvio("a-arte", "a-imagem", "a-arte-estado", "anuncio", "salvar-anuncio");
 
