@@ -176,11 +176,11 @@
     document.getElementById("arte-logo-estado").textContent =
       empresa && empresa.logo
         ? "Logotipo já enviado. Escolha outro arquivo só para substituir."
-        : "Quadrado, 400×400. Com logotipo, a empresa aparece antes na lista geral.";
+        : "Quadrado, 400×400, até 60 kB. SVG de preferência; PNG se precisar de fundo transparente.";
     document.getElementById("arte-capa-estado").textContent =
       empresa && empresa.capa
         ? "Capa já enviada. Escolha outro arquivo só para substituir."
-        : "Deitada, 800×450. Entra como fundo atrás da categoria, do nome e do logotipo no cartão.";
+        : "Deitada, 800×450, até 120 kB. WEBP de preferência; JPG serve.";
     atualizarContagem();
 
     modal.hidden = false;
@@ -367,7 +367,7 @@
   /* Liga um <input type=file> a um campo escondido com o caminho gravado.
      Enquanto o envio acontece, o botão de salvar fica bloqueado — salvar no
      meio do caminho guardaria uma ficha apontando para lugar nenhum. */
-  function ligarEnvio(idArquivo, idCaminho, idEstado, tipo, idBotao) {
+  function ligarEnvio(idArquivo, idCaminho, idEstado, tipo, idBotao, recomendado) {
     var campo = document.getElementById(idArquivo);
     var caminho = document.getElementById(idCaminho);
     var aviso = document.getElementById(idEstado);
@@ -383,10 +383,19 @@
 
       enviarArquivo(arquivo, tipo).then(function (resposta) {
         caminho.value = resposta.caminho;
+
         /* O arquivo já está no repositório, mas a ficha só passa a apontar
            para ele depois de salva — e confundir as duas coisas custa uma
            imagem que "sumiu". */
-        aviso.textContent = "Enviado: " + arquivo.name + " — salve para publicar.";
+        var kb = Math.round(resposta.bytes / 1024);
+        var pesado = recomendado && kb > recomendado;
+
+        /* Acima do recomendado o envio não é recusado: a imagem pode ser
+           legítima e grande. Mas quem publica merece saber que acabou de
+           deixar a página mais lenta. */
+        aviso.textContent = "Enviado: " + arquivo.name + " (" + kb + " kB)" +
+          (pesado ? " — acima dos " + recomendado + " kB recomendados; comprima se puder." : "") +
+          " — salve para publicar.";
       }).catch(function (falha) {
         campo.value = "";
         aviso.textContent = falha.message + " " + padrao;
@@ -396,10 +405,10 @@
     });
   }
 
-  ligarEnvio("arte-logo", "logo", "arte-logo-estado", "empresa", "salvar");
-  ligarEnvio("arte-capa", "capa", "arte-capa-estado", "capa", "salvar");
+  ligarEnvio("arte-logo", "logo", "arte-logo-estado", "empresa", "salvar", 60);
+  ligarEnvio("arte-capa", "capa", "arte-capa-estado", "capa", "salvar", 120);
   ligarEnvio("b-pdf", "b-arquivo", "b-pdf-estado", "boletim", "salvar-boletim");
-  ligarEnvio("a-arte", "a-imagem", "a-arte-estado", "anuncio", "salvar-anuncio");
+  ligarEnvio("a-arte", "a-imagem", "a-arte-estado", "anuncio", "salvar-anuncio", 150);
 
 
   /* Contador da descrição: o limite existe por causa do cartão, e saber
@@ -654,8 +663,12 @@
 
     document.getElementById("a-id").value = a ? a.id : "";
     document.getElementById("a-espaco").value = a ? a.espaco : espacoId;
+    var arq = espaco.arquivo || {};
     document.getElementById("a-formato").textContent =
-      (espaco.formato || "") + (espaco.limite ? " · até " + espaco.limite + " em rodízio" : "");
+      (espaco.formato || "") +
+      (arq.medida ? " · peça de " + arq.medida : "") +
+      (arq.peso ? ", até " + arq.peso + " kB" : "") +
+      (espaco.limite ? " · até " + espaco.limite + " em rodízio" : "");
     document.getElementById("titulo-anuncio").textContent =
       (a ? "Editar campanha" : "Nova campanha") + " — " + (espaco.nome || "");
     document.getElementById("a-ativo").checked = a ? a.ativo === true : true;
@@ -667,7 +680,7 @@
     document.getElementById("a-arte").value = "";
     document.getElementById("a-arte-estado").textContent = a && a.imagem
       ? "Peça já enviada. Escolha outro arquivo só para substituir."
-      : "PNG, JPG, WEBP ou SVG, até 3 MB.";
+      : "WEBP de preferência; PNG, JPG ou SVG também servem.";
 
     modalAnuncio.hidden = false;
     document.getElementById("a-titulo").focus();

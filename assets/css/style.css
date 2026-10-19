@@ -1159,3 +1159,54 @@ a.cartao:hover .cartao-cabeca-capa h3 { color: #fff; }
 }
 
 @media (max-width: 620px) { .empresa-topo-capa { padding: 20px 16px 22px; } }
+
+/* ---------- Quadro de especificação de arquivo --------------------------- */
+.bloco-especificacao .tabela-arquivos {
+  width: 100%; border-collapse: collapse; margin: 14px 0 4px;
+  font-size: .9rem;
+}
+.tabela-arquivos th {
+  text-align: left; padding: 0 10px 8px 0;
+  font-size: .72rem; text-transform: uppercase; letter-spacing: .06em;
+  color: var(--muted); font-weight: 600;
+  border-bottom: 1px solid var(--border);
+}
+.tabela-arquivos td {
+  padding: 10px 10px 10px 0; vertical-align: top;
+  border-bottom: 1px solid var(--border); color: var(--ink-soft);
+}
+.tabela-arquivos tr:last-child td { border-bottom: 0; }
+.tabela-arquivos td:first-child { color: var(--ink); }
+.tabela-arquivos td:not(:first-child) { white-space: nowrap; }
+
+.lista-notas {
+  margin: 10px 0 0; padding-left: 18px;
+  display: grid; gap: 7px;
+  color: var(--muted); font-size: .84rem;
+}
+
+@media (max-width: 420px) {
+  .tabela-arquivos { font-size: .84rem; }
+  .tabela-arquivos td, .tabela-arquivos th { padding-right: 6px; }
+}
+
+/* No celular a tabela vira lista: três colunas com "800 × 450 px" e
+   "até 120 kB" não cabem lado a lado em 360 px sem cortar o peso. */
+@media (max-width: 560px) {
+  .tabela-arquivos,
+  .tabela-arquivos tbody,
+  .tabela-arquivos tr,
+  .tabela-arquivos td { display: block; width: 100%; }
+  .tabela-arquivos thead { display: none; }
+  .tabela-arquivos tr {
+    padding: 12px 0; border-bottom: 1px solid var(--border);
+  }
+  .tabela-arquivos tr:last-child { border-bottom: 0; }
+  .tabela-arquivos td {
+    border: 0; padding: 1px 0; white-space: normal;
+  }
+  .tabela-arquivos td:not(:first-child)::before {
+    content: attr(data-rotulo) ": "; color: var(--muted);
+  }
+  .tabela-arquivos td:first-child { margin-bottom: 4px; }
+}

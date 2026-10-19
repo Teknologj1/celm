@@ -931,6 +931,35 @@ function oCentro(dados) {
   });
 }
 
+/* As medidas e os pesos ficam em data/centro.json: assim a página de
+   cadastro e a documentação dizem a mesma coisa, e mudar a recomendação é
+   mudar um arquivo de dados. */
+function blocoImagensDaEmpresa(dados) {
+  const esp = dados.centro.imagens && dados.centro.imagens.especificacoes;
+  if (!esp || !esp.itens || !esp.itens.length) return "";
+
+  return `<div class="bloco bloco-especificacao">
+              <h2>Imagens: o que enviar</h2>
+              <table class="tabela-arquivos">
+                <thead>
+                  <tr><th scope="col">Imagem</th><th scope="col">Medida</th><th scope="col">Peso</th></tr>
+                </thead>
+                <tbody>
+                  ${esp.itens.map((i) => `<tr>
+                    <td><strong>${escapar(i.nome)}</strong>
+                      <span class="tabela-sub">${escapar(i.formatos)}</span></td>
+                    <td data-rotulo="Medida">${escapar(i.medida)}</td>
+                    <td data-rotulo="Peso">${escapar(i.peso)}</td>
+                  </tr>`).join("\n                  ")}
+                </tbody>
+              </table>
+              <ul class="lista-notas">
+                ${esp.itens.filter((i) => i.nota).map((i) => `<li>${escapar(i.nota)}</li>`).join("\n                ")}
+                <li>${escapar(esp.observacao)}</li>
+              </ul>
+            </div>`;
+}
+
 function cadastro(dados) {
   const opcoesCategoria = dados.categorias
     .map((c) => `<option value="${escapar(c.nome)}">${escapar(c.nome)}</option>`)
@@ -1016,6 +1045,7 @@ function cadastro(dados) {
             </div>
             <p id="cadastro-aviso" style="margin-top:14px;color:var(--muted);font-size:.88rem">
               Nada é enviado automaticamente: o botão apenas abre seu programa de e-mail com as informações preenchidas, para você conferir antes de enviar.
+              Anexe nele o logotipo e a foto de capa, nas medidas do quadro ao lado.
             </p>
           </form>
 
@@ -1032,6 +1062,7 @@ function cadastro(dados) {
               <b>🤝 Dica</b>
               <p>Empresas que publicam uma vantagem para vizinhos aparecem também na página <a href="${url(1, "vantagens/")}">Vantagens</a> — é onde os condôminos procuram quando precisam contratar dentro de casa.</p>
             </div>
+            ${blocoImagensDaEmpresa(dados)}
             <div class="bloco">
               <h2>Prefere falar direto?</h2>
               <p style="color:var(--ink-soft)">Escreva para <a href="mailto:${escapar(dados.centro.contato.administracao)}">${escapar(dados.centro.contato.administracao)}</a> ou ligue para ${escapar(dados.centro.contato.telefone)}.</p>
@@ -1177,6 +1208,33 @@ function anuncie(dados) {
               <li>Link para o site, WhatsApp ou página que o anunciante indicar.</li>
               <li>Identificação como publicidade, conforme a recomendação do Google e o Código de Defesa do Consumidor.</li>
             </ul>
+          </div>
+          <div class="bloco bloco-especificacao">
+            <h2>Como enviar a peça</h2>
+            <p class="dica-rodizio" style="margin-top:0">
+              A peça vai ao ar como foi enviada: o site não redimensiona nem
+              comprime nada. Arquivo acima do recomendado não fica mais bonito
+              — só demora mais a abrir, sobretudo no celular.
+            </p>
+            <table class="tabela-arquivos">
+              <thead>
+                <tr><th scope="col">Espaço</th><th scope="col">Medida</th><th scope="col">Peso</th></tr>
+              </thead>
+              <tbody>
+                ${espacos.map((e) => `<tr>
+                  <td>${escapar(e.tabela.nome)}</td>
+                  <td data-rotulo="Medida">${escapar(e.arquivo.medida)}</td>
+                  <td data-rotulo="Peso">até ${e.arquivo.peso} kB</td>
+                </tr>`).join("\n                ")}
+              </tbody>
+            </table>
+            <p class="dica-rodizio">
+              <strong>WEBP</strong> é o formato que pesa menos e todo navegador
+              atual abre — é o preferido. <strong>JPG</strong> serve para foto,
+              <strong>PNG</strong> quando houver fundo transparente e
+              <strong>SVG</strong> para peça vetorial, que pesa poucos kB.
+              O limite do envio é de 3 MB, mas a boa peça fica bem abaixo disso.
+            </p>
           </div>
           <div class="bloco">
             <h2>O que não entra</h2>

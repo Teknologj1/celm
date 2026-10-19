@@ -103,7 +103,27 @@
         "alt": "Estacionamento coberto do complexo",
         "legenda": "Estacionamento coberto, com acesso direto às torres"
       }
-    ]
+    ],
+    "especificacoes": {
+      "observacao": "As imagens entram no site como foram enviadas: não há redimensionamento automático. Arquivo grande demais não fica mais bonito — só demora mais a abrir, principalmente no celular.",
+      "limite": "3 MB por arquivo",
+      "itens": [
+        {
+          "nome": "Logotipo da empresa",
+          "medida": "400 × 400 px",
+          "peso": "até 60 kB",
+          "formatos": "Quadrado · SVG de preferência; PNG se precisar de fundo transparente",
+          "nota": "SVG é desenho vetorial: pesa poucos kB e fica nítido em qualquer tela."
+        },
+        {
+          "nome": "Imagem de capa da empresa",
+          "medida": "800 × 450 px",
+          "peso": "até 120 kB",
+          "formatos": "Deitada, 16:9 · WEBP de preferência; JPG serve",
+          "nota": "É foto, então WEBP ou JPG comprimem muito melhor que PNG."
+        }
+      ]
+    }
   },
   "publicidade": {
     "mostrarEspacosVazios": true,

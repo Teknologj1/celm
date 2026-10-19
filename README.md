@@ -183,6 +183,29 @@ faltar.
 
 ## Imagens
 
+### Peso e formato
+
+O site **não redimensiona nem comprime** nada: a imagem vai ao ar como foi
+enviada. Por isso as medidas e os pesos recomendados são publicados onde quem
+envia vai ler — em `/anuncie/` para as peças publicitárias e em `/cadastro/`
+para as imagens das empresas — e repetidos nas dicas do painel.
+
+| Imagem | Medida | Peso | Formato |
+| --- | --- | --- | --- |
+| Logotipo da empresa | 400 × 400 px | até 60 kB | SVG; PNG se precisar de transparência |
+| Capa da empresa | 800 × 450 px | até 120 kB | WEBP; JPG serve |
+| Faixa (home, torre) | 970 × 250 px | até 150 kB | WEBP, PNG, JPG ou SVG |
+| Cartão no diretório | 600 × 400 px | até 100 kB | WEBP, PNG, JPG ou SVG |
+| Bloco nas fichas | 300 × 250 px | até 80 kB | WEBP, PNG, JPG ou SVG |
+
+O painel **avisa, sem recusar**, quando o arquivo passa do recomendado: a
+imagem pode ser legítima e grande, mas quem publica merece saber que acabou de
+deixar a página mais lenta. O teto rígido continua sendo 3 MB, que é o que o
+corpo da função da Vercel comporta.
+
+Os textos saem de `data/centro.json` (`imagens.especificacoes`) e do bloco
+`arquivo` de cada espaço em `data/espacos.json`.
+
 ### Fotos do complexo
 
 Ficam em `assets/img/complexo/` e são declaradas em `data/centro.json`, no
@@ -276,12 +299,16 @@ data como prefixo, de modo que uma edição nova nunca sobrescreve a anterior.
 São quatro lugares fixos no site. Cada um comporta **várias campanhas em
 rodízio**: elas ocupam o mesmo espaço e se revezam por tempo.
 
-| `espaco` | Onde aparece | Campanhas | Troca |
-| --- | --- | --- | --- |
-| `home` | Faixa na página inicial, abaixo das categorias | até 5 | 8 s |
-| `diretorio` | Ao final da lista de resultados do diretório | até 10 | 9 s |
-| `empresa` | Bloco na lateral de cada ficha de empresa | até 10 | 10 s |
-| `torre` | Faixa ao final das páginas de torre e de categoria | até 15 | 10 s |
+| `espaco` | Onde aparece | Campanhas | Troca | Peça |
+| --- | --- | --- | --- | --- |
+| `home` | Faixa na página inicial, abaixo das categorias | até 5 | 8 s | 970×250, até 150 kB |
+| `diretorio` | Ao final da lista de resultados do diretório | até 10 | 9 s | 600×400, até 100 kB |
+| `empresa` | Bloco na lateral de cada ficha de empresa | até 10 | 10 s | 300×250, até 80 kB |
+| `torre` | Faixa ao final das páginas de torre e de categoria | até 15 | 10 s | 970×250, até 150 kB |
+
+As medidas e os pesos ficam no bloco `arquivo` de cada espaço e são o que a
+página `/anuncie/` publica — mudar a recomendação é mudar um número no JSON,
+não um texto espalhado por páginas.
 
 Essa separação é o que mantém a manutenção simples:
 
