@@ -1,1 +1,14 @@
-[]
+[
+  {
+    "id": "home-instituto-iois",
+    "titulo": "Agende sua consulta no IOIS",
+    "texto": "",
+    "link": "https://www.iois.com.br",
+    "imagem": "assets/img/anuncios/2026-10-19-iois-logo-animada.webp",
+    "anunciante": "Instituto IOIS",
+    "espaco": "home",
+    "ativo": true,
+    "inicio": "2026-10-19",
+    "fim": ""
+  }
+]
