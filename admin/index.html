@@ -170,21 +170,19 @@
         </label>
 
         <div class="grade-form">
-          <div class="campo campo-largo">
-            <label for="a-titulo">Título *</label>
-            <input id="a-titulo" type="text" maxlength="120" placeholder="O que o anúncio diz em uma linha">
-          </div>
-          <div class="campo campo-largo">
-            <label for="a-texto">Texto de apoio</label>
-            <textarea id="a-texto" maxlength="300" placeholder="Uma ou duas linhas."></textarea>
-          </div>
           <div class="campo">
-            <label for="a-anunciante">Anunciante</label>
-            <input id="a-anunciante" type="text" maxlength="120">
+            <label for="a-anunciante">Anunciante *</label>
+            <input id="a-anunciante" type="text" maxlength="120" placeholder="Quem está anunciando">
+            <small class="dica">Só para o painel: não aparece no site.</small>
           </div>
           <div class="campo">
             <label for="a-link">Link de destino</label>
             <input id="a-link" type="url" maxlength="500" placeholder="https://">
+          </div>
+          <div class="campo campo-largo">
+            <label for="a-chamada">Chamada (opcional)</label>
+            <input id="a-chamada" type="text" maxlength="120" placeholder="Uma linha curta, se a peça precisar de apoio">
+            <small class="dica">Aparece <strong>acima</strong> da imagem ou do vídeo. Em branco, só a peça é exibida.</small>
           </div>
           <div class="campo campo-largo">
             <label for="a-arte">Peça do anúncio</label>

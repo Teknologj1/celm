@@ -30,7 +30,9 @@ function midiaDaPeca(a, profundidade, primeira) {
 
   const endereco = url(profundidade, a.imagem);
   const atributo = primeira ? "src" : "data-src";
-  const alternativo = escapar(a.titulo || a.anunciante || "Publicidade");
+  /* O texto alternativo é o da chamada, ou o nome de quem anuncia: a peça
+     precisa dizer alguma coisa a quem usa leitor de tela. */
+  const alternativo = escapar(a.chamada || a.anunciante || "Publicidade");
 
   /* Peça em vídeo pesa uma fração do GIF equivalente. Sem som, em laço e
      sem controles, ela se comporta como uma animação, não como um filme. */
@@ -43,29 +45,37 @@ function midiaDaPeca(a, profundidade, primeira) {
       alt="${alternativo}" loading="lazy">`;
 }
 
-/* O período já é filtrado em build/dados.js; aqui só se monta a vitrine. */
+/* A peça é o anúncio.
+ *
+ * Não se desenha moldura em volta dela: nem título, nem texto de apoio, nem
+ * o nome de quem anuncia. Quem fez a arte já disse o que queria dizer, e
+ * repetir ao lado só rouba espaço e atenção. O nome do anunciante é
+ * obrigatório no cadastro, mas serve ao controle — não vai para a tela.
+ *
+ * A única escrita possível é a chamada, opcional, e ela aparece acima da
+ * peça, nunca ao lado: ao lado, a imagem encolhe para caber. */
 function pecaDeAnuncio(a, profundidade, primeira) {
+  const midia = midiaDaPeca(a, profundidade, primeira);
+
   const interno = `
-      ${midiaDaPeca(a, profundidade, primeira)}
-      <div>
-        <b>${escapar(a.titulo)}</b>
-        ${a.texto ? `<p>${escapar(a.texto)}</p>` : ""}
-        ${a.anunciante ? `<small>${escapar(a.anunciante)}</small>` : ""}
-      </div>`;
+      ${a.chamada ? `<span class="anuncio-chamada">${escapar(a.chamada)}</span>` : ""}
+      ${midia || `<span class="anuncio-sem-peca">${escapar(a.anunciante || "")}</span>`}`;
 
   return a.link
-    ? `<a class="anuncio-conteudo" href="${escapar(a.link)}" rel="noopener sponsored" target="_blank">${interno}</a>`
-    : `<div class="anuncio-conteudo">${interno}</div>`;
+    ? `<a class="anuncio-peca" href="${escapar(a.link)}" rel="noopener sponsored" target="_blank">${interno}</a>`
+    : `<div class="anuncio-peca">${interno}</div>`;
 }
 
-/* Um espaço pode ter várias campanhas em cartaz; elas se revezam no mesmo
- * lugar, por tempo. Todas vão no HTML — o rodízio só troca qual está
- * visível —, de modo que sem JavaScript a primeira continua aparecendo e
- * nenhum anunciante fica fora do ar por causa de um script que não rodou. */
 function anuncio(dados, espaco, profundidade, extra) {
   const publicidade = dados.centro.publicidade || {};
   const definicao = (dados.espacos || []).find((e) => e.id === espaco) || {};
   const campanhas = dados.anuncios[espaco] || [];
+
+  /* A peça nunca passa da largura para a qual foi feita: esticar uma arte
+     de 970 px até 1.200 px só a deixa borrada. Abaixo disso ela encolhe
+     junto com a tela, como qualquer imagem. */
+  const medida = (definicao.arquivo && definicao.arquivo.medida) || "";
+  const larguraNativa = (medida.match(/(\d+)/) || [])[1];
 
   if (campanhas.length) {
     const slides = campanhas.map((a, i) => `
@@ -89,7 +99,8 @@ function anuncio(dados, espaco, profundidade, extra) {
         </p>`;
     }
 
-    return `<aside class="anuncio ${extra || ""}" aria-label="Publicidade"${campanhas.length > 1
+    return `<aside class="anuncio ${extra || ""}" aria-label="Publicidade"${larguraNativa
+        ? ` style="--peca-largura:${larguraNativa}px"` : ""}${campanhas.length > 1
         ? ` data-rodizio data-intervalo="${Number(definicao.intervalo) || 8}"` : ""}>
         <span class="anuncio-rotulo">Publicidade</span>
         <div class="anuncio-palco">${slides}
@@ -102,7 +113,7 @@ function anuncio(dados, espaco, profundidade, extra) {
 
   return `<aside class="anuncio anuncio-vazio ${extra || ""}" aria-label="Espaço publicitário disponível">
         <span class="anuncio-rotulo">Espaço publicitário</span>
-        <div class="anuncio-conteudo">
+        <div class="anuncio-convite">
           <div>
             <b>Anuncie para quem trabalha aqui</b>
             <p>${escapar(definicao.formato || "Espaço disponível nesta página")}.</p>

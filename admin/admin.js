@@ -620,8 +620,9 @@
             return "<li class='campanha-linha'>" +
               "<span class='selo selo-" + s.classe + "'>" + s.rotulo + "</span>" +
               "<div class='campanha-dados'>" +
-                "<b>" + escapar(a.titulo) + "</b>" +
-                (a.anunciante ? "<span>" + escapar(a.anunciante) + "</span>" : "") +
+                "<b>" + escapar(a.anunciante || "(sem anunciante)") + "</b>" +
+                (a.chamada ? "<span>" + escapar(a.chamada) + "</span>" : "") +
+                (a.imagem ? "" : "<span>sem peça enviada</span>") +
                 "<span class='periodo'>" + escapar(periodoLegivel(a)) + "</span>" +
               "</div>" +
               "<div class='campanha-acoes'>" +
@@ -680,7 +681,7 @@
       (a ? "Editar campanha" : "Nova campanha") + " — " + (espaco.nome || "");
     document.getElementById("a-ativo").checked = a ? a.ativo === true : true;
 
-    ["titulo", "texto", "anunciante", "link", "imagem", "inicio", "fim"].forEach(function (campo) {
+    ["anunciante", "chamada", "link", "imagem", "inicio", "fim"].forEach(function (campo) {
       document.getElementById("a-" + campo).value = a ? (a[campo] || "") : "";
     });
 
@@ -690,7 +691,7 @@
       : "Parada: WEBP, PNG, JPG ou SVG, até 150 kB. Animada: MP4, WEBM ou WEBP animado, até 500 kB. GIF não é aceito.";
 
     modalAnuncio.hidden = false;
-    document.getElementById("a-titulo").focus();
+    document.getElementById("a-anunciante").focus();
   }
 
   function fecharAnuncio() { modalAnuncio.hidden = true; }
@@ -734,7 +735,7 @@
     if (remover) {
       var fora = acharAnuncio(remover);
       if (!fora) return;
-      if (!window.confirm("Remover a campanha \"" + fora.titulo + "\"?")) return;
+      if (!window.confirm("Remover a campanha de \"" + fora.anunciante + "\"?")) return;
       alvo.disabled = true;
       api("anuncios", { method: "POST", body: JSON.stringify({ id: remover, remover: true }) })
         .then(carregarAnuncios)
@@ -758,7 +759,7 @@
       espaco: document.getElementById("a-espaco").value,
       ativo: document.getElementById("a-ativo").checked
     };
-    ["titulo", "texto", "anunciante", "link", "imagem", "inicio", "fim"].forEach(function (campo) {
+    ["anunciante", "chamada", "link", "imagem", "inicio", "fim"].forEach(function (campo) {
       corpo[campo] = document.getElementById("a-" + campo).value;
     });
 

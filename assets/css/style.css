@@ -784,14 +784,45 @@ a.cartao:hover .marca-empresa.monograma {
   font-size: .68rem; font-weight: 700; letter-spacing: .1em; text-transform: uppercase;
   color: var(--muted);
 }
-.anuncio-conteudo {
-  display: flex; gap: 18px; align-items: center; color: inherit; text-decoration: none;
+/* A peça ocupa a largura do espaço. Era aqui que estava o erro: a arte
+   entrava num quadro fixo de 140×90, então uma faixa de 970×250 virava uma
+   miniatura espremida com o texto ao lado. */
+.anuncio-peca {
+  display: block; color: inherit; text-decoration: none;
 }
-.anuncio-conteudo:hover { text-decoration: none; }
-.anuncio-conteudo img { width: 140px; height: 90px; object-fit: cover; border-radius: var(--radius-sm); flex: none; }
-.anuncio-conteudo b { display: block; font-size: 1.02rem; margin-bottom: 4px; }
-.anuncio-conteudo p { margin: 0 0 4px; color: var(--ink-soft); font-size: .92rem; }
-.anuncio-conteudo small { color: var(--muted); font-size: .82rem; }
+.anuncio-peca:hover { text-decoration: none; }
+
+.anuncio-midia {
+  display: block; width: 100%; height: auto;
+  /* Nunca maior que a largura para a qual a peça foi feita — esticar só
+     borra a arte. Centralizada quando o espaço é mais largo que ela. */
+  max-width: min(100%, var(--peca-largura, 100%));
+  margin-inline: auto;
+  border-radius: var(--radius-sm);
+}
+video.anuncio-midia { background: var(--surface-alt); }
+
+/* Chamada opcional, sempre acima da peça. Ao lado, a imagem teria de
+   encolher para abrir espaço — que foi o que acontecia antes. O recuo à
+   direita evita que ela passe por baixo da etiqueta "Publicidade". */
+.anuncio-chamada {
+  display: block; margin-bottom: 10px; padding-right: 96px;
+  font-size: .98rem; font-weight: 600; line-height: 1.35; color: var(--ink);
+}
+.anuncio-peca:hover .anuncio-chamada { color: var(--brand); }
+
+/* Campanha sem arte: mostra ao menos quem anuncia, para o espaço não ficar
+   em branco enquanto a peça não chega. */
+.anuncio-sem-peca {
+  display: block; padding: 22px 0; text-align: center;
+  color: var(--ink-soft); font-weight: 600;
+}
+
+.anuncio-convite {
+  display: flex; gap: 18px; align-items: center;
+}
+.anuncio-convite b { display: block; font-size: 1.02rem; margin-bottom: 4px; }
+.anuncio-convite p { margin: 0 0 4px; color: var(--ink-soft); font-size: .92rem; }
 
 .anuncio-vazio {
   background: repeating-linear-gradient(
@@ -802,11 +833,11 @@ a.cartao:hover .marca-empresa.monograma {
 }
 .anuncio-faixa { margin-block: 8px; }
 .anuncio-lateral { margin-bottom: 18px; }
-.anuncio-lateral .anuncio-conteudo { flex-direction: column; align-items: flex-start; gap: 10px; }
-.anuncio-lateral .anuncio-conteudo img { width: 100%; height: 150px; }
+.anuncio-lateral .anuncio-convite { flex-direction: column; align-items: flex-start; gap: 10px; }
 @media (max-width: 620px) {
-  .anuncio-conteudo { flex-direction: column; align-items: flex-start; }
-  .anuncio-conteudo img { width: 100%; height: 140px; }
+  .anuncio { padding: 14px; }
+  .anuncio-convite { flex-direction: column; align-items: flex-start; }
+  .anuncio-chamada { padding-right: 0; margin-top: 14px; font-size: .94rem; }
 }
 
 /* ---------- Movimento ----------------------------------------------------
@@ -1227,9 +1258,6 @@ a.cartao:hover .cartao-cabeca-capa h3 { color: #fff; }
   .tabela-arquivos td:first-child { margin-bottom: 4px; }
 }
 
-/* Peça de anúncio em vídeo: comporta-se como imagem, sem controles. */
-.anuncio-midia { display: block; max-width: 100%; height: auto; }
-video.anuncio-midia { background: var(--surface-alt); border-radius: 8px; }
 .titulo-animacao {
   margin: 18px 0 6px; font-size: .78rem; text-transform: uppercase;
   letter-spacing: .07em; color: var(--muted);

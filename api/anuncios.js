@@ -15,7 +15,7 @@ const { json, erro, lerCorpo, mesmaOrigem, rotear } = require("./_lib/http");
 
 const ARQUIVO = "data/anuncios.json";
 const ESPACOS = "data/espacos.json";
-const LIMITES = { titulo: 120, texto: 300, link: 500, imagem: 300, anunciante: 120 };
+const LIMITES = { chamada: 120, link: 500, imagem: 300, anunciante: 120 };
 
 function exigirComercial(req, res) {
   let sessao;
@@ -44,7 +44,7 @@ function validar(entrada) {
   const problemas = [];
   const anuncio = {};
 
-  ["titulo", "texto", "link", "imagem", "anunciante"].forEach((campo) => {
+  ["chamada", "link", "imagem", "anunciante"].forEach((campo) => {
     anuncio[campo] = texto(entrada[campo], LIMITES[campo]);
   });
 
@@ -60,7 +60,13 @@ function validar(entrada) {
   if (anuncio.inicio && anuncio.fim && anuncio.fim < anuncio.inicio) {
     problemas.push("O término não pode ser antes do início.");
   }
-  if (!anuncio.titulo) problemas.push("Informe ao menos o título da campanha.");
+  /* O anunciante é obrigatório, mas não aparece no site: é o que permite
+     saber de quem é a campanha no painel e no histórico. A peça, sim, é o
+     que o visitante vê — sem ela não há o que colocar no ar. */
+  if (!anuncio.anunciante) problemas.push("Informe o nome do anunciante.");
+  if (anuncio.ativo && !anuncio.imagem) {
+    problemas.push("Para colocar no ar, envie a peça do anúncio.");
+  }
   if (anuncio.link && !/^https?:\/\//i.test(anuncio.link)) {
     problemas.push("O link deve começar com http:// ou https://");
   }
@@ -71,7 +77,7 @@ function validar(entrada) {
 /* Identificador legível, derivado do anunciante — ajuda a reconhecer a
    campanha no histórico do Git, que é a auditoria do painel. */
 function novoId(anuncio, existentes) {
-  const base = (anuncio.anunciante || anuncio.titulo || anuncio.espaco)
+  const base = (anuncio.anunciante || anuncio.espaco)
     .normalize("NFD").replace(/[̀-ͯ]/g, "")
     .toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "")
     .slice(0, 40) || "campanha";

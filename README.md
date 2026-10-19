@@ -377,18 +377,35 @@ espaço é um cartão com as campanhas dentro, o selo `3 de 10` dizendo quantas
 estão no ar e **+ Nova campanha** no rodapé. Em cada campanha há **Editar**,
 **Desligar** (sai do rodízio sem perder o que foi preenchido) e **Remover**.
 
-O formulário pede título, texto, anunciante, link e o período (`início` e
-`fim`, ambos opcionais). A peça é **enviada ali mesmo**, escolhendo o arquivo.
+O formulário pede o **anunciante** (obrigatório, mas só para o painel — não
+aparece no site), o link, o período (`início` e `fim`, ambos opcionais) e a
+**peça**, enviada ali mesmo. A **chamada** é opcional: quando preenchida,
+aparece como uma linha acima da imagem ou do vídeo; em branco, o visitante vê
+só a peça.
+
+### A peça é o anúncio
+
+Não se desenha moldura em volta dela — nem título, nem texto de apoio, nem o
+nome de quem anuncia. Quem fez a arte já disse o que queria dizer, e repetir
+ao lado rouba espaço e atenção.
+
+A peça ocupa a largura do espaço, limitada à largura para a qual foi feita:
+esticar uma arte de 970 px até 1.200 px só a deixa borrada. Abaixo disso ela
+encolhe junto com a tela.
+
+Uma campanha só vai ao ar com peça enviada; sem ela não há o que mostrar.
+Salvar como rascunho (desligada) continua valendo, para preparar antes de
+receber o material.
 
 O período é respeitado na geração do site: campanha ativa mas fora da janela
 não ocupa vaga nem aparece. Dá para deixar a campanha do mês que vem pronta
 sem travar a deste mês — lembrando que, como o site é estático, a virada só
 acontece na próxima publicação.
 
-A API valida antes de gravar: campanha sem título é recusada, período
-invertido é recusado, link que não comece com `http://` ou `https://` é
-recusado, e passar do limite do espaço devolve *"espaço lotado"* dizendo
-quantas cabem.
+A API valida antes de gravar: campanha sem anunciante é recusada, campanha no
+ar sem peça é recusada, período invertido é recusado, link que não comece com
+`http://` ou `https://` é recusado, e passar do limite do espaço devolve
+*"espaço lotado"* dizendo quantas cabem.
 
 ### Ou direto no arquivo
 
@@ -400,15 +417,17 @@ painel gera um a partir do anunciante:
   "id": "home-clinica-sorriso",
   "espaco": "home",
   "ativo": true,
-  "titulo": "Título da campanha",
-  "texto": "Uma linha de apoio.",
+  "anunciante": "Nome do anunciante",
+  "chamada": "",
   "imagem": "assets/img/anuncios/campanha.png",
   "link": "https://anunciante.com.br",
-  "anunciante": "Nome do anunciante",
   "inicio": "2026-11-01",
   "fim": "2026-11-30"
 }
 ```
+
+`anunciante` é obrigatório e **não** vai para a tela; `chamada` é opcional e
+aparece acima da peça.
 
 Enquanto nenhum anúncio está ativo, o espaço mostra um convite para anunciar,
 que leva à página `/anuncie/` — o layout nunca fica com um buraco. Para ocultar
