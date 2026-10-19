@@ -131,6 +131,11 @@
     "responsavel": "Teknologji",
     "descontoCondomino": 30,
     "observacao": "Valores de referência para a primeira temporada do guia, enquanto a audiência é medida. Condôminos do complexo têm desconto.",
-    "vigencia": "Tabela de outubro de 2026"
+    "vigencia": "Tabela de outubro de 2026",
+    "animacao": {
+      "peso": 500,
+      "formatos": "MP4, WEBM ou WEBP animado",
+      "nota": "A mesma animação de 3 segundos em 970×250 pesou 1.260 kB em GIF, 398 kB em WEBP animado e 108 kB em MP4. O GIF é aceito, mas é o que mais custa ao visitante — principalmente no celular."
+    }
   }
 }

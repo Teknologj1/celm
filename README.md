@@ -197,6 +197,36 @@ para as imagens das empresas — e repetidos nas dicas do painel.
 | Faixa (home, torre) | 970 × 250 px | até 150 kB | WEBP, PNG, JPG ou SVG |
 | Cartão no diretório | 600 × 400 px | até 100 kB | WEBP, PNG, JPG ou SVG |
 | Bloco nas fichas | 300 × 250 px | até 80 kB | WEBP, PNG, JPG ou SVG |
+| Peça animada | a do espaço | até 500 kB | MP4, WEBM ou WEBP animado |
+
+### Animação sem peso
+
+A mesma animação de 3 segundos em 970×250, medida nos quatro formatos:
+
+| Formato | Peso | Relação |
+| --- | --- | --- |
+| GIF | 1.260 kB | — |
+| WEBP animado | 398 kB | 3× menor |
+| MP4 (H.264) | 108 kB | 12× menor |
+| WEBM (VP9) | 108 kB | 12× menor |
+
+O GIF é aceito porque é o que o anunciante costuma ter à mão, e o painel
+avisa na hora do envio que o mesmo movimento em MP4 pesa cerca de um décimo.
+Peça em `.mp4` ou `.webm` é publicada como `<video muted loop playsinline>` —
+sem som, em laço e sem controles, ela se comporta como animação, não como
+filme.
+
+Três cuidados fazem a animação não custar o que parece:
+
+1. **Só a peça em cartaz é baixada.** Num espaço com dez campanhas, dar `src`
+   às dez faria o visitante baixar dez peças para ver uma. A primeira vem com
+   `src` de verdade — é a que aparece sem JavaScript — e as demais carregam no
+   instante em que o rodízio as mostra. Medido com três campanhas (1,26 MB de
+   GIF + 110 kB de vídeo): cada visita pede **uma**, nunca as três.
+2. **Vídeo fora da tela fica parado.** Animação que ninguém vê custa
+   processador e, no celular, bateria.
+3. **Com `prefers-reduced-motion`, o vídeo não começa** — fica no primeiro
+   quadro, como qualquer outra animação do site.
 
 O painel **avisa, sem recusar**, quando o arquivo passa do recomendado: a
 imagem pode ser legítima e grande, mas quem publica merece saber que acabou de

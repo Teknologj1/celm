@@ -37,6 +37,29 @@
     var visivel = true;
     var parado = false;
 
+    /* A peça só baixa quando entra em cartaz pela primeira vez. */
+    function acordar(slide) {
+      var midia = slide.querySelector("[data-src]");
+      if (!midia) return;
+      midia.src = midia.getAttribute("data-src");
+      midia.removeAttribute("data-src");
+      if (midia.tagName === "VIDEO") midia.load();
+    }
+
+    /* Vídeo fora de cartaz fica parado: animação que ninguém vê custa
+       processador e, no celular, bateria. Com movimento reduzido pedido
+       pelo sistema, o vídeo nem começa — fica no primeiro quadro. */
+    function cuidarDoVideo(slide, ativo) {
+      var video = slide.querySelector("video");
+      if (!video) return;
+      if (ativo && !semMovimento) {
+        var tocando = video.play();
+        if (tocando && tocando.catch) tocando.catch(function () {});
+      } else {
+        video.pause();
+      }
+    }
+
     function mostrar(indice) {
       atual = (indice + slides.length) % slides.length;
 
@@ -45,6 +68,8 @@
         slide.classList.toggle("ativo", ativo);
         if (ativo) slide.removeAttribute("aria-hidden");
         else slide.setAttribute("aria-hidden", "true");
+        if (ativo) acordar(slide);
+        cuidarDoVideo(slide, ativo);
       });
 
       Array.prototype.forEach.call(marcadores, function (botao, i) {
@@ -85,6 +110,7 @@
         visivel = entradas[0].isIntersecting;
         if (visivel) tocar();
         else pausar();
+        cuidarDoVideo(slides[atual], visivel);
       }, { threshold: 0.25 }).observe(espaco);
     }
 

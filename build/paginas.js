@@ -19,10 +19,34 @@ function marcaEmpresa(empresa, profundidade, tamanho) {
 /* Um anúncio só vai ao ar se estiver marcado como ativo e dentro do período
    contratado — assim a campanha sai sozinha no fim da veiculação, sem
    depender de alguém lembrar de desligá-la. */
+/* A peça só é baixada quando entra em cartaz.
+ *
+ * Num espaço com dez campanhas, dar `src` às dez faria o visitante baixar
+ * dez peças para ver uma. A primeira vem com `src` de verdade — é a que
+ * aparece sem JavaScript —, e as demais carregam no momento em que o
+ * rodízio as mostra pela primeira vez. */
+function midiaDaPeca(a, profundidade, primeira) {
+  if (!a.imagem) return "";
+
+  const endereco = url(profundidade, a.imagem);
+  const atributo = primeira ? "src" : "data-src";
+  const alternativo = escapar(a.titulo || a.anunciante || "Publicidade");
+
+  /* Peça em vídeo pesa uma fração do GIF equivalente. Sem som, em laço e
+     sem controles, ela se comporta como uma animação, não como um filme. */
+  if (/\.(mp4|webm)$/i.test(a.imagem)) {
+    return `<video class="anuncio-midia" ${atributo}="${escapar(endereco)}"
+        muted loop playsinline preload="none" aria-label="${alternativo}"></video>`;
+  }
+
+  return `<img class="anuncio-midia" ${atributo}="${escapar(endereco)}"
+      alt="${alternativo}" loading="lazy">`;
+}
+
 /* O período já é filtrado em build/dados.js; aqui só se monta a vitrine. */
-function pecaDeAnuncio(a, profundidade) {
+function pecaDeAnuncio(a, profundidade, primeira) {
   const interno = `
-      ${a.imagem ? `<img src="${url(profundidade, a.imagem)}" alt="${escapar(a.titulo || a.anunciante)}" loading="lazy">` : ""}
+      ${midiaDaPeca(a, profundidade, primeira)}
       <div>
         <b>${escapar(a.titulo)}</b>
         ${a.texto ? `<p>${escapar(a.texto)}</p>` : ""}
@@ -46,7 +70,7 @@ function anuncio(dados, espaco, profundidade, extra) {
   if (campanhas.length) {
     const slides = campanhas.map((a, i) => `
         <div class="anuncio-slide${i === 0 ? " ativo" : ""}" data-slide="${i}"${i ? ' aria-hidden="true"' : ""}>
-          ${pecaDeAnuncio(a, profundidade)}
+          ${pecaDeAnuncio(a, profundidade, i === 0)}
         </div>`).join("");
 
     /* Marcadores só com mais de uma campanha — e só enquanto couberem na
@@ -1089,6 +1113,7 @@ function anuncie(dados) {
   const moeda = (v) => "R$ " + Number(v).toLocaleString("pt-BR");
   const comDesconto = (v) => Math.round(v * (1 - desconto / 100));
 
+  const animacao = publicidade.animacao;
   const espacos = (dados.espacos || [])
     .filter((e) => e.tabela)
     .slice()
@@ -1235,6 +1260,16 @@ function anuncie(dados) {
               <strong>SVG</strong> para peça vetorial, que pesa poucos kB.
               O limite do envio é de 3 MB, mas a boa peça fica bem abaixo disso.
             </p>
+            ${animacao ? `<h3 class="titulo-animacao">Peça animada</h3>
+            <p class="dica-rodizio">
+              Aceita em <strong>${escapar(animacao.formatos)}</strong>, até
+              ${animacao.peso} kB. ${escapar(animacao.nota)}
+            </p>
+            <p class="dica-rodizio">
+              A peça em cartaz é a única que o visitante baixa: as demais do
+              mesmo espaço só carregam quando entram no rodízio, e a animação
+              para quando sai da tela.
+            </p>` : ""}
           </div>
           <div class="bloco">
             <h2>O que não entra</h2>

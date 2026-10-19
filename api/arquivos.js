@@ -59,7 +59,13 @@ const TIPOS = {
       jpg: "image/jpeg",
       jpeg: "image/jpeg",
       webp: "image/webp",
-      svg: "image/svg+xml"
+      svg: "image/svg+xml",
+      /* Peça animada. O GIF entra porque é o que o anunciante costuma ter à
+         mão, mas pesa várias vezes mais que os outros dois para o mesmo
+         resultado — o painel avisa isso na hora do envio. */
+      gif: "image/gif",
+      mp4: "video/mp4",
+      webm: "video/webm"
     },
     assinatura: () => true,
     rotulo: "peça de anúncio"

@@ -367,7 +367,9 @@
   /* Liga um <input type=file> a um campo escondido com o caminho gravado.
      Enquanto o envio acontece, o botão de salvar fica bloqueado — salvar no
      meio do caminho guardaria uma ficha apontando para lugar nenhum. */
-  function ligarEnvio(idArquivo, idCaminho, idEstado, tipo, idBotao, recomendado) {
+  var ANIMADOS = /\.(gif|mp4|webm)$/i;
+
+  function ligarEnvio(idArquivo, idCaminho, idEstado, tipo, idBotao, recomendado, recomendadoAnimado) {
     var campo = document.getElementById(idArquivo);
     var caminho = document.getElementById(idCaminho);
     var aviso = document.getElementById(idEstado);
@@ -388,13 +390,21 @@
            para ele depois de salva — e confundir as duas coisas custa uma
            imagem que "sumiu". */
         var kb = Math.round(resposta.bytes / 1024);
-        var pesado = recomendado && kb > recomendado;
+        /* Peça animada tem outro orçamento: comparar um vídeo de 3 segundos
+           com o teto de uma imagem parada só geraria aviso inútil. */
+        var teto = ANIMADOS.test(arquivo.name) && recomendadoAnimado
+          ? recomendadoAnimado
+          : recomendado;
+        var pesado = teto && kb > teto;
 
         /* Acima do recomendado o envio não é recusado: a imagem pode ser
            legítima e grande. Mas quem publica merece saber que acabou de
            deixar a página mais lenta. */
         aviso.textContent = "Enviado: " + arquivo.name + " (" + kb + " kB)" +
-          (pesado ? " — acima dos " + recomendado + " kB recomendados; comprima se puder." : "") +
+          (pesado ? " — acima dos " + teto + " kB recomendados; comprima se puder." : "") +
+          (/\.gif$/i.test(arquivo.name)
+            ? " O mesmo movimento em MP4 costuma pesar um décimo do GIF."
+            : "") +
           " — salve para publicar.";
       }).catch(function (falha) {
         campo.value = "";
@@ -408,7 +418,7 @@
   ligarEnvio("arte-logo", "logo", "arte-logo-estado", "empresa", "salvar", 60);
   ligarEnvio("arte-capa", "capa", "arte-capa-estado", "capa", "salvar", 120);
   ligarEnvio("b-pdf", "b-arquivo", "b-pdf-estado", "boletim", "salvar-boletim");
-  ligarEnvio("a-arte", "a-imagem", "a-arte-estado", "anuncio", "salvar-anuncio", 150);
+  ligarEnvio("a-arte", "a-imagem", "a-arte-estado", "anuncio", "salvar-anuncio", 150, 500);
 
 
   /* Contador da descrição: o limite existe por causa do cartão, e saber
@@ -680,7 +690,7 @@
     document.getElementById("a-arte").value = "";
     document.getElementById("a-arte-estado").textContent = a && a.imagem
       ? "Peça já enviada. Escolha outro arquivo só para substituir."
-      : "WEBP de preferência; PNG, JPG ou SVG também servem.";
+      : "Parada: WEBP, PNG, JPG ou SVG, até 150 kB. Animada: MP4, WEBM ou WEBP animado, até 500 kB.";
 
     modalAnuncio.hidden = false;
     document.getElementById("a-titulo").focus();
