@@ -211,6 +211,10 @@ p  { margin: 0 0 1em; }
 .nav a[aria-current="page"] { color: var(--brand); background: var(--brand-soft); }
 .nav a.btn { color: var(--btn-texto); background: var(--brand); }
 .nav a.btn:hover { color: var(--btn-texto); background: var(--brand); filter: brightness(1.08); }
+/* A variante de destaque precisa da mesma especificidade da regra acima;
+   sem isto o botão do menu volta ao azul da marca e o destaque some. */
+.nav a.btn-accent,
+.nav a.btn-accent:hover { background: var(--accent); color: #1c1608; }
 
 .nav-toggle {
   display: none; margin-left: auto;
@@ -1292,3 +1296,11 @@ a.cartao:hover .cartao-cabeca-capa h3 { color: #fff; }
   :root:not([data-theme="light"]) .assinatura-logo { filter: brightness(1.55) saturate(1.1); }
 }
 :root[data-theme="dark"] .assinatura-logo { filter: brightness(1.55) saturate(1.1); }
+
+/* Campo-armadilha contra robô de formulário: precisa existir no HTML e
+   receber valor se preenchido, então não pode ser display:none — alguns
+   robôs ignoram o que está escondido assim. Fica fora da tela. */
+.armadilha {
+  position: absolute; left: -9999px; width: 1px; height: 1px;
+  overflow: hidden;
+}

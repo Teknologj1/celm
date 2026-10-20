@@ -20,8 +20,8 @@ contatos passam por um filtro de privacidade antes de ir ao ar (veja
 | Torres | `/torres/`, `/torres/<a\|b>/` e `/torres/<a\|b>/<categoria>/` | Busca encadeada: escolhe a torre, depois o tipo de serviço, depois a empresa |
 | Categorias | `/categorias/` e `/categorias/<slug>/` | Navegação por área de atuação |
 | Vantagens | `/vantagens/` | Todas as condições especiais oferecidas entre condôminos |
-| O Centro | `/o-centro/` | Torres, estrutura, localização, contato da administração e o **boletim informativo** |
-| Cadastro | `/cadastro/` | Formulário que gera o e-mail de cadastro para a administração |
+| Sobre | `/o-centro/` | Torres, estrutura, localização, contato da administração e o **boletim informativo** |
+| Cadastro | `/cadastro/` | Formulário que envia o pedido de cadastro por e-mail à administração |
 | Anuncie | `/anuncie/` | Espaços publicitários disponíveis e contato comercial |
 | **Painel** | `/admin/` | Área restrita: empresas e boletim (administração) e campanhas publicitárias (comercial) |
 
@@ -100,6 +100,7 @@ assets/          ← CSS, JavaScript, fontes e imagens
 admin/           ← painel da administração (login e tela de cadastro)
 api/             ← funções da Vercel que atendem o painel
   login.js, logout.js, sessao.js, empresas.js, anuncios.js
+  cadastro.js      a única rota pública: envia o formulário por e-mail
   boletins.js, arquivos.js   edições do boletim e envio de PDF/imagem
   _lib/            autenticação, armazenamento e validação
 scripts/
@@ -474,6 +475,49 @@ decidir. Continuam valendo no painel e na geração do site.
 > O caminho é validar na prática: as três primeiras campanhas e a audiência
 > medida dizem se o valor sobe ou desce. `publicidade.vigencia` registra a
 > data da tabela, para que ela seja revista sem constrangimento.
+
+## Formulário de cadastro
+
+O formulário de `/cadastro/` envia os dados **direto para o e-mail da
+administração** (`contato.administracao` em `data/centro.json`). Quem
+preencher recebe a resposta no próprio endereço que informou: o e-mail sai
+com `reply_to` apontando para ele.
+
+### O que precisa estar configurado
+
+| Variável | O que é |
+| --- | --- |
+| `RESEND_API_KEY` | Chave da conta de envio ([Resend](https://resend.com), plano gratuito atende) |
+| `EMAIL_REMETENTE` | Remetente verificado, ex.: `Guia Liberty Mall <guia@seudominio.com.br>` |
+| `EMAIL_DESTINO` | Opcional: sobrepõe o destinatário de `data/centro.json` |
+| `EMAIL_API_URL` | Opcional: outro provedor compatível, ou um servidor de teste |
+
+O remetente precisa ser de um domínio verificado na conta de envio — provedor
+nenhum deixa mandar e-mail em nome de um domínio alheio, e sem isso a
+mensagem vira spam.
+
+**Enquanto as variáveis não existirem, o formulário não quebra**: a rota
+devolve um código que o navegador entende e volta a abrir o programa de
+e-mail do visitante com tudo preenchido, como fazia antes. O mesmo acontece
+se o provedor estiver fora do ar.
+
+### Por que a rota é defendida em camadas
+
+É a única rota pública da API — todas as outras exigem sessão. Rota aberta
+que dispara e-mail é alvo de robô de spam, e captcha custa a quem preenche de
+verdade. As defesas:
+
+1. **Mesma origem**: o pedido precisa vir do próprio site.
+2. **Campo-armadilha**: invisível para gente, irresistível para robô. O nome
+   do campo é sem sentido de propósito — chamá-lo de "sobrenome" faria o
+   preenchimento automático do navegador completá-lo, e o cadastro de uma
+   pessoa real seria descartado como se fosse robô.
+3. **Tempo mínimo**: menos de três segundos entre abrir e enviar é robô.
+4. **Limite por IP**: três envios a cada quinze minutos.
+5. **Limite de tamanho** em cada campo, antes de falar com o provedor.
+
+Quem cai nas duas primeiras recebe a mesma resposta de um envio aceito. Dizer
+"você parece um robô" só ensina o robô a passar na próxima.
 
 ## Painel da administração
 

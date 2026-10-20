@@ -1074,13 +1074,29 @@ function cadastro(dados) {
               <textarea id="c-beneficio" name="Vantagem" placeholder="Ex.: 10% de desconto para empresas das Torres A e B."></textarea>
             </div>
 
+            <!-- Campo-armadilha: fica fora da tela e sem foco por tabulação,
+                 então só um robô o preenche. O servidor descarta o envio em
+                 que ele vier cheio.
+
+                 O nome é propositalmente sem sentido. Chamá-lo de algo como
+                 "sobrenome" faria o preenchimento automático do navegador
+                 completá-lo sozinho, e o cadastro de uma pessoa real seria
+                 descartado como se fosse robô. -->
+            <div class="armadilha" aria-hidden="true">
+              <label for="c-ref-interna">Não preencha este campo</label>
+              <input id="c-ref-interna" name="ref-interna" type="text" tabindex="-1"
+                     autocomplete="off" aria-hidden="true">
+            </div>
+
             <div class="acoes">
-              <button class="btn" type="submit">Gerar e-mail de cadastro</button>
+              <button class="btn" type="submit">Enviar cadastro</button>
               <button class="btn btn-secundario" type="reset">Limpar</button>
             </div>
             <p id="cadastro-aviso" style="margin-top:14px;color:var(--muted);font-size:.88rem">
-              Nada é enviado automaticamente: o botão apenas abre seu programa de e-mail com as informações preenchidas, para você conferir antes de enviar.
-              Anexe nele o logotipo e a foto de capa, nas medidas do quadro ao lado.
+              Os dados vão direto para a administração do guia. O logotipo e a
+              foto de capa, nas medidas do quadro ao lado, podem ser enviados
+              depois por e-mail — a resposta chega no endereço que você
+              informar.
             </p>
           </form>
 

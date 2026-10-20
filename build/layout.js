@@ -32,14 +32,14 @@ function dataPorExtenso(iso) {
 
 /* O menu principal carrega só o que leva a algum lugar. "Vantagens" entra
    quando existe ao menos uma condição cadastrada — menu com página vazia é
-   promessa não cumprida. "Anuncie" não é página de visitante: vive no rodapé
-   e em cada espaço publicitário livre, que é onde um anunciante repara. */
+   promessa não cumprida. */
 const MENU_FIXO = [
   { href: "", rotulo: "Início", chave: "inicio" },
   { href: "empresas/", rotulo: "Empresas", chave: "empresas" },
   { href: "torres/", rotulo: "Torres", chave: "torres" },
   { href: "categorias/", rotulo: "Categorias", chave: "categorias" },
-  { href: "o-centro/", rotulo: "O Centro", chave: "centro" }
+  { href: "o-centro/", rotulo: "Sobre", chave: "centro" },
+  { href: "cadastro/", rotulo: "Cadastrar empresa", chave: "cadastro" }
 ];
 
 function menuRodape(dados) {
@@ -49,7 +49,6 @@ function menuRodape(dados) {
   if ((dados.boletins || []).length) {
     itens.push({ href: "o-centro/#boletim", rotulo: "Boletim informativo" });
   }
-  itens.push({ href: "anuncie/", rotulo: "Anuncie" });
   return itens;
 }
 
@@ -95,7 +94,9 @@ function cabecalho(dados, profundidade, atual, baseFixa) {
       </button>
       <nav class="nav" id="nav-principal" aria-label="Navegação principal">
         ${itens}
-        <a class="btn btn-sm" href="${u("cadastro/")}">Cadastrar empresa</a>
+        <!-- O botão em destaque é o comercial: cadastrar empresa é serviço
+             prestado ao condômino, anunciar é o que sustenta o guia. -->
+        <a class="btn btn-sm btn-accent" href="${u("anuncie/")}"${atual === "anuncie" ? ' aria-current="page"' : ""}>Anuncie aqui</a>
       </nav>
     </div>
   </header>`;
@@ -123,7 +124,7 @@ function rodape(dados, profundidade, baseFixa) {
         <div>
           <h4>Navegar</h4>
           <ul>
-            ${menu(dados).concat(menuRodape(dados)).map((i) => `<li><a href="${u(i.href)}">${escapar(i.rotulo)}</a></li>`).join("\n            ")}
+            ${menu(dados).concat(menuRodape(dados), [{ href: "anuncie/", rotulo: "Anuncie" }]).map((i) => `<li><a href="${u(i.href)}">${escapar(i.rotulo)}</a></li>`).join("\n            ")}
           </ul>
         </div>
         <div>
