@@ -608,13 +608,22 @@ e-mail, e sai de `desenvolvedor` em `data/centro.json`:
 "desenvolvedor": {
   "nome": "Teknologji",
   "instagram": "@teknologji.ti",
-  "email": "contato@teknologji.com.br"
+  "email": "contato@teknologji.com.br",
+  "logo": "assets/img/marca/teknologji.webp"
 }
 ```
 
 Fica separada por um filete do que é do condomínio, logo acima — o guia é dos
-condôminos, a construção é de quem assina ali. Tirar o bloco é apagar o campo:
-sem `nome`, a linha não é gerada.
+condôminos, a construção é de quem assina ali. As duas linhas são
+centralizadas: fecham a página, não são mais uma coluna de conteúdo.
+
+A marca entra com 20 px de altura, à esquerda do nome. É de propósito que
+seja pequena: ela não compete com a do condomínio, que abre o rodapé num
+tamanho várias vezes maior. No tema escuro recebe um clareado leve, porque o
+azul dela encosta no fundo sem isso.
+
+Tirar o bloco é apagar o campo: sem `nome`, a linha não é gerada; sem `logo`,
+fica só o texto.
 
 ## Privacidade dos contatos
 

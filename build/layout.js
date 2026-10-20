@@ -146,7 +146,7 @@ function rodape(dados, profundidade, baseFixa) {
         <span>Guia de empresas mantido pelos condôminos do ${escapar(dados.centro.nome)}.</span>
         <span>Atualizado em ${escapar(dataPorExtenso(dados.centro.atualizadoEm))}.</span>
       </div>
-${assinatura(dados)}
+${assinatura(dados, profundidade, baseFixa)}
     </div>
   </footer>`;
 }
@@ -154,7 +154,7 @@ ${assinatura(dados)}
 /* Crédito de quem fez o site. Fica na última linha do rodapé, separado do
    que é do condomínio: o guia é dos condôminos, a construção é de quem
    assina aqui. */
-function assinatura(dados) {
+function assinatura(dados, profundidade, baseFixa) {
   const dev = dados.centro.desenvolvedor;
   if (!dev || !dev.nome) return "";
 
@@ -167,8 +167,13 @@ function assinatura(dados) {
     contatos.push(`<a href="mailto:${escapar(dev.email)}">${escapar(dev.email)}</a>`);
   }
 
+  const u = (caminho) => url(profundidade, caminho, baseFixa);
+
   return `      <div class="rodape-assinatura">
-        <span>Desenvolvido por <strong>${escapar(dev.nome)}</strong></span>
+        <span class="assinatura-autor">
+          ${dev.logo ? `<img class="assinatura-logo" src="${u(dev.logo)}" alt="" width="309" height="160" loading="lazy">` : ""}
+          <span>Desenvolvido por <strong>${escapar(dev.nome)}</strong></span>
+        </span>
         ${contatos.length ? `<span class="assinatura-contatos">${contatos.join("<span aria-hidden=\"true\"> · </span>")}</span>` : ""}
       </div>`;
 }

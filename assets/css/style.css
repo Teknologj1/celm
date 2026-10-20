@@ -690,9 +690,12 @@ a.chip:hover { text-decoration: none; }
 .rodape a { color: var(--ink-soft); }
 .rodape a:hover { color: var(--brand); }
 .rodape address { font-style: normal; color: var(--ink-soft); line-height: 1.7; }
+/* As duas últimas linhas fecham o rodapé centralizadas: são o fecho da
+   página, não mais uma coluna de conteúdo. */
 .rodape-base {
   margin-top: 30px; padding-top: 18px; border-top: 1px solid var(--border);
-  display: flex; justify-content: space-between; gap: 12px; flex-wrap: wrap;
+  display: flex; justify-content: center; gap: 6px 16px; flex-wrap: wrap;
+  text-align: center;
   color: var(--muted); font-size: .85rem;
 }
 
@@ -1267,15 +1270,25 @@ a.cartao:hover .cartao-cabeca-capa h3 { color: #fff; }
 .rodape-assinatura {
   margin-top: 14px; padding-top: 14px;
   border-top: 1px solid color-mix(in srgb, var(--border) 60%, transparent);
-  display: flex; flex-wrap: wrap; gap: 6px 16px;
-  align-items: center; justify-content: space-between;
+  display: flex; flex-wrap: wrap; gap: 4px 16px;
+  align-items: center; justify-content: center;
+  text-align: center;
   color: var(--muted); font-size: .82rem;
 }
 .rodape-assinatura strong { color: var(--ink-soft); font-weight: 600; }
-.assinatura-contatos { display: flex; flex-wrap: wrap; gap: 4px; align-items: center; }
+.assinatura-autor { display: inline-flex; align-items: center; gap: 8px; }
+
+/* Discreta: a marca de quem fez não compete com a do condomínio, que abre
+   o rodapé num tamanho várias vezes maior. */
+.assinatura-logo { height: 20px; width: auto; flex: none; }
+
+.assinatura-contatos { display: flex; flex-wrap: wrap; gap: 4px; align-items: center; justify-content: center; }
 .rodape-assinatura a { color: var(--muted); }
 .rodape-assinatura a:hover { color: var(--brand); }
 
-@media (max-width: 560px) {
-  .rodape-assinatura { justify-content: flex-start; gap: 4px 12px; }
+/* No escuro o azul da marca encosta no fundo; um clareado leve devolve a
+   leitura sem desbotar a cor. */
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) .assinatura-logo { filter: brightness(1.55) saturate(1.1); }
 }
+:root[data-theme="dark"] .assinatura-logo { filter: brightness(1.55) saturate(1.1); }
