@@ -10,6 +10,20 @@ As **136 empresas** publicadas são as do cadastro real do condomínio. Os
 contatos passam por um filtro de privacidade antes de ir ao ar (veja
 [Privacidade dos contatos](#privacidade-dos-contatos)).
 
+## ⚠ Antes de abrir ao público
+
+Três coisas precisam ser confirmadas com o condomínio. `npm run check` avisa
+sobre as duas primeiras a cada execução, e o CI repete o aviso a cada push.
+
+| Pendência | Onde | Por que trava |
+| --- | --- | --- |
+| **E-mail da administração** | `contato.administracao` em `data/centro.json` — hoje `administracao@exemplo.com.br` | É o endereço que recebe os pedidos de cadastro. Enquanto for de exemplo, o formulário **se recusa a enviar** e diz que o cadastro ainda não está aberto: mandar para um endereço fictício seria pior, porque a tela diria "enviado" e o pedido cairia no vazio |
+| **Telefone da administração** | `contato.telefone` — hoje `(61) 3000-0000` | Está publicado na página Sobre e no rodapé como contato real |
+| **Conta de envio de e-mail** | `RESEND_API_KEY` e `EMAIL_REMETENTE` na Vercel | Sem elas o formulário volta a abrir o programa de e-mail do visitante (veja [Formulário de cadastro](#formulário-de-cadastro)) |
+
+Confirmados os dois primeiros, é editar `data/centro.json` — o aviso some
+sozinho na verificação seguinte.
+
 ## O que o site tem
 
 | Página | Endereço | O que faz |

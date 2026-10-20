@@ -107,3 +107,39 @@ if (problemas.length) {
 }
 
 console.log(`✓ ${arquivos.length} páginas verificadas, ${total} links internos válidos`);
+
+/* Dados que ainda são de exemplo.
+ *
+ * Não reprovam o build — são deliberados enquanto o condomínio não confirma
+ * —, mas aparecem em toda verificação e em todo push, para que ninguém abra
+ * o site ao público achando que o contato publicado é real. Um e-mail
+ * fictício no ar significa pedido de cadastro caindo no vazio. */
+const PROVISORIOS = [
+  {
+    caminho: "contato.administracao",
+    ehProvisorio: (v) => /@exemplo\.|@example\./i.test(String(v || "")),
+    nota: "e-mail que recebe os pedidos de cadastro do formulário"
+  },
+  {
+    caminho: "contato.telefone",
+    ehProvisorio: (v) => /0000-0000|3000-0000/.test(String(v || "")),
+    nota: "telefone publicado como contato da administração"
+  }
+];
+
+const centro = JSON.parse(fs.readFileSync(path.join(RAIZ, "data", "centro.json"), "utf8"));
+const buscar = (obj, caminho) => caminho.split(".").reduce((o, c) => (o || {})[c], obj);
+
+const pendentes = PROVISORIOS
+  .map((item) => ({ item, valor: buscar(centro, item.caminho) }))
+  .filter(({ item, valor }) => item.ehProvisorio(valor));
+
+if (pendentes.length) {
+  console.warn("");
+  console.warn("⚠ Antes de abrir ao público, confirmar com o condomínio:");
+  pendentes.forEach(({ item, valor }) => {
+    console.warn(`  - ${item.caminho} = ${valor}`);
+    console.warn(`    (${item.nota})`);
+  });
+  console.warn("  Editar em data/centro.json.");
+}

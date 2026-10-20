@@ -93,6 +93,19 @@
           return;
         }
 
+        /* Endereço de destino ainda não confirmado: não adianta abrir o
+           programa de e-mail, porque ele apontaria para o mesmo endereço
+           de exemplo. Melhor dizer a verdade. */
+        if (r.corpo.codigo === "destino-provisorio") {
+          dizer(
+            "O cadastro ainda não está aberto: o endereço da administração " +
+            "do guia não foi confirmado. Tente de novo em alguns dias ou " +
+            "procure a administração do condomínio.",
+            "var(--ink)"
+          );
+          return;
+        }
+
         if (r.corpo.codigo === "sem-email") return abrirPrograma(dados);
 
         if (r.corpo.problemas && r.corpo.problemas.length) {

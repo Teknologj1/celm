@@ -105,6 +105,13 @@ function corpoHtml(dados) {
   </div>`;
 }
 
+/* Enquanto o condomínio não confirma o endereço, data/centro.json carrega um
+   de exemplo. Mandar para ele é pior do que não mandar: o formulário diria
+   "enviado" e o pedido cairia no vazio. */
+function ehProvisorio(email) {
+  return /@exemplo\.|@example\./i.test(String(email || ""));
+}
+
 async function destinatario() {
   if (process.env.EMAIL_DESTINO) return process.env.EMAIL_DESTINO;
   const { dados } = await gh.lerJson("data/centro.json");
@@ -188,6 +195,12 @@ module.exports = async function (req, res) {
       }
       if (!para) {
         return json(res, 503, { erro: "Destinatário não configurado.", codigo: "sem-email" });
+      }
+      if (ehProvisorio(para)) {
+        return json(res, 503, {
+          erro: "O endereço da administração ainda não foi confirmado.",
+          codigo: "destino-provisorio"
+        });
       }
 
       try {
