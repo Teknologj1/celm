@@ -137,5 +137,10 @@
       "formatos": "MP4, WEBM ou WEBP animado",
       "nota": "GIF animado não é aceito: a mesma animação de 3 segundos em 970×250 pesa 1.260 kB em GIF contra 398 kB em WEBP animado e 108 kB em MP4. O vídeo entra sem som, em laço e sem controles — comporta-se como animação."
     }
+  },
+  "desenvolvedor": {
+    "nome": "Teknologji",
+    "instagram": "@teknologji.ti",
+    "email": "contato@teknologji.com.br"
   }
 }

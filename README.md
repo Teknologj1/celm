@@ -83,7 +83,8 @@ final na raiz do projeto, pronto para o GitHub Pages.
 
 ```
 data/            ← a fonte da verdade (conteúdo do guia)
-  centro.json      dados do complexo: endereço, torres, estrutura, imagens, contato
+  centro.json      dados do complexo: endereço, torres, estrutura, imagens,
+                   contato, privacidade e quem desenvolveu o site
   categorias.json  áreas de atuação e sinônimos usados na busca
   empresas.json    as empresas do guia
   espacos.json     os quatro espaços publicitários: formato, limite e preço
@@ -597,6 +598,23 @@ que é o que permite gerar contas sem a senha sair do computador de quem cria.
 O scrypt resiste melhor a ataques com hardware dedicado; se em algum momento
 isso pesar mais que a conveniência, contas no formato antigo continuam
 funcionando — o campo `algoritmo` de cada conta diz como verificá-la.
+
+## Assinatura no rodapé
+
+A última linha do rodapé credita quem desenvolveu o site, com Instagram e
+e-mail, e sai de `desenvolvedor` em `data/centro.json`:
+
+```json
+"desenvolvedor": {
+  "nome": "Teknologji",
+  "instagram": "@teknologji.ti",
+  "email": "contato@teknologji.com.br"
+}
+```
+
+Fica separada por um filete do que é do condomínio, logo acima — o guia é dos
+condôminos, a construção é de quem assina ali. Tirar o bloco é apagar o campo:
+sem `nome`, a linha não é gerada.
 
 ## Privacidade dos contatos
 

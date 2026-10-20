@@ -1262,3 +1262,20 @@ a.cartao:hover .cartao-cabeca-capa h3 { color: #fff; }
   margin: 18px 0 6px; font-size: .78rem; text-transform: uppercase;
   letter-spacing: .07em; color: var(--muted);
 }
+
+/* ---------- Assinatura de quem desenvolveu ------------------------------- */
+.rodape-assinatura {
+  margin-top: 14px; padding-top: 14px;
+  border-top: 1px solid color-mix(in srgb, var(--border) 60%, transparent);
+  display: flex; flex-wrap: wrap; gap: 6px 16px;
+  align-items: center; justify-content: space-between;
+  color: var(--muted); font-size: .82rem;
+}
+.rodape-assinatura strong { color: var(--ink-soft); font-weight: 600; }
+.assinatura-contatos { display: flex; flex-wrap: wrap; gap: 4px; align-items: center; }
+.rodape-assinatura a { color: var(--muted); }
+.rodape-assinatura a:hover { color: var(--brand); }
+
+@media (max-width: 560px) {
+  .rodape-assinatura { justify-content: flex-start; gap: 4px 12px; }
+}

@@ -146,8 +146,31 @@ function rodape(dados, profundidade, baseFixa) {
         <span>Guia de empresas mantido pelos condôminos do ${escapar(dados.centro.nome)}.</span>
         <span>Atualizado em ${escapar(dataPorExtenso(dados.centro.atualizadoEm))}.</span>
       </div>
+${assinatura(dados)}
     </div>
   </footer>`;
+}
+
+/* Crédito de quem fez o site. Fica na última linha do rodapé, separado do
+   que é do condomínio: o guia é dos condôminos, a construção é de quem
+   assina aqui. */
+function assinatura(dados) {
+  const dev = dados.centro.desenvolvedor;
+  if (!dev || !dev.nome) return "";
+
+  const contatos = [];
+  if (dev.instagram) {
+    const arroba = dev.instagram.replace(/^@/, "");
+    contatos.push(`<a href="https://instagram.com/${escapar(arroba)}" rel="noopener" target="_blank">@${escapar(arroba)}</a>`);
+  }
+  if (dev.email) {
+    contatos.push(`<a href="mailto:${escapar(dev.email)}">${escapar(dev.email)}</a>`);
+  }
+
+  return `      <div class="rodape-assinatura">
+        <span>Desenvolvido por <strong>${escapar(dev.nome)}</strong></span>
+        ${contatos.length ? `<span class="assinatura-contatos">${contatos.join("<span aria-hidden=\"true\"> · </span>")}</span>` : ""}
+      </div>`;
 }
 
 /* Monta a página completa. */
