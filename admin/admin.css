@@ -315,3 +315,51 @@ input[type="file"]:hover { border-color: var(--brand); }
   .campanha-acoes { width: 100%; }
   .campanha-acoes .btn { flex: 1 1 auto; }
 }
+
+/* ---------- Tabela de valores (referência interna) ----------------------- */
+.bloco-precos {
+  background: var(--surface); border: 1px solid var(--border);
+  border-radius: var(--radius); box-shadow: var(--shadow);
+  padding: 16px 18px; margin: 22px 0 18px;
+}
+.bloco-precos > summary {
+  cursor: pointer; display: flex; flex-wrap: wrap; gap: 4px 12px;
+  align-items: baseline; list-style: none;
+}
+.bloco-precos > summary::-webkit-details-marker { display: none; }
+.bloco-precos > summary::before {
+  content: "▸"; color: var(--muted); margin-right: 6px; transition: transform .15s ease;
+}
+.bloco-precos[open] > summary::before { content: "▾"; }
+.bloco-precos .sub { color: var(--muted); font-size: .78rem; display: block; }
+.bloco-precos > summary .sub { display: inline; }
+.bloco-precos .dica { margin: 10px 0 0; }
+
+.tabela-valores { margin-top: 12px; font-size: .88rem; }
+.tabela-valores th { white-space: nowrap; }
+.tabela-valores td { white-space: nowrap; vertical-align: top; }
+.tabela-valores td:first-child { white-space: normal; }
+.valor-condomino { color: var(--ok, #1f7a4d); font-weight: 600; }
+
+/* No celular a tabela vira lista: cinco colunas de valores não cabem, e
+   rolar de lado esconde justamente a coluna do condômino. */
+@media (max-width: 620px) {
+  .tabela-valores,
+  .tabela-valores tbody,
+  .tabela-valores tr,
+  .tabela-valores td { display: block; width: 100%; }
+  .tabela-valores thead { display: none; }
+  .tabela-valores tr {
+    padding: 12px 0; border-bottom: 1px solid var(--border);
+  }
+  .tabela-valores tr:last-child { border-bottom: 0; }
+  .tabela-valores td {
+    border: 0; padding: 2px 0; white-space: normal;
+    display: flex; justify-content: space-between; gap: 12px;
+  }
+  .tabela-valores td:first-child { display: block; margin-bottom: 6px; }
+  .tabela-valores td:not(:first-child)::before {
+    content: attr(data-rotulo); color: var(--muted); font-weight: 400;
+  }
+  .tabela-valores .sub { display: none; }
+}

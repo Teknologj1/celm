@@ -598,6 +598,62 @@
     return (estado.espacos || []).find(function (e) { return e.id === id; });
   }
 
+  var tabelaPrecos = document.getElementById("tabela-precos");
+
+  function moeda(v) {
+    return "R$ " + Number(v).toLocaleString("pt-BR");
+  }
+
+  /* A tabela saiu da página pública: valor agora é combinado por e-mail.
+     Mas quem fecha a campanha precisa dela à mão, e o lugar certo é logo
+     acima dos espaços — é aqui que o número é usado. */
+  function desenharPrecos() {
+    var pub = estado.publicidade || {};
+    var espacos = (estado.espacos || []).filter(function (e) { return e.tabela; });
+
+    if (!espacos.length) {
+      tabelaPrecos.hidden = true;
+      return;
+    }
+
+    var desconto = Number(pub.descontoCondomino) || 0;
+    var comDesconto = function (v) { return Math.round(v * (1 - desconto / 100)); };
+
+    var linhas = espacos.map(function (e) {
+      var t = e.tabela;
+      return "<tr>" +
+        "<td><strong>" + escapar(t.nome) + "</strong>" +
+          "<span class='sub'>" + escapar(e.arquivo ? e.arquivo.medida : t.medida) + "</span></td>" +
+        "<td data-rotulo='Mensal'>" + moeda(t.mensal) + "</td>" +
+        "<td data-rotulo='Trimestral'>" + moeda(t.trimestral) + "</td>" +
+        "<td data-rotulo='Semestral'>" + moeda(t.semestral) + "</td>" +
+        "<td class='valor-condomino' data-rotulo='Condômino/mês'>" + moeda(comDesconto(t.mensal)) +
+          "<span class='sub'>por mês</span></td>" +
+      "</tr>";
+    }).join("");
+
+    tabelaPrecos.innerHTML =
+      "<details class='bloco-precos' open>" +
+        "<summary><strong>Tabela de valores</strong>" +
+          (pub.vigencia ? "<span class='sub'>" + escapar(pub.vigencia) + "</span>" : "") +
+        "</summary>" +
+        "<div class='tabela-rolagem'>" +
+          "<table class='tabela tabela-valores'>" +
+            "<thead><tr>" +
+              "<th>Espaço</th><th>Mensal</th><th>Trimestral</th><th>Semestral</th>" +
+              "<th>Condômino" + (desconto ? " (−" + desconto + "%)" : "") + "</th>" +
+            "</tr></thead>" +
+            "<tbody>" + linhas + "</tbody>" +
+          "</table>" +
+        "</div>" +
+        (pub.observacao ? "<p class='dica'>" + escapar(pub.observacao) + "</p>" : "") +
+        "<p class='dica'>Não aparece no site: a página comercial fala em formato e " +
+          "disponibilidade, e o valor é combinado por e-mail.</p>" +
+      "</details>";
+
+    tabelaPrecos.hidden = false;
+  }
+
   /* Um cartão por espaço, com as campanhas dentro. O espaço é o lugar fixo
      do site; a campanha é o que passa nele. */
   function desenharAnuncios() {
@@ -658,6 +714,8 @@
     return api("anuncios").then(function (dados) {
       estado.espacos = dados.espacos || [];
       estado.anuncios = dados.anuncios || [];
+      estado.publicidade = dados.publicidade || {};
+      desenharPrecos();
       desenharAnuncios();
     }).catch(function (falha) {
       estadoAnuncios.hidden = false;

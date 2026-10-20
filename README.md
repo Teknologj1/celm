@@ -459,8 +459,14 @@ como manda a recomendação do Google para conteúdo pago.
 
 Os valores ficam em `data/espacos.json`, no bloco `tabela` de cada espaço.
 **Eles não são publicados**: a página `/anuncie/` fala em formato, medida e
-disponibilidade, e o valor é combinado por e-mail. A tabela serve de
-referência interna na hora de responder:
+disponibilidade, e o valor é combinado por e-mail.
+
+A tabela aparece no painel, na aba **Anúncios**, logo acima dos espaços — é
+ali que o número é usado, na hora de fechar uma campanha. Traz mensal,
+trimestral, semestral e já o valor com o desconto de condômino aplicado. Só o
+perfil `comercial` a enxerga: a rota `/api/anuncios` recusa a administração
+com `403`, de modo que o valor não chega nem ao navegador de quem não
+negocia.
 
 | Espaço | Onde aparece | Mensal | Trimestral | Semestral |
 | --- | --- | --- | --- | --- |

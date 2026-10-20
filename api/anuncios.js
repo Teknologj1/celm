@@ -106,6 +106,18 @@ module.exports = async function (req, res) {
     return Array.isArray(dados) ? dados : [];
   }
 
+  /* O painel mostra a tabela de valores ao lado dos espaços; os números
+     vivem em espacos.json e o desconto e a vigência em centro.json. */
+  async function lerPublicidade() {
+    try {
+      const { dados } = await gh.lerJson("data/centro.json");
+      return (dados && dados.publicidade) || {};
+    } catch (falha) {
+      console.error("Falha ao ler a publicidade:", falha);
+      return {};
+    }
+  }
+
   async function lerCampanhas() {
     try {
       const { dados } = await gh.lerJson(ARQUIVO);
@@ -119,8 +131,10 @@ module.exports = async function (req, res) {
   return rotear(req, res, {
     GET: async () => {
       try {
-        const [espacos, anuncios] = await Promise.all([lerEspacos(), lerCampanhas()]);
-        return json(res, 200, { espacos, anuncios });
+        const [espacos, anuncios, publicidade] = await Promise.all([
+          lerEspacos(), lerCampanhas(), lerPublicidade()
+        ]);
+        return json(res, 200, { espacos, anuncios, publicidade });
       } catch (falha) {
         console.error("Falha ao ler anúncios:", falha);
         return erro(res, 500, "Não foi possível carregar os espaços.");
