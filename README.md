@@ -48,9 +48,11 @@ Detalhes de implementação:
   topo. Tudo isso é desligado por completo quando o sistema do visitante pede
   menos animação (`prefers-reduced-motion`), e nada depende de animação para
   funcionar.
-- **Tipografia própria**: a fonte Inter é servida pelo próprio site
+- **Tipografia própria**: Inter (texto), Instrument Serif (títulos) e Chakra
+  Petch (o título de abertura) são servidas pelo próprio site
   (`assets/fonts/`), sem pedir nada ao Google — mais rápido e sem enviar o IP
-  de quem visita a terceiros.
+  de quem visita a terceiros. As três são licenciadas sob a SIL Open Font
+  License; o texto de cada licença está ao lado dos arquivos.
 - **Busca encadeada (torre → tipo de serviço → empresa)**: além das páginas
   de `/torres/`, os filtros do diretório se ajustam uns aos outros — ao
   escolher a Torre B, a lista de categorias passa a mostrar apenas as que
@@ -180,6 +182,21 @@ rodapé e no `sitemap.xml`.
 O gerador valida os dados e interrompe o build com uma mensagem clara se uma
 categoria não existir, um `slug` estiver repetido ou um campo obrigatório
 faltar.
+
+## Tipografia da marca
+
+O título de abertura da página inicial usa a letra do letreiro do Liberty
+Mall, em caixa alta — é a caixa que faz a fonte ser reconhecida como a da
+marca; em caixa baixa a mesma fonte lê como tipografia técnica qualquer.
+
+Uma ressalva honesta: **o logotipo oficial é vetor com o texto já convertido
+em curvas**, então não há nome de fonte para extrair dele. A escolha foi feita
+por comparação — renderizei "LIBERTY MALL" em oito famílias livres ao lado do
+logotipo e a mais próxima em geometria quadrada e terminais retos foi a
+**Chakra Petch**. É uma aproximação, não a fonte original. Se o condomínio
+tiver o manual da marca, o nome da fonte está lá e dá para trocar mudando uma
+linha (`--font-marca` em `assets/css/style.css`); se ela for comercial, o
+licenciamento para web é por conta de quem publica.
 
 ## Imagens
 
