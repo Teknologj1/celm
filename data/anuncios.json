@@ -9,5 +9,16 @@
     "link": "https://www.iois.com.br",
     "inicio": "2026-10-19",
     "fim": ""
+  },
+  {
+    "id": "diretorio-instituto-iois",
+    "chamada": "",
+    "link": "https://wa.me/5561996987275?text=\"Quero agendar uma consulta",
+    "imagem": "assets/img/anuncios/2026-10-20-100sorrisos.jpeg",
+    "anunciante": "Instituto IOIS",
+    "espaco": "diretorio",
+    "ativo": true,
+    "inicio": "2026-10-20",
+    "fim": ""
   }
 ]
