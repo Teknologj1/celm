@@ -20,5 +20,16 @@
     "ativo": true,
     "inicio": "2026-10-20",
     "fim": ""
+  },
+  {
+    "id": "empresa-instituto-iois",
+    "chamada": "",
+    "link": "https://wa.me/5561996987275?text=\"Quero agendar uma consulta",
+    "imagem": "assets/img/anuncios/2026-10-20-clareamento-300x250.jpg",
+    "anunciante": "Instituto IOIS",
+    "espaco": "empresa",
+    "ativo": true,
+    "inicio": "2026-10-20",
+    "fim": ""
   }
 ]
