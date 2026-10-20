@@ -800,14 +800,19 @@ a.cartao:hover .marca-empresa.monograma {
 .anuncio-peca:hover { text-decoration: none; }
 
 .anuncio-midia {
-  display: block; width: 100%; height: auto;
-  /* Nunca maior que a largura para a qual a peça foi feita — esticar só
-     borra a arte. Centralizada quando o espaço é mais largo que ela. */
+  display: block; height: auto;
+  /* Dois tetos: a largura do espaço e a da própria peça. Esticar arte só
+     borra — uma peça de 600 px de largura fica em 600, centralizada, mesmo
+     num espaço de 970. Abaixo disso ela encolhe junto com a tela. */
   max-width: min(100%, var(--peca-largura, 100%));
   margin-inline: auto;
   border-radius: var(--radius-sm);
 }
-video.anuncio-midia { background: var(--surface-alt); }
+/* A imagem se dimensiona pelo arquivo; o vídeo não tem tamanho natural
+   antes de carregar os metadados, e sem largura explícita o navegador o
+   desenha com 300 px. */
+img.anuncio-midia { width: auto; }
+video.anuncio-midia { width: 100%; background: var(--surface-alt); }
 
 /* Chamada opcional, sempre acima da peça. Ao lado, a imagem teria de
    encolher para abrir espaço — que foi o que acontecia antes. O recuo à
@@ -839,8 +844,6 @@ video.anuncio-midia { background: var(--surface-alt); }
   border-style: dashed;
 }
 .anuncio-faixa { margin-block: 8px; }
-.anuncio-lateral { margin-bottom: 18px; }
-.anuncio-lateral .anuncio-convite { flex-direction: column; align-items: flex-start; gap: 10px; }
 @media (max-width: 620px) {
   .anuncio { padding: 14px; }
   .anuncio-convite { flex-direction: column; align-items: flex-start; }

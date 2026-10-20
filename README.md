@@ -212,9 +212,7 @@ para as imagens das empresas — e repetidos nas dicas do painel.
 | --- | --- | --- | --- |
 | Logotipo da empresa | 400 × 400 px | até 60 kB | SVG; PNG se precisar de transparência |
 | Capa da empresa | 800 × 450 px | até 120 kB | WEBP; JPG serve |
-| Faixa (home, torre) | 970 × 250 px | até 150 kB | WEBP, PNG, JPG ou SVG |
-| Cartão no diretório | 600 × 400 px | até 100 kB | WEBP, PNG, JPG ou SVG |
-| Bloco nas fichas | 300 × 250 px | até 80 kB | WEBP, PNG, JPG ou SVG |
+| Faixa publicitária | 970 × 250 px | até 150 kB | WEBP, PNG, JPG ou SVG |
 | Peça animada | a do espaço | até 500 kB | MP4, WEBM ou WEBP animado (**GIF recusado**) |
 
 ### Animação sem peso
@@ -347,12 +345,20 @@ data como prefixo, de modo que uma edição nova nunca sobrescreve a anterior.
 São quatro lugares fixos no site. Cada um comporta **várias campanhas em
 rodízio**: elas ocupam o mesmo espaço e se revezam por tempo.
 
+Todos ficam **no alto da página, logo abaixo do cabeçalho** — antes do
+conteúdo, onde a visita começa.
+
 | `espaco` | Onde aparece | Campanhas | Troca | Peça |
 | --- | --- | --- | --- | --- |
-| `home` | Faixa na página inicial, abaixo das categorias | até 5 | 8 s | 970×250, até 150 kB |
-| `diretorio` | Ao final da lista de resultados do diretório | até 10 | 9 s | 600×400, até 100 kB |
-| `empresa` | Bloco na lateral de cada ficha de empresa | até 10 | 10 s | 300×250, até 80 kB |
-| `torre` | Faixa ao final das páginas de torre e de categoria | até 15 | 10 s | 970×250, até 150 kB |
+| `home` | Topo da página inicial, abaixo da abertura | até 5 | 8 s | 970×250, até 150 kB |
+| `diretorio` | Topo do diretório, antes dos filtros | até 10 | 9 s | 970×250, até 150 kB |
+| `empresa` | Topo de todas as fichas de empresa | até 10 | 10 s | 970×250, até 150 kB |
+| `torre` | Topo das páginas de torre e de categoria | até 15 | 10 s | 970×250, até 150 kB |
+
+As quatro peças passaram a ter a mesma medida porque passaram a ocupar o
+mesmo tipo de lugar. O cartão de 600×400 fazia sentido dentro da grade do
+diretório e o bloco de 300×250 na lateral da ficha; no alto da página, os
+dois viravam blocos altos empurrando o conteúdo para baixo.
 
 As medidas e os pesos ficam no bloco `arquivo` de cada espaço e são o que a
 página `/anuncie/` publica — mudar a recomendação é mudar um número no JSON,
@@ -407,9 +413,9 @@ Não se desenha moldura em volta dela — nem título, nem texto de apoio, nem o
 nome de quem anuncia. Quem fez a arte já disse o que queria dizer, e repetir
 ao lado rouba espaço e atenção.
 
-A peça ocupa a largura do espaço, limitada à largura para a qual foi feita:
-esticar uma arte de 970 px até 1.200 px só a deixa borrada. Abaixo disso ela
-encolhe junto com a tela.
+A peça ocupa a largura do espaço, com dois tetos: a largura do espaço e a da
+própria arte. Uma peça de 600 px fica em 600, centralizada, mesmo num espaço
+de 970 — esticar só borra. Abaixo disso ela encolhe junto com a tela.
 
 Uma campanha só vai ao ar com peça enviada; sem ela não há o que mostrar.
 Salvar como rascunho (desligada) continua valendo, para preparar antes de
