@@ -2,6 +2,33 @@
 
 /* Casca comum das páginas: <head>, cabeçalho, rodapé e helpers de link. */
 
+const fs = require("fs");
+const path = require("path");
+const crypto = require("crypto");
+
+/* Carimbo de versão nos arquivos de CSS e JavaScript.
+ *
+ * Sem ele, o navegador que já visitou o site continua usando a folha de
+ * estilo e os scripts que guardou — e uma correção publicada não chega a
+ * quem mais visita. O endereço muda junto com o conteúdo, então o arquivo
+ * antigo deixa de existir para o navegador e o novo desce de uma vez. */
+const RAIZ = path.join(__dirname, "..");
+const carimbos = new Map();
+
+function carimbo(caminho) {
+  if (carimbos.has(caminho)) return carimbos.get(caminho);
+  let marca = "";
+  try {
+    const conteudo = fs.readFileSync(path.join(RAIZ, caminho));
+    marca = "?v=" + crypto.createHash("sha1").update(conteudo).digest("hex").slice(0, 8);
+  } catch (falha) {
+    /* Arquivo ausente é problema do verificador de links, não daqui: a
+       página continua sendo gerada, só sem carimbo. */
+  }
+  carimbos.set(caminho, marca);
+  return marca;
+}
+
 function escapar(texto) {
   return String(texto == null ? "" : texto)
     .replace(/&/g, "&amp;")
@@ -221,7 +248,7 @@ function pagina(dados, opcoes) {
     : "";
 
   const scripts = (opcoes.scripts || [])
-    .map((src) => `  <script src="${u("assets/js/" + src)}" defer></script>`)
+    .map((src) => `  <script src="${u("assets/js/" + src) + carimbo("assets/js/" + src)}" defer></script>`)
     .join("\n");
 
   const dadosEstruturados = opcoes.jsonLd
@@ -244,7 +271,7 @@ ${canonical ? `  <link rel="canonical" href="${escapar(canonical)}">\n` : ""}  <
 ${canonical ? `  <meta property="og:url" content="${escapar(canonical)}">\n` : ""}  <link rel="icon" href="${u("assets/img/favicon.svg")}" type="image/svg+xml">
   <link rel="preload" href="${u("assets/fonts/inter-variable.woff2")}" as="font" type="font/woff2" crossorigin>
   <link rel="preload" href="${u("assets/fonts/instrument-serif.woff2")}" as="font" type="font/woff2" crossorigin>
-  <link rel="stylesheet" href="${u("assets/css/style.css")}">
+  <link rel="stylesheet" href="${u("assets/css/style.css") + carimbo("assets/css/style.css")}">
 ${dadosEstruturados}</head>
 <body>
   <a class="skip-link" href="#conteudo">Ir para o conteúdo</a>
@@ -254,9 +281,9 @@ ${opcoes.conteudo}
   </main>
 ${camadaDeBusca(dados, profundidade, baseFixa)}
 ${rodape(dados, profundidade, baseFixa)}
-  <script src="${u("assets/js/app.js")}" defer></script>
-  <script src="${u("assets/js/busca-rapida.js")}" defer></script>
-  <script src="${u("assets/js/anuncios.js")}" defer></script>
+  <script src="${u("assets/js/app.js") + carimbo("assets/js/app.js")}" defer></script>
+  <script src="${u("assets/js/busca-rapida.js") + carimbo("assets/js/busca-rapida.js")}" defer></script>
+  <script src="${u("assets/js/anuncios.js") + carimbo("assets/js/anuncios.js")}" defer></script>
 ${scripts}
 </body>
 </html>

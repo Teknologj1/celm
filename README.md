@@ -85,6 +85,14 @@ Detalhes de implementação:
   quando existe JavaScript para trazê-los de volta. O HTML entregue tem as
   136 fichas, então o Google continua vendo o diretório inteiro. Apenas os
   filtros deixam de funcionar.
+- **Carimbo de versão nos arquivos estáticos**: o endereço do CSS e de cada
+  script carrega um resumo do próprio conteúdo (`style.css?v=6ea95f44`). Sem
+  isso, quem já visitou o site continuava usando a cópia guardada pelo
+  navegador — e uma correção publicada não chegava justamente a quem mais
+  volta. Com o carimbo, o arquivo antigo deixa de existir para o navegador e
+  o novo desce na primeira visita. Imagens e PDFs ficam de fora de propósito:
+  o painel regrava logotipo e capa com o mesmo nome, e eles precisam ser
+  reconferidos a cada visita.
 - **SEO**: cada empresa tem página própria, com `<title>`, meta description,
   canonical, Open Graph e dados estruturados JSON-LD (`LocalBusiness`).
 - **Acessibilidade**: navegação por teclado, marcos ARIA, link de pular para o
