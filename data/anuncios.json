@@ -31,5 +31,16 @@
     "ativo": true,
     "inicio": "2026-10-20",
     "fim": ""
+  },
+  {
+    "id": "torre-instituto-iois",
+    "chamada": "",
+    "link": "https://wa.me/5561996987275/?text=Ol%C3%A1,%20quero%20agendar%20uma%20consulta%20e%20ter%20meu%20sorriso%20tranformado",
+    "imagem": "assets/img/anuncios/2026-10-21-anuncio-1d-970x250.png",
+    "anunciante": "Instituto IOIS",
+    "espaco": "torre",
+    "ativo": true,
+    "inicio": "2026-10-21",
+    "fim": ""
   }
 ]
