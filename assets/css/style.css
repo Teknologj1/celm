@@ -1304,3 +1304,15 @@ a.cartao:hover .cartao-cabeca-capa h3 { color: #fff; }
   position: absolute; left: -9999px; width: 1px; height: 1px;
   overflow: hidden;
 }
+
+/* ---------- Carregar mais ------------------------------------------------ */
+/* Os cartões além da primeira leva só são escondidos quando há JavaScript
+   para trazê-los de volta. Sem ele, a lista inteira continua na página. */
+.js .cartao-extra { display: none; }
+
+.carregar-mais {
+  display: flex; flex-direction: column; align-items: center; gap: 8px;
+  margin: 26px 0 8px;
+}
+.carregar-mais .btn { min-width: 240px; justify-content: center; }
+.carregar-mais .dica { color: var(--muted); font-size: .84rem; }

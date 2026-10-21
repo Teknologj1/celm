@@ -8,6 +8,18 @@
   var raiz = document.getElementById("resultados");
   if (!raiz) return;
 
+  /* Paginação em "carregar mais".
+   *
+   * O diretório inteiro são 136 cartões. Despejados de uma vez, o anúncio e
+   * o rodapé ficam a dez rolagens do topo — ninguém chega lá. A primeira
+   * leva é curta de propósito; as seguintes são maiores, porque quem clicou
+   * uma vez já decidiu que quer ver mais. */
+  var PRIMEIRA_PAGINA = 12;
+  var INCREMENTO = 24;
+  var mostrados = PRIMEIRA_PAGINA;
+
+  var areaMais = document.getElementById("mais");
+
   var fonte = document.getElementById("dados-empresas");
   var empresas = carregarEmpresas();
   var baseUrl = raiz.getAttribute("data-base") || "";
@@ -204,7 +216,41 @@
     }
 
     raiz.className = "grade grade-3";
-    raiz.innerHTML = lista.map(cartao).join("");
+
+    var visiveis = lista.slice(0, mostrados);
+    raiz.innerHTML = visiveis.map(cartao).join("");
+    desenharBotao(lista.length, visiveis.length);
+  }
+
+  function desenharBotao(total, visiveis) {
+    if (!areaMais) return;
+
+    var faltam = total - visiveis;
+    if (faltam <= 0) {
+      areaMais.hidden = true;
+      areaMais.innerHTML = "";
+      return;
+    }
+
+    areaMais.hidden = false;
+    areaMais.innerHTML =
+      '<button class="btn btn-secundario" type="button" id="btn-mais">' +
+        "Carregar mais " + Math.min(faltam, INCREMENTO) + " empresas" +
+      "</button>" +
+      '<span class="dica">Mostrando ' + visiveis + " de " + total + "</span>";
+
+    document.getElementById("btn-mais").addEventListener("click", function () {
+      var primeiroNovo = visiveis;
+      mostrados += INCREMENTO;
+      renderizar(calcular());
+
+      /* Quem navega por teclado precisa continuar de onde parou: o botão
+         some quando a lista acaba, e sem isto o foco voltaria ao início
+         da página. */
+      var cartoes = raiz.querySelectorAll(".cartao");
+      var alvo = document.getElementById("btn-mais") || cartoes[primeiroNovo];
+      if (alvo) alvo.focus({ preventScroll: true });
+    });
   }
 
   function sincronizarControles(resultado) {
@@ -240,6 +286,8 @@
   }
 
   function atualizar() {
+    /* Mudou filtro, mudou lista: a contagem recomeça. */
+    mostrados = PRIMEIRA_PAGINA;
     var resultado = calcular();
     sincronizarControles(resultado);
     escreverUrl();

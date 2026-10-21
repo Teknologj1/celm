@@ -333,6 +333,11 @@ function home(dados) {
   });
 }
 
+/* Quantos cartões a página mostra antes de alguém pedir mais. O diretório
+   inteiro são 136: de uma vez, o anúncio e o rodapé ficam a dez rolagens do
+   topo e ninguém os vê. */
+const PRIMEIRA_PAGINA = 12;
+
 function diretorio(dados) {
   const opcoesCategoria = dados.categorias
     .map((c) => `<option value="${escapar(c.slug)}">${escapar(c.nome)} (${c.empresas.length})</option>`)
@@ -384,8 +389,14 @@ function diretorio(dados) {
         </div>
 
         <div id="resultados" class="grade grade-3" data-base="${url(1, "")}">
-          ${dados.vitrine.map((e) => cartaoEmpresa(e, 1)).join("\n          ")}
+          ${dados.vitrine.map((e, i) =>
+            cartaoEmpresa(e, 1).replace('class="cartao', `class="cartao${i >= PRIMEIRA_PAGINA ? " cartao-extra" : ""}`)
+          ).join("\n          ")}
         </div>
+
+        <!-- Fica vazio e escondido até o JavaScript assumir. Sem ele, a
+             lista inteira continua na página e não há o que carregar. -->
+        <div class="carregar-mais" id="mais" hidden></div>
 
         ${anuncio(dados, "diretorio", 1, "anuncio-faixa")}
 

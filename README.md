@@ -75,8 +75,16 @@ Detalhes de implementação:
 - **Busca tolerante**: ignora acentos e entende sinônimos — procurar por
   "dentista" encontra a categoria Odontologia, "contador" encontra
   Contabilidade. Também aceita "sala 1208", "torre B" e "12º andar".
-- **Sem JavaScript**, o diretório continua listando todas as empresas; apenas
-  os filtros deixam de funcionar.
+- **Carregar mais**: o diretório abre com 12 empresas e cresce de 24 em 24.
+  As 136 de uma vez empurravam o anúncio e o rodapé para 11.400 px do topo —
+  dez rolagens, que quase ninguém faz. Com a primeira leva curta, o anúncio
+  fica a 1.700 px e a página inteira cabe em 2.700 px em vez de 12.400.
+  Mudar de filtro recomeça a contagem.
+- **Sem JavaScript**, o diretório continua listando **todas** as empresas e o
+  botão nem aparece: os cartões além da primeira leva só são escondidos
+  quando existe JavaScript para trazê-los de volta. O HTML entregue tem as
+  136 fichas, então o Google continua vendo o diretório inteiro. Apenas os
+  filtros deixam de funcionar.
 - **SEO**: cada empresa tem página própria, com `<title>`, meta description,
   canonical, Open Graph e dados estruturados JSON-LD (`LocalBusiness`).
 - **Acessibilidade**: navegação por teclado, marcos ARIA, link de pular para o
