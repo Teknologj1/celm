@@ -2,13 +2,13 @@
   {
     "id": "home",
     "nome": "Faixa da página inicial",
-    "formato": "Faixa 970×250 no topo da página inicial, logo abaixo da abertura",
+    "formato": "Faixa 970×250 na página inicial, abaixo das categorias",
     "limite": 5,
     "intervalo": 8,
     "tabela": {
       "nome": "Faixa da página inicial",
       "medida": "970 × 250 px",
-      "onde": "Topo da página inicial, logo abaixo da abertura",
+      "onde": "Página inicial, logo abaixo das categorias",
       "mensal": 390,
       "trimestral": 1050,
       "semestral": 1950,
@@ -28,21 +28,21 @@
   {
     "id": "diretorio",
     "nome": "Cartão no diretório",
-    "formato": "Faixa 970×250 no topo do diretório, acima dos filtros e da lista",
+    "formato": "Cartão dentro da lista de resultados, após a primeira linha",
     "limite": 10,
     "intervalo": 9,
     "tabela": {
-      "nome": "Faixa do diretório",
-      "medida": "970 × 250 px",
-      "onde": "Topo do diretório, antes dos filtros e da lista",
+      "nome": "Cartão no diretório",
+      "medida": "600 × 400 px",
+      "onde": "Dentro da lista de empresas, ao final da primeira dobra",
       "mensal": 290,
       "trimestral": 780,
       "semestral": 1450,
       "argumento": "Alcança quem já está procurando um serviço — o momento de maior intenção de contratar."
     },
     "arquivo": {
-      "medida": "970 × 250 px",
-      "peso": 150,
+      "medida": "600 × 400 px",
+      "peso": 100,
       "formatos": [
         "WEBP",
         "PNG",
@@ -54,21 +54,21 @@
   {
     "id": "empresa",
     "nome": "Bloco nas fichas",
-    "formato": "Faixa 970×250 no topo de todas as fichas de empresa",
+    "formato": "Bloco 300×250 na lateral das fichas de empresa",
     "limite": 10,
     "intervalo": 10,
     "tabela": {
-      "nome": "Faixa nas fichas de empresa",
-      "medida": "970 × 250 px",
-      "onde": "Topo de todas as fichas de empresa",
+      "nome": "Bloco nas fichas",
+      "medida": "300 × 250 px",
+      "onde": "Lateral de todas as 136 fichas de empresa",
       "mensal": 240,
       "trimestral": 650,
       "semestral": 1200,
       "argumento": "Presente em todas as fichas: é o espaço com mais páginas de exibição no site."
     },
     "arquivo": {
-      "medida": "970 × 250 px",
-      "peso": 150,
+      "medida": "300 × 250 px",
+      "peso": 80,
       "formatos": [
         "WEBP",
         "PNG",
@@ -80,13 +80,13 @@
   {
     "id": "torre",
     "nome": "Faixa de torre e categoria",
-    "formato": "Faixa no topo das páginas de torre e de categoria",
+    "formato": "Faixa ao final das páginas de torre e categoria",
     "limite": 15,
     "intervalo": 10,
     "tabela": {
       "nome": "Faixa de torre e categoria",
       "medida": "970 × 250 px",
-      "onde": "Topo das páginas de torre e de categoria",
+      "onde": "Final das páginas de torre e de categoria",
       "mensal": 190,
       "trimestral": 510,
       "semestral": 950,

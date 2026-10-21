@@ -216,12 +216,6 @@ function home(dados) {
       </div>
     </section>
 
-    <section class="secao secao-anuncio">
-      <div class="container">
-        ${anuncio(dados, "home", 0, "anuncio-faixa")}
-      </div>
-    </section>
-
     <section class="secao">
       <div class="container">
         <div class="secao-topo revelar">
@@ -242,6 +236,12 @@ function home(dados) {
             </a>`).join("\n            ")}
           </div>
         </div>
+      </div>
+    </section>
+
+    <section class="secao" style="padding-top:0">
+      <div class="container">
+        ${anuncio(dados, "home", 0, "anuncio-faixa")}
       </div>
     </section>
 
@@ -350,8 +350,6 @@ function diretorio(dados) {
           <p>Busque por nome, serviço ou profissional. Também dá para filtrar por torre e por área de atuação — o resultado muda enquanto você digita.</p>
         </div>
 
-        ${anuncio(dados, "diretorio", 1, "anuncio-faixa")}
-
         <form class="painel-filtros" id="form-filtros" role="search">
           <div class="campo">
             <label for="filtro-busca">Buscar</label>
@@ -388,6 +386,8 @@ function diretorio(dados) {
         <div id="resultados" class="grade grade-3" data-base="${url(1, "")}">
           ${dados.vitrine.map((e) => cartaoEmpresa(e, 1)).join("\n          ")}
         </div>
+
+        ${anuncio(dados, "diretorio", 1, "anuncio-faixa")}
 
         <noscript>
           <p class="vazio" style="margin-top:20px">A busca e os filtros precisam de JavaScript. A lista completa de empresas continua visível acima.</p>
@@ -481,8 +481,6 @@ function empresa(dados, item) {
         </div>
       </header>
 
-      ${anuncio(dados, "empresa", 2, "anuncio-faixa")}
-
       <div class="colunas">
         <div>
           <div class="bloco">
@@ -517,6 +515,8 @@ function empresa(dados, item) {
               <a class="btn btn-secundario btn-sm" href="${escapar(linkMaps(centro))}" rel="noopener" target="_blank">Abrir no mapa</a>
             </div>
           </div>
+
+          ${anuncio(dados, "empresa", 2, "anuncio-lateral")}
 
           <div class="bloco">
             <h2>Está aqui também</h2>
@@ -692,8 +692,6 @@ function torre(dados, item) {
           </div>
         </div>
 
-        ${anuncio(dados, "torre", 2, "anuncio-faixa")}
-
         <div class="grade grade-3 revelar-fila" style="margin-bottom:30px">
           ${item.categorias.map((c) => `<a class="cartao-cat" data-area="${escapar(c.slug)}" href="${url(2, base + c.slug + "/")}">
             <span class="icone" aria-hidden="true">${escapar(c.icone)}</span>
@@ -708,6 +706,8 @@ function torre(dados, item) {
           <span>Prefere ver tudo de uma vez?</span>
           <a href="${url(2, "empresas/?torre=" + encodeURIComponent(item.id))}">Abrir as ${item.total} empresas da ${escapar(item.nome)} no diretório →</a>
         </div>
+
+        ${anuncio(dados, "torre", 2, "anuncio-faixa")}
       </div>
     </section>`;
 
@@ -744,8 +744,6 @@ function torreCategoria(dados, item, cat) {
           <p>${escapar(cat.descricao)}</p>
         </div>
 
-        ${anuncio(dados, "torre", 3, "anuncio-faixa")}
-
         <div class="chips" style="margin-bottom:24px">
           <a class="chip" href="${url(3, base)}">← Outras categorias da ${escapar(item.nome)}</a>
           ${naOutraTorre.map((par) => `<a class="chip" href="${url(3, "torres/" + par.torre.id.toLowerCase() + "/" + cat.slug + "/")}">${escapar(cat.nome)} na ${escapar(par.torre.nome)} (${par.cat.empresas.length})</a>`).join("\n          ")}
@@ -754,6 +752,8 @@ function torreCategoria(dados, item, cat) {
 
         <p class="nota-ordem">Empresas em ordem alfabética.</p>
         ${grade(cat.empresas, 3)}
+
+        ${anuncio(dados, "torre", 3, "anuncio-faixa")}
       </div>
     </section>`;
 
