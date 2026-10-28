@@ -42,5 +42,16 @@
     "ativo": true,
     "inicio": "2026-10-21",
     "fim": ""
+  },
+  {
+    "id": "home-teknologji",
+    "chamada": "",
+    "link": "https://teknologji.com.br",
+    "imagem": "assets/img/anuncios/2026-10-28-01-home-970x250.webp",
+    "anunciante": "Teknologji",
+    "espaco": "home",
+    "ativo": true,
+    "inicio": "2026-10-28",
+    "fim": ""
   }
 ]
