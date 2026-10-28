@@ -64,5 +64,16 @@
     "ativo": true,
     "inicio": "2026-10-28",
     "fim": ""
+  },
+  {
+    "id": "empresa-teknologji",
+    "chamada": "",
+    "link": "https://teknologji.com.br",
+    "imagem": "assets/img/anuncios/2026-10-28-teknologji-03-corrigido-300x250.webp",
+    "anunciante": "Teknologji",
+    "espaco": "empresa",
+    "ativo": true,
+    "inicio": "2026-10-28",
+    "fim": ""
   }
 ]
