@@ -53,5 +53,16 @@
     "ativo": true,
     "inicio": "2026-10-28",
     "fim": ""
+  },
+  {
+    "id": "diretorio-teknologji",
+    "chamada": "",
+    "link": "https://teknologji.com.br",
+    "imagem": "assets/img/anuncios/2026-10-28-02-diretorio-600x400.webp",
+    "anunciante": "Teknologji",
+    "espaco": "diretorio",
+    "ativo": true,
+    "inicio": "2026-10-28",
+    "fim": ""
   }
 ]
